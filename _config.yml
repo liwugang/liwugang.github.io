@@ -1,0 +1,25 @@
+# Site settings
+name: liwugang blog
+email: liwugang@163.com;liwugang@outlook.com
+author: Li Wugang
+url: https://liwugang.github.io/
+resume_site: https://liwugang.github.io/
+github: https://github.com/liwugang/
+baseurl: ""
+description: patient and courage
+meta_description: liwugang;个人博客;
+motto: 
+banner: 
+
+permalink: /:year/:month/:day/:title/
+paginate: 10
+
+exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'Rakefile']
+
+github_username: liwugang
+
+# Build settings
+markdown: kramdown
+
+baidu_analysis: 1d2fe4c4c213d17757e0b1a94713ead0
+
