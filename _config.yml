@@ -1,12 +1,12 @@
 # Site settings
-name: liwugang blog
+name: Liwugang's Blog
 email: liwugang@163.com
 author: Li Wugang
 url: https://liwugang.github.io/
 resume_site: https://liwugang.github.io/
 github: https://github.com/liwugang/
 baseurl: ""
-description: patient and courage
+description: Patient && Courage
 meta_description: liwugang;个人博客;
 motto: 
 banner: 
