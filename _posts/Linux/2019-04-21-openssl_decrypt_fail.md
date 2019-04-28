@@ -1,12 +1,9 @@
 ---
 layout: post
-#标题配置
+
 title:  openssl AES密钥和iv长度问题分析
-#时间配置
 date:   2019-04-21 15:13:00 +0800
-#大类配置
 categories: Linux
-#小类配置
 tag: openssl
 ---
 
