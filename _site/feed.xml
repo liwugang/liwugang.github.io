@@ -5,8 +5,8 @@
     <description>Patient &amp;&amp; Courage</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 28 Apr 2019 23:10:29 +0800</pubDate>
-    <lastBuildDate>Sun, 28 Apr 2019 23:10:29 +0800</lastBuildDate>
+    <pubDate>Sun, 28 Apr 2019 23:12:56 +0800</pubDate>
+    <lastBuildDate>Sun, 28 Apr 2019 23:12:56 +0800</lastBuildDate>
     <generator>Jekyll v3.8.3</generator>
     
       <item>
@@ -14,6 +14,7 @@
         <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#git-rebase逻辑&quot; id=&quot;markdown-toc-git-rebase逻辑&quot;&gt;git rebase逻辑&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#git-editor的修改&quot; id=&quot;markdown-toc-git-editor的修改&quot;&gt;git editor的修改&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#处理git-rebase-todo文件&quot; id=&quot;markdown-toc-处理git-rebase-todo文件&quot;&gt;处理git-rebase-todo文件&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#python实现&quot; id=&quot;markdown-toc-python实现&quot;&gt;Python实现&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -31,8 +32,8 @@
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    git config core.editor &lt;span class=&quot;c&quot;&gt;#查看当前使用editor&lt;/span&gt;
     git config &lt;span class=&quot;nt&quot;&gt;--local&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--replace-all&lt;/span&gt;  core.editor NEW_EDITOR &lt;span class=&quot;c&quot;&gt;# 修改当前的仓库的editor为NEW_EDITOR&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;处理git-rebase-todo文件
-=====================&lt;/p&gt;
+
+&lt;h1 id=&quot;处理git-rebase-todo文件&quot;&gt;处理git-rebase-todo文件&lt;/h1&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pick 62e0071 first commit
 pick 3bd641a second commit
 pick 92c03c7 third commit

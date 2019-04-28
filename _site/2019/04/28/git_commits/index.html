@@ -137,6 +137,7 @@
               <ul id="markdown-toc">
   <li><a href="#git-rebase逻辑" id="markdown-toc-git-rebase逻辑">git rebase逻辑</a></li>
   <li><a href="#git-editor的修改" id="markdown-toc-git-editor的修改">git editor的修改</a></li>
+  <li><a href="#处理git-rebase-todo文件" id="markdown-toc-处理git-rebase-todo文件">处理git-rebase-todo文件</a></li>
   <li><a href="#python实现" id="markdown-toc-python实现">Python实现</a></li>
 </ul>
 
@@ -154,8 +155,8 @@
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    git config core.editor <span class="c">#查看当前使用editor</span>
     git config <span class="nt">--local</span> <span class="nt">--replace-all</span>  core.editor NEW_EDITOR <span class="c"># 修改当前的仓库的editor为NEW_EDITOR</span>
 </code></pre></div></div>
-<p>处理git-rebase-todo文件
-=====================</p>
+
+<h1 id="处理git-rebase-todo文件">处理git-rebase-todo文件</h1>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pick 62e0071 first commit
 pick 3bd641a second commit
 pick 92c03c7 third commit

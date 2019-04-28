@@ -26,6 +26,7 @@ git提供config命令来查看配置和修改配置，同样editor也可以这�
     git config core.editor #查看当前使用editor
     git config --local --replace-all  core.editor NEW_EDITOR # 修改当前的仓库的editor为NEW_EDITOR
 ```
+
 处理git-rebase-todo文件
 =====================
 ```bash
