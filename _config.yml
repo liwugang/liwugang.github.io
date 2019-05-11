@@ -10,7 +10,7 @@ description: Patient && Courage
 meta_description: liwugang;个人博客;
 motto: 
 banner: 
-
+gems: [jekyll-paginate]
 permalink: /:year/:month/:day/:title/
 paginate: 10
 
@@ -22,4 +22,3 @@ github_username: liwugang
 markdown: kramdown
 
 baidu_analysis: 1d2fe4c4c213d17757e0b1a94713ead0
-
