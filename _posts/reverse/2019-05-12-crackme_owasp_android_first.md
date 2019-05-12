@@ -12,7 +12,7 @@ tag: frida
 
 背景
 ================
-最近在学习frida，就拿OWASP上的crackme进行练习，[下载地址](https://github.com/OWASP/owasp-mstg/blob/master/Crackmes/README.md)，并且关于该crackme分析的文章很多，之列出相应的frida脚本。
+最近在学习frida，就拿OWASP上的crackme进行练习，[下载地址](https://github.com/OWASP/owasp-mstg/blob/master/Crackmes/README.md)，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。
 
 UnCrackable App for Android Level 1
 ===============
