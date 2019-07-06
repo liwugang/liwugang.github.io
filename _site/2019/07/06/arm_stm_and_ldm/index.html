@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ARM中的STM和LDM指令的解析 - Liwugang's Blog</title>
+
+	<link rel="shortcut icon" href="/styles/images/favicon.jpg">
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<link rel="stylesheet" href="/styles/css/index.css">
+	<link rel="stylesheet" href="/styles/css/fontawesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/styles/css/syntax.css">
+	<link rel="canonical" href="/2019/07/06/arm_stm_and_ldm/">
+	<link rel="alternate" type="application/rss+xml" title="Liwugang's Blog" href="/feed.xml">
+	
+	<meta name="keywords" content="ARM中的STM和LDM指令的解析, Liwugang's Blog, liwugang;个人博客;">
+	<meta name="description" content="liwugang;个人博客;">
+
+	<script src="/styles/js/jquery.min.js"></script>
+	<!--[if lt IE 9]>
+    	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  	<![endif]-->
+  	<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "//hm.baidu.com/hm.js?1d2fe4c4c213d17757e0b1a94713ead0";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+  	<style type="text/css">
+	  	.docs-content{
+	  		margin-bottom: 10px;
+	  	}
+  	</style>
+</head>
+
+  <body class="index">
+
+    <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">
+        <!--<img src="/styles/images/logo.jpg">-->
+      </a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">    
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/categories/">Categories</a>
+        </li>
+        <li>
+          <a href="/tag">Tags</a>
+        </li>
+        <li>
+          <a rel="nofollow" target="_blank" href="https://github.com/liwugang/" >Github</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></a>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">关于<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a rel="nofollow" target="_blank" href="https://liwugang.github.io/">关于作者</a></li>
+            <li><a href="/feed.xml">RSS订阅</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+    <div class="docs-header" id="content">
+  <div class="container">
+  	
+  		<!--
+		    <h1>ARM中的STM和LDM指令的解析</h1>
+		    <p>Post on Jul 06, 2019 by <a href="/about">Li Wugang</a></p>
+		-->
+		    <h1></h1>
+    
+  </div>
+</div>
+    
+      
+<div class="banner">
+  <div class="container">
+  	
+    	<a href="/categories/#arm-ref">arm</a>	/
+    	<a href="/tag/#arm-ref">arm</a>
+    
+  </div>
+</div>
+
+    
+
+    <div class="container docs-container">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="sidebar hidden-print" role="complementary">
+        <div id="navigation">
+  <h1>目录</h1>
+  <ul class="nav sidenav">
+  </ul>
+  <div style="height: 200px;width: 200px;">
+  </div>
+</div>
+
+ 
+      </div>
+    </div>
+    <div class="col-md-9" role="main">
+      <div class="panel docs-content">
+        <div class="wrapper">
+            <header class="post-header">
+              <h1 class="post-title">ARM中的STM和LDM指令的解析</h1>
+              <!--
+                <p class="post-meta">Jul 6, 2019</p>
+              -->
+              <div class="meta">Posted on <span class="postdate">Jul 06, 2019</span> By <a target="_blank" href="http://localhost:4000">Li Wugang</a></div>
+              <br />
+            </header>
+            <article class="post-content">
+              <ul id="markdown-toc">
+  <li><a href="#stm指令" id="markdown-toc-stm指令">STM指令</a>    <ul>
+      <li><a href="#stmdastmed" id="markdown-toc-stmdastmed">STMDA(STMED)</a></li>
+      <li><a href="#回写base寄存器" id="markdown-toc-回写base寄存器">回写base寄存器</a></li>
+    </ul>
+  </li>
+  <li><a href="#ldm指令" id="markdown-toc-ldm指令">LDM指令</a></li>
+</ul>
+
+<h1 id="stm指令">STM指令</h1>
+<p>STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。</p>
+<blockquote>
+  <p>格式： STM[xx] Rn[!], registers</p>
+</blockquote>
+
+<p>Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。</p>
+
+<p>xx用于确认放置根据下面两个条件区分：
+1.base地址之前和之后;
+2.地址是放置前增加还是后增加。</p>
+
+<p>由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">xx</th>
+      <th style="text-align: center">name</th>
+      <th style="text-align: center">介绍</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">IA(EA)</td>
+      <td style="text-align: center">Increment After(Empty Ascending)</td>
+      <td style="text-align: center">放置后地址增加，address = Rn</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DA(ED)</td>
+      <td style="text-align: center">Decrement After(Empty Descending)</td>
+      <td style="text-align: center">放置后地址减少，address = Rn - len(registers) + 4</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DB(FD)</td>
+      <td style="text-align: center">Decrement Before(Full Descending)</td>
+      <td style="text-align: center">放置前地址减少，addrss = Rn - len(registers)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">IB(FA)</td>
+      <td style="text-align: center">Increment Before(Full Ascending)</td>
+      <td style="text-align: center">放置前地址增加，address = Rn + 4</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="stmdastmed">STMDA(STMED)</h2>
+<p>来看下为什么 address = Rn - len(registers) + 4 ?</p>
+
+<ul>
+  <li>放置后地址减少;</li>
+  <li>寄存器编号按从低到高放置在存储空间的从低到高的位置;</li>
+</ul>
+
+<p>所以先倒数第一的寄存器需要放置在base地址中，即mem[Rn] = R[end], 接下来倒数第二为 mem[Rn - 4] = R[end-1], 类似第一个就是mem[Rn - len(registers) + 4] = R[first]了。</p>
+
+<h2 id="回写base寄存器">回写base寄存器</h2>
+
+<p>若需要回写base寄存器</p>
+<ul>
+  <li>IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4</li>
+  <li>DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4</li>
+</ul>
+
+<h1 id="ldm指令">LDM指令</h1>
+<p>和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。</p>
+
+
+            </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+    <footer class="footer" role="contentinfo">
+	<div class="container">
+		<p class="copyright">Copyright &copy; 2014-2019 <a href="https://liwugang.github.io/"><code>Li Wugang</code></a>.</p>
+		<p>Powered by <a href="http://jekyllrb.com">Jekyll</a>, themed from <a href="http://lesscss.cn/">Less</a>, refactored by <a href="https://github.com/luoyan35714/LessOrMore">Freud Kang</a></p>
+	</div>
+</footer>
+
+<script src="/styles/js/jquery.min.js"></script>
+<script src="/styles/js/bootstrap.min.js"></script>
+<script src="/styles/js/holder.min.js"></script>
+<script src="/styles/js/lessismore.js"></script>
+<script src="/styles/js/application.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  </body>
+</html>

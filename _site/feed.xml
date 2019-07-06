@@ -5,9 +5,161 @@
     <description>Patient &amp;&amp; Courage</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 12 May 2019 18:21:07 +0800</pubDate>
-    <lastBuildDate>Sun, 12 May 2019 18:21:07 +0800</lastBuildDate>
+    <pubDate>Sat, 06 Jul 2019 15:02:32 +0800</pubDate>
+    <lastBuildDate>Sat, 06 Jul 2019 15:02:32 +0800</lastBuildDate>
     <generator>Jekyll v3.8.3</generator>
+    
+      <item>
+        <title>ARM中的STM和LDM指令的解析</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#stm指令&quot; id=&quot;markdown-toc-stm指令&quot;&gt;STM指令&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#stmdastmed&quot; id=&quot;markdown-toc-stmdastmed&quot;&gt;STMDA(STMED)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#回写base寄存器&quot; id=&quot;markdown-toc-回写base寄存器&quot;&gt;回写base寄存器&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ldm指令&quot; id=&quot;markdown-toc-ldm指令&quot;&gt;LDM指令&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;stm指令&quot;&gt;STM指令&lt;/h1&gt;
+&lt;p&gt;STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;格式： STM[xx] Rn[!], registers&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。&lt;/p&gt;
+
+&lt;p&gt;xx用于确认放置根据下面两个条件区分：
+1.base地址之前和之后;
+2.地址是放置前增加还是后增加。&lt;/p&gt;
+
+&lt;p&gt;由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;xx&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;name&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;介绍&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;IA(EA)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Increment After(Empty Ascending)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;放置后地址增加，address = Rn&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;DA(ED)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Decrement After(Empty Descending)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;放置后地址减少，address = Rn - len(registers) + 4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;DB(FD)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Decrement Before(Full Descending)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;放置前地址减少，addrss = Rn - len(registers)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;IB(FA)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Increment Before(Full Ascending)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;放置前地址增加，address = Rn + 4&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;stmdastmed&quot;&gt;STMDA(STMED)&lt;/h2&gt;
+&lt;p&gt;来看下为什么 address = Rn - len(registers) + 4 ?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;放置后地址减少;&lt;/li&gt;
+  &lt;li&gt;寄存器编号按从低到高放置在存储空间的从低到高的位置;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;所以先倒数第一的寄存器需要放置在base地址中，即mem[Rn] = R[end], 接下来倒数第二为 mem[Rn - 4] = R[end-1], 类似第一个就是mem[Rn - len(registers) + 4] = R[first]了。&lt;/p&gt;
+
+&lt;h2 id=&quot;回写base寄存器&quot;&gt;回写base寄存器&lt;/h2&gt;
+
+&lt;p&gt;若需要回写base寄存器&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4&lt;/li&gt;
+  &lt;li&gt;DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;ldm指令&quot;&gt;LDM指令&lt;/h1&gt;
+&lt;p&gt;和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 06 Jul 2019 14:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/07/06/arm_stm_and_ldm/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/07/06/arm_stm_and_ldm/</guid>
+        
+        <category>arm</category>
+        
+        
+        <category>arm</category>
+        
+      </item>
+    
+      <item>
+        <title>feof的陷阱</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#feof函数&quot; id=&quot;markdown-toc-feof函数&quot;&gt;feof函数&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#例子&quot; id=&quot;markdown-toc-例子&quot;&gt;例子&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#总结&quot; id=&quot;markdown-toc-总结&quot;&gt;总结&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;feof函数&quot;&gt;feof函数&lt;/h1&gt;
+&lt;p&gt;The function feof() tests the end-of-file indicator for the stream pointed to by stream, returning nonzero if it is set.&lt;/p&gt;
+
+&lt;p&gt;feof是用于测试当前是否文件末尾。若是末尾返回非0值。&lt;/p&gt;
+
+&lt;h1 id=&quot;例子&quot;&gt;例子&lt;/h1&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// test.c    &lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;FILE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fopen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;empty_file&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;feof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 判断是否文件末尾，若不是读取一个字节，然后输出&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d-%x&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;eof&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行命令：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;empty_file &lt;span class=&quot;c&quot;&gt;#创建空文件&lt;/span&gt;
+gcc &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test &lt;/span&gt;test.c &lt;span class=&quot;c&quot;&gt;# 编译上述文件&lt;/span&gt;
+localhost:~/Desktop&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./test 
+0-75 &lt;span class=&quot;c&quot;&gt;#执行结果：fread返回值 和 c的值&lt;/span&gt;
+eof
+localhost:~/Desktop&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./test 
+0-ffffffb6 &lt;span class=&quot;c&quot;&gt;#执行结果：fread返回值 和 c的值&lt;/span&gt;
+eof
+ocalhost:~/Desktop&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./test 
+0-34 &lt;span class=&quot;c&quot;&gt;#执行结果：fread返回值 和 c的值&lt;/span&gt;
+eof
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从上面例子可以看到，对于空文件来说，feof第一次返回值为0，即为非文件末尾，在使用fread读取文件时返回值为0，表示没有读到内容，第二次feof返回值为非0，退出while循环。&lt;/p&gt;
+
+&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
+</description>
+        <pubDate>Sat, 18 May 2019 22:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/05/18/feof%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/18/feof%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+        
+        <category>misc</category>
+        
+        
+        <category>misc</category>
+        
+      </item>
     
       <item>
         <title>OWASP Android crackmes</title>
