@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1-Two Sum @LeetCode - Liwugang's Blog</title>
+
+	<link rel="shortcut icon" href="/styles/images/favicon.jpg">
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<link rel="stylesheet" href="/styles/css/index.css">
+	<link rel="stylesheet" href="/styles/css/fontawesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/styles/css/syntax.css">
+	<link rel="canonical" href="/2016/01/13/1_two_sum/">
+	<link rel="alternate" type="application/rss+xml" title="Liwugang's Blog" href="/feed.xml">
+	
+	<meta name="keywords" content="1-Two Sum @LeetCode, Liwugang's Blog, liwugang;个人博客;">
+	<meta name="description" content="liwugang;个人博客;">
+
+	<script src="/styles/js/jquery.min.js"></script>
+	<!--[if lt IE 9]>
+    	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  	<![endif]-->
+  	<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "//hm.baidu.com/hm.js?1d2fe4c4c213d17757e0b1a94713ead0";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+  	<style type="text/css">
+	  	.docs-content{
+	  		margin-bottom: 10px;
+	  	}
+  	</style>
+</head>
+
+  <body class="index">
+
+    <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">
+        <!--<img src="/styles/images/logo.jpg">-->
+      </a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">    
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/categories/">Categories</a>
+        </li>
+        <li>
+          <a href="/tag">Tags</a>
+        </li>
+        <li>
+          <a rel="nofollow" target="_blank" href="https://github.com/liwugang/" >Github</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></a>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">关于<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a rel="nofollow" target="_blank" href="https://liwugang.github.io/">关于作者</a></li>
+            <li><a href="/feed.xml">RSS订阅</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+    <div class="docs-header" id="content">
+  <div class="container">
+  	
+  		<!--
+		    <h1>1-Two Sum @LeetCode</h1>
+		    <p>Post on Jan 13, 2016 by <a href="/about">Li Wugang</a></p>
+		-->
+		    <h1></h1>
+    
+  </div>
+</div>
+    
+      
+<div class="banner">
+  <div class="container">
+  	
+    	<a href="/categories/#LeetCode-ref">LeetCode</a>	/
+    	<a href="/tag/#LeetCode-ref">LeetCode</a>
+    
+  </div>
+</div>
+
+    
+
+    <div class="container docs-container">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="sidebar hidden-print" role="complementary">
+        <div id="navigation">
+  <h1>目录</h1>
+  <ul class="nav sidenav">
+  </ul>
+  <div style="height: 200px;width: 200px;">
+  </div>
+</div>
+
+ 
+      </div>
+    </div>
+    <div class="col-md-9" role="main">
+      <div class="panel docs-content">
+        <div class="wrapper">
+            <header class="post-header">
+              <h1 class="post-title">1-Two Sum @LeetCode</h1>
+              <!--
+                <p class="post-meta">Jan 13, 2016</p>
+              -->
+              <div class="meta">Posted on <span class="postdate">Jan 13, 2016</span> By <a target="_blank" href="http://localhost:4000">Li Wugang</a></div>
+              <br />
+            </header>
+            <article class="post-content">
+              <ul id="markdown-toc">
+  <li><a href="#题目" id="markdown-toc-题目">题目</a></li>
+  <li><a href="#思路" id="markdown-toc-思路">思路</a>    <ul>
+      <li><a href="#题目中得到的信息有" id="markdown-toc-题目中得到的信息有">题目中得到的信息有：</a></li>
+      <li><a href="#方法一" id="markdown-toc-方法一">方法一：</a></li>
+      <li><a href="#方法二" id="markdown-toc-方法二">方法二：</a>        <ul>
+          <li><a href="#结果" id="markdown-toc-结果">结果</a></li>
+        </ul>
+      </li>
+      <li><a href="#方法三" id="markdown-toc-方法三">方法三：</a>        <ul>
+          <li><a href="#c版本" id="markdown-toc-c版本">c版本</a></li>
+          <li><a href="#结果-1" id="markdown-toc-结果-1">结果</a></li>
+          <li><a href="#java版本" id="markdown-toc-java版本">java版本</a></li>
+          <li><a href="#结果-2" id="markdown-toc-结果-2">结果</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="题目">题目</h1>
+<p><img src="/assets/pictures/leetcode/1-1.png" alt="graph" /></p>
+
+<h1 id="思路">思路</h1>
+<h2 id="题目中得到的信息有">题目中得到的信息有：</h2>
+
+<ol>
+  <li>都是整数，并且可正可负，也可一个值包含多个；</li>
+  <li>只有一个正确的结果。</li>
+</ol>
+
+<h2 id="方法一">方法一：</h2>
+<p>最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。</p>
+<h2 id="方法二">方法二：</h2>
+<p>由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。</p>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */</span>
+<span class="kt">int</span><span class="o">*</span> <span class="nf">twoSum</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span> <span class="n">nums</span><span class="p">,</span> <span class="kt">int</span> <span class="n">numSize</span><span class="p">,</span> <span class="kt">int</span> <span class="n">target</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="o">*</span><span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">*</span> <span class="n">numSize</span><span class="p">);</span><span class="c1">//申请额外空间</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+		<span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>		<span class="c1">//初始化</span>
+		
+	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//采用的是插入排序</span>
+		<span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+		<span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">nums</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">nums</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span> <span class="p">{</span>
+				<span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="k">break</span><span class="p">;</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+		<span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+	<span class="p">}</span>
+	
+	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">numSize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> 
+	<span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>           <span class="c1">//遍历寻找结果</span>
+		<span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">nums</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span> <span class="o">-</span> <span class="n">target</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+			<span class="k">break</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">j</span><span class="o">--</span><span class="p">;</span>
+		<span class="k">else</span> 
+			<span class="n">i</span><span class="o">++</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="kt">int</span> <span class="o">*</span><span class="n">ret</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span> 
+			<span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span> 
+	<span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h3 id="结果">结果</h3>
+<p><img src="/assets/pictures/leetcode/1-2.png" alt="graph" /></p>
+<h2 id="方法三">方法三：</h2>
+<p>方法二是通过两个值找target，可以换个思路通过一个值和target找另一个值。这种思路需要额外的数据结构，该数据结构必须要满足1）值和下标都能保存；2）可以快速查找出是否包含指定值。hashmap满足该条件。以值作为key,下标作为value。由于hashmap不能有重复key，题目有是允许一个值包含多个，这样可以吗？</p>
+
+<p>两种情况：1）所求的结果值都是一样的，这样的话一个在hashmap中，另一个还没有插入进去，就找到正确的结果了；2）不相等，并且一个值为多个相同值中的一个，这样会将多个相同值插入到hashmap中，但题目中说正确结果只有一个，因此这种情况不会出现，所以hashmap完全满足该题目。</p>
+<h3 id="c版本">c版本</h3>
+<pre><code class="language-C++">//采用数组方式存储，冲突的解决是最简单的，线性增加
+typedef struct node { 
+	int index;     //下标
+	int value;     //值
+}node;
+
+//从hash中取特定值，若没有返回-1
+int hash_get(node *hash, int numSize, int value)   {
+	int i = (unsigned int)value % numSize;
+	while (hash[i].index != -1) {
+		if (hash[i].value == value)
+			break;
+		i = (i + 1) % numSize;
+	}
+	return hash[i].index;
+}
+
+//将值和下标放入到hash中
+void hash_put(node *hash, int numSize, int value, int index)
+{
+	int i = (unsigned int)value % numSize;
+	while (hash[i].index != -1) {
+		i = (i + 1) % numSize;
+	}
+	hash[i].index = index;
+	hash[i].value = value;
+}
+
+int* twoSum(int* nums, int numSize, int target) {
+    node *hash = (node *)malloc(numSize * sizeof(node));
+	for (int i = 0; i &lt; numSize; i++)
+		hash[i].index = -1;
+	int index;
+	int *ret = NULL;
+	for (int i = 0; i &lt; numSize; i++) {
+		index = hash_get(hash, numSize, target - nums[i]);
+		if (index == -1) 
+			hash_put(hash, numSize, nums[i], i);
+		else {
+			ret = (int *)malloc(2*sizeof(int));
+			ret[0] = index + 1;
+			ret[1] = i + 1;
+			break;
+		}
+	}
+	free(hash);
+	return ret;
+    
+}
+</code></pre>
+<h3 id="结果-1">结果</h3>
+<p><img src="/assets/pictures/leetcode/1-3.png" alt="graph" /></p>
+<h3 id="java版本">java版本</h3>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="nf">twoSum</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">nums</span><span class="o">,</span> <span class="kt">int</span> <span class="n">target</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nums</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span> <span class="c1">//一遍遍历</span>
+			<span class="n">Integer</span> <span class="n">value</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">target</span> <span class="o">-</span> <span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span> <span class="c1">//在hashmap中取值</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">value</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>       <span class="c1">//若没有，则插入</span>
+				<span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">i</span><span class="o">);</span>
+			<span class="k">else</span> <span class="o">{</span>                  <span class="c1">//有，则说明已经找到</span>
+				<span class="kt">int</span><span class="o">[]</span> <span class="n">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>
+				<span class="n">ret</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="n">ret</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+			<span class="o">}</span>	
+		<span class="o">}</span>
+		<span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<h3 id="结果-2">结果</h3>
+<p><img src="/assets/pictures/leetcode/1-4.png" alt="graph" /></p>
+
+            </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+    <footer class="footer" role="contentinfo">
+	<div class="container">
+		<p class="copyright">Copyright &copy; 2014-2019 <a href="https://liwugang.github.io/"><code>Li Wugang</code></a>.</p>
+		<p>Powered by <a href="http://jekyllrb.com">Jekyll</a>, themed from <a href="http://lesscss.cn/">Less</a>, refactored by <a href="https://github.com/luoyan35714/LessOrMore">Freud Kang</a></p>
+	</div>
+</footer>
+
+<script src="/styles/js/jquery.min.js"></script>
+<script src="/styles/js/bootstrap.min.js"></script>
+<script src="/styles/js/holder.min.js"></script>
+<script src="/styles/js/lessismore.js"></script>
+<script src="/styles/js/application.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  </body>
+</html>
