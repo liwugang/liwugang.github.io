@@ -32,6 +32,7 @@
 		  s.parentNode.insertBefore(hm, s);
 		})();
 	</script>
+	<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   	<style type="text/css">
 	  	.docs-content{
 	  		margin-bottom: 10px;
@@ -171,30 +172,30 @@
 </code></pre></div></div>
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// hook root检测的三个方法，hook计算password的方法</span>
 <span class="nx">Java</span><span class="p">.</span><span class="nx">perform</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">checkClass</span> <span class="o">=</span> <span class="nx">Java</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s2">"sg.vantagepoint.a.c"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">checkClass</span> <span class="o">=</span> <span class="nx">Java</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">"</span><span class="s2">sg.vantagepoint.a.c</span><span class="dl">"</span><span class="p">);</span>
     <span class="nx">checkClass</span><span class="p">.</span><span class="nx">a</span><span class="p">.</span><span class="nx">implementation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">a</span><span class="p">();</span>
-        <span class="nx">send</span><span class="p">(</span><span class="s2">"function a: "</span> <span class="o">+</span>  <span class="nx">result</span><span class="p">);</span>
+        <span class="nx">send</span><span class="p">(</span><span class="dl">"</span><span class="s2">function a: </span><span class="dl">"</span> <span class="o">+</span>  <span class="nx">result</span><span class="p">);</span>
         <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">};</span>
     <span class="nx">checkClass</span><span class="p">.</span><span class="nx">b</span><span class="p">.</span><span class="nx">implementation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">b</span><span class="p">();</span>
-        <span class="nx">send</span><span class="p">(</span><span class="s2">"function b: "</span> <span class="o">+</span>  <span class="nx">result</span><span class="p">);</span>
+        <span class="nx">send</span><span class="p">(</span><span class="dl">"</span><span class="s2">function b: </span><span class="dl">"</span> <span class="o">+</span>  <span class="nx">result</span><span class="p">);</span>
         <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">};</span>
     <span class="nx">checkClass</span><span class="p">.</span><span class="nx">c</span><span class="p">.</span><span class="nx">implementation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">c</span><span class="p">();</span>
-        <span class="nx">send</span><span class="p">(</span><span class="s2">"function c: "</span> <span class="o">+</span>  <span class="nx">result</span><span class="p">);</span>
+        <span class="nx">send</span><span class="p">(</span><span class="dl">"</span><span class="s2">function c: </span><span class="dl">"</span> <span class="o">+</span>  <span class="nx">result</span><span class="p">);</span>
         <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">};</span>
-    <span class="kd">var</span> <span class="nx">password</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">passwordClass</span> <span class="o">=</span> <span class="nx">Java</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s2">"sg.vantagepoint.a.a"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">password</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">passwordClass</span> <span class="o">=</span> <span class="nx">Java</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">"</span><span class="s2">sg.vantagepoint.a.a</span><span class="dl">"</span><span class="p">);</span>
     <span class="nx">passwordClass</span><span class="p">.</span><span class="nx">a</span><span class="p">.</span><span class="nx">implementation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">a</span><span class="p">(</span><span class="kr">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="kr">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">a</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
         <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
            <span class="nx">password</span> <span class="o">+=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
         <span class="p">}</span>
-        <span class="nx">send</span><span class="p">(</span><span class="s2">"password: "</span> <span class="o">+</span> <span class="nx">password</span><span class="p">);</span>
+        <span class="nx">send</span><span class="p">(</span><span class="dl">"</span><span class="s2">password: </span><span class="dl">"</span> <span class="o">+</span> <span class="nx">password</span><span class="p">);</span>
         <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
     <span class="p">};</span>
 <span class="p">});</span>

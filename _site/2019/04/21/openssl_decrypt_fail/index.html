@@ -32,6 +32,7 @@
 		  s.parentNode.insertBefore(hm, s);
 		})();
 	</script>
+	<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   	<style type="text/css">
 	  	.docs-content{
 	  		margin-bottom: 10px;
@@ -148,9 +149,9 @@
 
 <h1 id="例子">例子</h1>
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="kt">int</span> <span class="n">aes_encrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
+<span class="kt">int</span> <span class="nf">aes_encrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
         <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">out_length</span><span class="p">);</span>
-<span class="kt">int</span> <span class="n">aes_decrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
+<span class="kt">int</span> <span class="nf">aes_decrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
         <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">out_length</span><span class="p">);</span>
 
 <span class="c1">// 上述加解密函数来自于 https://github.com/liwugang/filecrypt/blob/master/algs/base.c</span>
