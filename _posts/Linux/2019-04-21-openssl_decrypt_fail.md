@@ -1,22 +1,19 @@
 ---
-layout: post
+layout: article
 
 title:  openssl AES密钥和iv长度问题分析
 date:   2019-04-21 15:13:00 +0800
-categories: Linux
+ 
 tag: openssl
+key: openssl_aes
 ---
-
-* content
-{:toc}
-
 
 
 在做[filecrypt](https://github.com/liwugang/filecrypt)项目时花费时间最多的是AES256算法的调试上，出现的问题是：
 调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。
 
-例子
-======
+# 例子
+
 ```c
 
 int aes_encrypt_common(uint8_t *input, uint64_t length, const unsigned char *password,
@@ -62,8 +59,8 @@ second:0
 ```
 可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟.
 
-代码分析
-===========
+# 代码分析
+
 ## openssl 下载编译
 加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本
 > ./config -d && make
@@ -72,6 +69,7 @@ second:0
 > gcc -o  openssl_test openssl_test.c  ../openssl-1.1.1b/libcrypto.a -pthread -ldl -g
 
 从[aes_decrypt_common](https://github.com/liwugang/filecrypt/blob/master/algs/base.c#L98)源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的：
+
 ```c
 int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher,
                        ENGINE *impl, const unsigned char *key,
@@ -230,8 +228,8 @@ BLOCK_CIPHER_generic_pack(NID_aes, 256, 0)
 ```
 所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有'\0'，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。
 
-总结
-=====
+# 总结
+
 * openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。
 * 超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。
 * 在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。

@@ -1,23 +1,20 @@
 ---
-layout: post
+layout: article
 
 title:  2-Add Two Numbers @LeetCode
 date:   2016-01-13 21:08:00 +0800
-categories: LeetCode
+ 
 tag: LeetCode
+key: leetcode_02
 ---
 
-* content
-{:toc}
+# 题目
 
-
-题目
-====================
 ![graph]({{"/assets/pictures/leetcode/2-1.png" | prepend:site.baseurl}})
 
-思路
-====================
-## 题目中得到的信息有：
+# 思路
+
+## 题目中得到的信息有
 
 1. 这是两个非负数，每位分别保存在链表的一个结点上；
 2. 逆序保存，从低位到高位依次。
@@ -25,6 +22,7 @@ tag: LeetCode
 一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。
 
 ## C算法
+
 ```c++
 /**
  * Definition for singly-linked list. 
@@ -85,5 +83,6 @@ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
     return ret;
 }
 ```
+
 ## 结果
 ![graph]({{"/assets/pictures/leetcode/2-2.png" | prepend:site.baseurl}})

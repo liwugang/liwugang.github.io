@@ -1,26 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title></title>
-    <description>Patient &amp;&amp; Courage</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 26 Dec 2019 18:16:23 +0800</pubDate>
-    <lastBuildDate>Thu, 26 Dec 2019 18:16:23 +0800</lastBuildDate>
-    <generator>Jekyll v4.0.0</generator>
-    
-      <item>
-        <title>ARM中的STM和LDM指令的解析</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#stm指令&quot; id=&quot;markdown-toc-stm指令&quot;&gt;STM指令&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#stmdastmed&quot; id=&quot;markdown-toc-stmdastmed&quot;&gt;STMDA(STMED)&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#回写base寄存器&quot; id=&quot;markdown-toc-回写base寄存器&quot;&gt;回写base寄存器&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#ldm指令&quot; id=&quot;markdown-toc-ldm指令&quot;&gt;LDM指令&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-12-28T18:02:13+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">ARM中的STM和LDM指令的解析</title><link href="http://localhost:4000/2019/07/06/arm_stm_and_ldm.html" rel="alternate" type="text/html" title="ARM中的STM和LDM指令的解析" /><published>2019-07-06T14:00:00+08:00</published><updated>2019-07-06T14:00:00+08:00</updated><id>http://localhost:4000/2019/07/06/arm_stm_and_ldm</id><content type="html" xml:base="http://localhost:4000/2019/07/06/arm_stm_and_ldm.html">&lt;h1 id=&quot;stm指令&quot;&gt;STM指令&lt;/h1&gt;
 
-&lt;h1 id=&quot;stm指令&quot;&gt;STM指令&lt;/h1&gt;
 &lt;p&gt;STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;格式： STM[xx] Rn[!], registers&lt;/p&gt;
@@ -85,34 +65,15 @@
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;ldm指令&quot;&gt;LDM指令&lt;/h1&gt;
-&lt;p&gt;和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。&lt;/p&gt;
 
-</description>
-        <pubDate>Sat, 06 Jul 2019 14:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/07/06/arm_stm_and_ldm/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/07/06/arm_stm_and_ldm/</guid>
-        
-        <category>arm</category>
-        
-        
-        <category>arm</category>
-        
-      </item>
-    
-      <item>
-        <title>feof的陷阱</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#feof函数&quot; id=&quot;markdown-toc-feof函数&quot;&gt;feof函数&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#例子&quot; id=&quot;markdown-toc-例子&quot;&gt;例子&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#总结&quot; id=&quot;markdown-toc-总结&quot;&gt;总结&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="arm" /><summary type="html">STM指令 STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。 格式： STM[xx] Rn[!], registers Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。 xx用于确认放置根据下面两个条件区分： 1.base地址之前和之后; 2.地址是放置前增加还是后增加。 由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。 xx name 介绍 IA(EA) Increment After(Empty Ascending) 放置后地址增加，address = Rn DA(ED) Decrement After(Empty Descending) 放置后地址减少，address = Rn - len(registers) + 4 DB(FD) Decrement Before(Full Descending) 放置前地址减少，addrss = Rn - len(registers) IB(FA) Increment Before(Full Ascending) 放置前地址增加，address = Rn + 4 STMDA(STMED) 来看下为什么 address = Rn - len(registers) + 4 ? 放置后地址减少; 寄存器编号按从低到高放置在存储空间的从低到高的位置; 所以先倒数第一的寄存器需要放置在base地址中，即mem[Rn] = R[end], 接下来倒数第二为 mem[Rn - 4] = R[end-1], 类似第一个就是mem[Rn - len(registers) + 4] = R[first]了。 回写base寄存器 若需要回写base寄存器 IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4 DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4 LDM指令 和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。</summary></entry><entry><title type="html">feof的陷阱</title><link href="http://localhost:4000/2019/05/18/feof_using.html" rel="alternate" type="text/html" title="feof的陷阱" /><published>2019-05-18T22:00:00+08:00</published><updated>2019-05-18T22:00:00+08:00</updated><id>http://localhost:4000/2019/05/18/feof_using</id><content type="html" xml:base="http://localhost:4000/2019/05/18/feof_using.html">&lt;h1 id=&quot;feof函数&quot;&gt;feof函数&lt;/h1&gt;
 
-&lt;h1 id=&quot;feof函数&quot;&gt;feof函数&lt;/h1&gt;
 &lt;p&gt;The function feof() tests the end-of-file indicator for the stream pointed to by stream, returning nonzero if it is set.&lt;/p&gt;
 
 &lt;p&gt;feof是用于测试当前是否文件末尾。若是末尾返回非0值。&lt;/p&gt;
 
 &lt;h1 id=&quot;例子&quot;&gt;例子&lt;/h1&gt;
+
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// test.c    &lt;/span&gt;
 &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
 &lt;/span&gt;
@@ -148,30 +109,12 @@ eof
 
 &lt;p&gt;从上面例子可以看到，对于空文件来说，feof第一次返回值为0，即为非文件末尾，在使用fread读取文件时返回值为0，表示没有读到内容，第二次feof返回值为非0，退出while循环。&lt;/p&gt;
 
-&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
-</description>
-        <pubDate>Sat, 18 May 2019 22:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/18/feof%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/18/feof%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
-        
-        <category>misc</category>
-        
-        
-        <category>misc</category>
-        
-      </item>
-    
-      <item>
-        <title>OWASP Android crackmes</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#背景&quot; id=&quot;markdown-toc-背景&quot;&gt;背景&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#uncrackable-app-for-android-level-1&quot; id=&quot;markdown-toc-uncrackable-app-for-android-level-1&quot;&gt;UnCrackable App for Android Level 1&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="misc" /><summary type="html">feof函数 The function feof() tests the end-of-file indicator for the stream pointed to by stream, returning nonzero if it is set. feof是用于测试当前是否文件末尾。若是末尾返回非0值。 例子 // test.c #include &amp;lt;stdio.h&amp;gt; int main() { FILE *f = fopen(&quot;empty_file&quot;, &quot;rb&quot;); if (f == NULL) { return -1; } while (!feof(f)) { // 判断是否文件末尾，若不是读取一个字节，然后输出 char c; int ret = fread(&amp;amp;c, 1, 1, f); printf(&quot;%d-%x\n&quot;, ret, c); } printf(&quot;eof\n&quot;); } 执行命令： touch empty_file #创建空文件 gcc -o test test.c # 编译上述文件 localhost:~/Desktop$ ./test 0-75 #执行结果：fread返回值 和 c的值 eof localhost:~/Desktop$ ./test 0-ffffffb6 #执行结果：fread返回值 和 c的值 eof ocalhost:~/Desktop$ ./test 0-34 #执行结果：fread返回值 和 c的值 eof 从上面例子可以看到，对于空文件来说，feof第一次返回值为0，即为非文件末尾，在使用fread读取文件时返回值为0，表示没有读到内容，第二次feof返回值为非0，退出while循环。 总结</summary></entry><entry><title type="html">OWASP Android crackmes</title><link href="http://localhost:4000/2019/05/12/crackme_owasp_android_first.html" rel="alternate" type="text/html" title="OWASP Android crackmes" /><published>2019-05-12T18:20:00+08:00</published><updated>2019-05-12T18:20:00+08:00</updated><id>http://localhost:4000/2019/05/12/crackme_owasp_android_first</id><content type="html" xml:base="http://localhost:4000/2019/05/12/crackme_owasp_android_first.html">&lt;h1 id=&quot;背景&quot;&gt;背景&lt;/h1&gt;
 
-&lt;h1 id=&quot;背景&quot;&gt;背景&lt;/h1&gt;
 &lt;p&gt;最近在学习frida，就拿OWASP上的crackme进行练习，&lt;a href=&quot;https://github.com/OWASP/owasp-mstg/blob/master/Crackmes/README.md&quot;&gt;下载地址&lt;/a&gt;，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。&lt;/p&gt;
 
 &lt;h1 id=&quot;uncrackable-app-for-android-level-1&quot;&gt;UnCrackable App for Android Level 1&lt;/h1&gt;
+
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/python3
 &lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;frida&lt;/span&gt;
@@ -227,56 +170,23 @@ eof
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</description>
-        <pubDate>Sun, 12 May 2019 18:20:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/12/crackme_owasp_android_first/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/12/crackme_owasp_android_first/</guid>
-        
-        <category>frida</category>
-        
-        
-        <category>reverse</category>
-        
-      </item>
-    
-      <item>
-        <title>简单C++ crackme分析</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#工具选择&quot; id=&quot;markdown-toc-工具选择&quot;&gt;工具选择&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#静态分析&quot; id=&quot;markdown-toc-静态分析&quot;&gt;静态分析&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#搜索关键字符串&quot; id=&quot;markdown-toc-搜索关键字符串&quot;&gt;搜索关键字符串&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#根据字符串来看流程&quot; id=&quot;markdown-toc-根据字符串来看流程&quot;&gt;根据字符串来看流程&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#模块1&quot; id=&quot;markdown-toc-模块1&quot;&gt;模块1&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#模块2&quot; id=&quot;markdown-toc-模块2&quot;&gt;模块2&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#plouf-函数分析&quot; id=&quot;markdown-toc-plouf-函数分析&quot;&gt;plouf 函数分析&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#求出password&quot; id=&quot;markdown-toc-求出password&quot;&gt;求出password&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#string1内容&quot; id=&quot;markdown-toc-string1内容&quot;&gt;string1内容&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#string2-内容&quot; id=&quot;markdown-toc-string2-内容&quot;&gt;string2 内容&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#程序求password&quot; id=&quot;markdown-toc-程序求password&quot;&gt;程序求password&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#总结&quot; id=&quot;markdown-toc-总结&quot;&gt;总结&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;该crackme来自于&lt;a href=&quot;https://www.root-me.org/en/Challenges/Cracking/ELF-C-0-protection&quot;&gt;这里&lt;/a&gt;,也可以从&lt;a href=&quot;http://localhost:4000/assets/crackme/cpp_001&quot;&gt;这里&lt;/a&gt;下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="frida" /><summary type="html">背景 最近在学习frida，就拿OWASP上的crackme进行练习，下载地址，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。 UnCrackable App for Android Level 1 #!/usr/bin/python3 import frida import sys def on_message(message, data): if message['type'] == 'send': print(&quot;[*] {0}&quot;.format(message['payload'])) else: print(message) pid = frida.get_usb_device().spawn([&quot;owasp.mstg.uncrackable1&quot;]) # 打开app process = frida.get_usb_device().attach(pid) content = &quot;&quot; with open(&quot;script_one.js&quot;) as f: content = f.read() if len(content) == 0: print(&quot;not found script&quot;) exit(0) script = process.create_script(content) script.on(&quot;message&quot;, on_message) script.load() frida.get_usb_device().resume(pid) sys.stdin.read() // hook root检测的三个方法，hook计算password的方法 Java.perform(function() { var checkClass = Java.use(&quot;sg.vantagepoint.a.c&quot;); checkClass.a.implementation = function() { var result = this.a(); send(&quot;function a: &quot; + result); return false; }; checkClass.b.implementation = function() { var result = this.b(); send(&quot;function b: &quot; + result); return false; }; checkClass.c.implementation = function() { var result = this.c(); send(&quot;function c: &quot; + result); return false; }; var password = &quot;&quot;; var passwordClass = Java.use(&quot;sg.vantagepoint.a.a&quot;); passwordClass.a.implementation = function() { var result = this.a(arguments[0],arguments[1]); for(var i = 0; i &amp;lt; result.length; i++) { password += String.fromCharCode(result[i]); } send(&quot;password: &quot; + password); return result; }; });</summary></entry><entry><title type="html">简单C++ crackme分析</title><link href="http://localhost:4000/2019/05/11/crackme_cpp_one.html" rel="alternate" type="text/html" title="简单C++ crackme分析" /><published>2019-05-11T15:20:00+08:00</published><updated>2019-05-11T15:20:00+08:00</updated><id>http://localhost:4000/2019/05/11/crackme_cpp_one</id><content type="html" xml:base="http://localhost:4000/2019/05/11/crackme_cpp_one.html">&lt;p&gt;该crackme来自于&lt;a href=&quot;https://www.root-me.org/en/Challenges/Cracking/ELF-C-0-protection&quot;&gt;这里&lt;/a&gt;,也可以从&lt;a href=&quot;http://localhost:4000/assets/crackme/cpp_001&quot;&gt;这里&lt;/a&gt;下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。&lt;/p&gt;
 
 &lt;h1 id=&quot;工具选择&quot;&gt;工具选择&lt;/h1&gt;
+
 &lt;p&gt;Linux静态分析工具使用&lt;a href=&quot;https://github.com/radareorg/cutter&quot;&gt;cutter&lt;/a&gt;, ，但由于cutter对C++的函数识别不好，故也使用IDA一起进行分析。&lt;/p&gt;
 
 &lt;h1 id=&quot;静态分析&quot;&gt;静态分析&lt;/h1&gt;
 
 &lt;p&gt;先静态分析，了解程序的大概轮廓，并找到关键部分，在结合动态调试，可以达到事半功倍的效果。&lt;/p&gt;
 
-&lt;h3 id=&quot;搜索关键字符串&quot;&gt;搜索关键字符串&lt;/h3&gt;
+&lt;h2 id=&quot;搜索关键字符串&quot;&gt;搜索关键字符串&lt;/h2&gt;
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;08048&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DFC&lt;/span&gt;	&lt;span class=&quot;mo&quot;&gt;00000037&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;Bravo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tu&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;peux&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;valider&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;en&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;utilisant&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ce&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mot&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;de&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; 
 &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;08048E34&lt;/span&gt;	&lt;span class=&quot;mo&quot;&gt;00000031&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;Congratz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;You&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;can&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;validate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 可以推断出来这是成功的提示&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;08048E65&lt;/span&gt;	&lt;span class=&quot;mo&quot;&gt;00000014&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;Password&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;incorrect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 这是失败的提示&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h3 id=&quot;根据字符串来看流程&quot;&gt;根据字符串来看流程&lt;/h3&gt;
+&lt;h2 id=&quot;根据字符串来看流程&quot;&gt;根据字符串来看流程&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/crackme_cpp_one/graph.jpg&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;图中蓝色部分为上面成功的提示的地方，所以需要执行的代码路径为1–&amp;gt; 2 –&amp;gt; 3。&lt;/p&gt;
@@ -589,31 +499,10 @@ eof
 &lt;ul&gt;
   &lt;li&gt;C++反编译后函数名会比较复杂，识别函数名难度会比较大，所以需要挑选多个工具一起使用；&lt;/li&gt;
   &lt;li&gt;此题相对简单，只用静态分析就可以，但遇到难度较大的，可以采用静态和动态结合方式。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 11 May 2019 15:20:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/11/crackme_cpp_one/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/11/crackme_cpp_one/</guid>
-        
-        <category>crackme</category>
-        
-        
-        <category>reverse</category>
-        
-      </item>
-    
-      <item>
-        <title>Git自动化合并多个Commit</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#git-rebase逻辑&quot; id=&quot;markdown-toc-git-rebase逻辑&quot;&gt;git rebase逻辑&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#git-editor的修改&quot; id=&quot;markdown-toc-git-editor的修改&quot;&gt;git editor的修改&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#处理git-rebase-todo文件&quot; id=&quot;markdown-toc-处理git-rebase-todo文件&quot;&gt;处理git-rebase-todo文件&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#python实现&quot; id=&quot;markdown-toc-python实现&quot;&gt;Python实现&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="crackme" /><summary type="html">该crackme来自于这里,也可以从这里下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。 工具选择 Linux静态分析工具使用cutter, ，但由于cutter对C++的函数识别不好，故也使用IDA一起进行分析。 静态分析 先静态分析，了解程序的大概轮廓，并找到关键部分，在结合动态调试，可以达到事半功倍的效果。 搜索关键字符串 .rodata:08048DFC 00000037 C Bravo, tu peux valider en utilisant ce mot de passe... .rodata:08048E34 00000031 C Congratz. You can validate with this password... // 可以推断出来这是成功的提示 .rodata:08048E65 00000014 C Password incorrect. // 这是失败的提示 根据字符串来看流程 图中蓝色部分为上面成功的提示的地方，所以需要执行的代码路径为1–&amp;gt; 2 –&amp;gt; 3。 模块1 int main (int argc, char **argv, char **envp); | ; var int var_16h @ ebp-0x16 | ; var int var_15h @ ebp-0x15 | ; var int var_14h @ ebp-0x14 | ; var int var_10h @ ebp-0x10 | ; var int var_ch @ ebp-0xc | ; var int var_8h_2 @ ebp-0x8 | ; var char *var_4h @ esp+0x4 | ; var int var_8h @ esp+0x8 | ; DATA XREF from entry0 (0x80488a7) | 0x08048a86 lea ecx, [var_4h] ; 为argc的地址 | 0x08048a8a and esp, 0xfffffff0 | 0x08048a8d push dword [ecx - 4] | 0x08048a90 push ebp | 0x08048a91 mov ebp, esp | 0x08048a93 push ebx | 0x08048a94 push ecx | 0x08048a95 sub esp, 0x20 | 0x08048a98 mov ebx, ecx | 0x08048a9a cmp dword [ebx], 1；对argc即参数的个数和1对比 | ,=&amp;lt; 0x08048a9d jg 0x8048aee；如果大于1, 跳转到0x8048aee,也即我们的第2部分 需要我们至少password作为第2个参数。 模块2 text:08048AEE loc_8048AEE: ; CODE XREF: main+17↑j .text:08048AEE lea eax, [ebp+var_15] .text:08048AF1 mov [esp], eax .text:08048AF4 call __ZNSaIcEC1Ev ; std::allocator&amp;lt;char&amp;gt;::allocator(void) .text:08048AF9 lea eax, [ebp+var_15] .text:08048AFC mov [esp+8], eax ; 参数3 .text:08048B00 mov dword ptr [esp+4], offset unk_8048DC4 ;参数2 .text:08048B08 lea eax, [ebp+var_C] .text:08048B0B mov [esp], eax ;参数1 .text:08048B0E call __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string1，是以unk_8048DC4作为字符串，保存在[ebp+var_C] .text:08048B13 lea eax, [ebp+var_16] .text:08048B16 mov [esp], eax .text:08048B19 call __ZNSaIcEC1Ev ; std::allocator&amp;lt;char&amp;gt;::allocator(void) .text:08048B1E lea eax, [ebp+var_16] .text:08048B21 mov [esp+8], eax ; 参数3 .text:08048B25 mov dword ptr [esp+4], offset unk_8048DCC ;参数2 .text:08048B2D lea eax, [ebp+var_10] .text:08048B30 mov [esp], eax ;参数1 .text:08048B33 call __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string2，是以unk_8048DCC作为字符串，保存在[ebp+var_10] .text:08048B38 lea eax, [ebp+var_14] .text:08048B3B lea edx, [ebp+var_C] .text:08048B3E mov [esp+8], edx ;参数3 上面string1 .text:08048B42 lea edx, [ebp+var_10] .text:08048B45 mov [esp+4], edx ;参数2 上面string2 .text:08048B49 mov [esp], eax ;参数1， 保存在[ebp+var_14] .text:08048B4C call _Z5ploufSsSs ; plouf(std::string,std::string) .text:08048B51 sub esp, 4 .text:08048B54 lea eax, [ebp+var_10] .text:08048B57 mov [esp], eax ; this .text:08048B5A call __ZNSsD1Ev ; std::string::~string() ;string2 回收 .text:08048B5F lea eax, [ebp+var_16] .text:08048B62 mov [esp], eax .text:08048B65 call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:08048B6A lea eax, [ebp+var_C] .text:08048B6D mov [esp], eax ; this .text:08048B70 call __ZNSsD1Ev ; std::string::~string() ;string1 回收 .text:08048B75 lea eax, [ebp+var_15] .text:08048B78 mov [esp], eax .text:08048B7B call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:08048B80 mov eax, [ebx+4] ; argv .text:08048B83 add eax, 4 ; argv + 4 .text:08048B86 mov eax, [eax] ; 我们传入的参数 .text:08048B88 mov [esp+4], eax ; char * ;参数2 我们传入的参数 .text:08048B8C lea eax, [ebp+var_14] .text:08048B8F mov [esp], eax ; std::string * ; 参数1， 上述plouf的参数1 .text:08048B92 call _ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_ ; std::operator==&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;,std::allocator&amp;lt;char&amp;gt;&amp;gt;(std::basic_string&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;,std::allocator&amp;lt;char&amp;gt;&amp;gt; const&amp;amp;,char const*) ; 进行对比 .text:08048B97 test al, al .text:08048B99 jz short loc_8048BE5 ;对比结果为0,则跳转到loc_8048BE5 模块3 .text:08048B9B mov dword ptr [esp+4], offset aBravoTuPeuxVal ; &quot;Bravo, tu peux valider en utilisant ce &quot;... .text:08048BA3 mov dword ptr [esp], offset _ZSt4cout@@GLIBCXX_3_4 .text:08048BAA call __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&amp;lt;&amp;lt;&amp;lt;std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;,char const*) .text:08048BAF mov dword ptr [esp+4], offset __ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_ ; std::endl&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;) .text:08048BB7 mov [esp], eax .text:08048BBA call __ZNSolsEPFRSoS_E ; std::ostream::operator&amp;lt;&amp;lt;(std::ostream &amp;amp; (*)(std::ostream &amp;amp;)) .text:08048BBF mov dword ptr [esp+4], offset aCongratzYouCan ; &quot;Congratz. You can validate with this pa&quot;... ; 成功的字符串 .text:08048BC7 mov dword ptr [esp], offset _ZSt4cout@@GLIBCXX_3_4 .text:08048BCE call __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&amp;lt;&amp;lt;&amp;lt;std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;,char const*) .text:08048BD3 mov dword ptr [esp+4], offset __ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_ ; std::endl&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;) .text:08048BDB mov [esp], eax .text:08048BDE call __ZNSolsEPFRSoS_E ; std::ostream::operator&amp;lt;&amp;lt;(std::ostream &amp;amp; (*)(std::ostream &amp;amp;)) .text:08048BE3 jmp short loc_8048C09 总结下： 以unk_8048DC4处的字符串构造string1； 以unk_8048DCC处的字符串构造string2； 执行plouf(addr, string2, string1)； 将addr和我们传入的密码进行对比，若相同则成功。 plouf 函数分析 .text:0804898D ; plouf(std::string, std::string) .text:0804898D public _Z5ploufSsSs .text:0804898D _Z5ploufSsSs proc near ; CODE XREF: main+C6↓p .text:0804898D .text:0804898D var_1D = byte ptr -1Dh .text:0804898D var_1C = dword ptr -1Ch .text:0804898D arg_0 = dword ptr 8 .text:0804898D arg_4 = dword ptr 0Ch .text:0804898D arg_8 = dword ptr 10h .text:0804898D .text:0804898D push ebp .text:0804898E mov ebp, esp .text:08048990 push edi .text:08048991 push esi .text:08048992 push ebx .text:08048993 sub esp, 2Ch .text:08048996 lea eax, [ebp+var_1D] .text:08048999 mov [esp], eax .text:0804899C call __ZNSaIcEC1Ev ; std::allocator&amp;lt;char&amp;gt;::allocator(void) .text:080489A1 lea eax, [ebp+var_1D] .text:080489A4 mov [esp+8], eax ;参数3 .text:080489A8 mov dword ptr [esp+4], offset unk_8048DB0 ;参数2 .text:080489B0 mov eax, [ebp+arg_0] .text:080489B3 mov [esp], eax ;我们传入的参数1 .text:080489B6 call __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string1，是以unk_8048DB0作为字符串，保存在传入的参数1 .text:080489BB lea eax, [ebp+var_1D] .text:080489BE mov [esp], eax .text:080489C1 call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:080489C6 mov [ebp+var_1C], 0 ; index .text:080489CD jmp short loc_8048A2B .text:080489CF ; --------------------------------------------------------------------------- .text:080489CF .text:080489CF loc_80489CF: ; CODE XREF: plouf(std::string,std::string)+BA↓j .text:080489CF mov eax, [ebp+var_1C] .text:080489D2 mov [esp+4], eax ; 作为下标 .text:080489D6 mov eax, [ebp+arg_4] ; 传入的参数2 - string2 .text:080489D9 mov [esp], eax .text:080489DC call __ZNSsixEj ; std::string::operator[](uint) .text:080489E1 movzx esi, byte ptr [eax] string2[index] .text:080489E4 mov ebx, [ebp+var_1C] .text:080489E7 mov eax, [ebp+arg_8] ;参数的参数3 - string1 .text:080489EA mov [esp], eax ; this .text:080489ED call __ZNKSs6lengthEv ; std::string::length(void) .text:080489F2 mov edi, eax ; edi保存 string1的长度 .text:080489F4 mov eax, ebx ; index .text:080489F6 mov edx, 0 .text:080489FB div edi .text:080489FD mov ecx, edx ; = index % string1的长度 .text:080489FF mov eax, ecx .text:08048A01 mov [esp+4], eax .text:08048A05 mov eax, [ebp+arg_8] .text:08048A08 mov [esp], eax .text:08048A0B call __ZNSsixEj ; std::string::operator[](uint) .text:08048A10 movzx eax, byte ptr [eax] ; string1[index % string1长度] .text:08048A13 xor eax, esi ;string[index % string1长度] xor string2[index] .text:08048A15 movsx eax, al .text:08048A18 mov [esp+4], eax .text:08048A1C mov eax, [ebp+arg_0] ;传入的参数1 .text:08048A1F mov [esp], eax .text:08048A22 call __ZNSspLEc ; std::string::operator+=(char) .text:08048A27 add [ebp+var_1C], 1 ; 将结果相加到参数1中 .text:08048A2B .text:08048A2B loc_8048A2B: ; CODE XREF: plouf(std::string,std::string)+40↑j .text:08048A2B mov eax, [ebp+var_1C] .text:08048A2E mov [esp+4], eax .text:08048A32 mov eax, [ebp+arg_4] ;参数的参数2-string2 .text:08048A35 mov [esp], eax .text:08048A38 call __ZNSsixEj ; std::string::operator[](uint) .text:08048A3D movzx eax, byte ptr [eax]; string2[index] .text:08048A40 test al, al .text:08048A42 setnz al .text:08048A45 test al, al .text:08048A47 jnz short loc_80489CF ;如果非0,跳转到loc_80489CF .text:08048A49 jmp short loc_8048A79 .text:08048A4B ; --------------------------------------------------------------------------- .text:08048A4B mov ebx, eax .text:08048A4D lea eax, [ebp+var_1D] .text:08048A50 mov [esp], eax .text:08048A53 call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:08048A58 mov eax, ebx .text:08048A5A mov [esp], eax .text:08048A5D call __Unwind_Resume .text:08048A62 mov ebx, eax .text:08048A64 mov eax, [ebp+arg_0] .text:08048A67 mov [esp], eax ; this .text:08048A6A call __ZNSsD1Ev ; std::string::~string() .text:08048A6F mov eax, ebx .text:08048A71 mov [esp], eax .text:08048A74 call __Unwind_Resume .text:08048A79 .text:08048A79 loc_8048A79: ; CODE XREF: plouf(std::string,std::string)+BC↑j .text:08048A79 mov eax, [ebp+arg_0] .text:08048A7C add esp, 2Ch .text:08048A7F pop ebx .text:08048A80 pop esi .text:08048A81 pop edi .text:08048A82 pop ebp .text:08048A83 retn 4 .text:08048A83 _Z5ploufSsSs endp .text:08048A83 用伪代码来描述下上述函数： plouf(addr, string2, string1) { string result = &amp;amp;addr; // 第1个参数地址 for (int i = 0; i &amp;lt; len(string2); i++) { // 遍历string2 temp = string2[i] ^ string1[i % len(string1)]; // 将string2的每个元素和 string1 相关地址进行异或 result += temp; } } 求出password string1内容 .rodata:08048DC4 unk_8048DC4 db 18h ; DATA XREF: main+7A↑o .rodata:08048DC5 db 0D6h .rodata:08048DC6 db 15h .rodata:08048DC7 db 0CAh .rodata:08048DC8 db 0FAh .rodata:08048DC9 db 77h ; w .rodata:08048DCA db 0 string2 内容 .rodata:08048DCC unk_8048DCC db 50h ; P ; DATA XREF: main+9F↑o .rodata:08048DCD db 0B3h .rodata:08048DCE db 67h ; g .rodata:08048DCF db 0AFh .rodata:08048DD0 db 0A5h .rodata:08048DD1 db 0Eh .rodata:08048DD2 db 77h ; w .rodata:08048DD3 db 0A3h .rodata:08048DD4 db 4Ah ; J .rodata:08048DD5 db 0A2h .rodata:08048DD6 db 9Bh .rodata:08048DD7 db 1 .rodata:08048DD8 db 7Dh ; } .rodata:08048DD9 db 89h .rodata:08048DDA db 61h ; a .rodata:08048DDB db 0A5h .rodata:08048DDC db 0A5h .rodata:08048DDD db 2 .rodata:08048DDE db 76h ; v .rodata:08048DDF db 0B2h .rodata:08048DE0 db 70h ; p .rodata:08048DE1 db 0B8h .rodata:08048DE2 db 89h .rodata:08048DE3 db 3 .rodata:08048DE4 db 79h ; y .rodata:08048DE5 db 0B8h .rodata:08048DE6 db 71h ; q .rodata:08048DE7 db 95h .rodata:08048DE8 db 9Bh .rodata:08048DE9 db 28h ; ( .rodata:08048DEA db 74h ; t .rodata:08048DEB db 0BFh .rodata:08048DEC db 61h ; a .rodata:08048DED db 0BEh .rodata:08048DEE db 96h .rodata:08048DEF db 12h .rodata:08048DF0 db 47h ; G .rodata:08048DF1 db 95h .rodata:08048DF2 db 3Eh ; &amp;gt; .rodata:08048DF3 db 0E1h .rodata:08048DF4 db 0A5h .rodata:08048DF5 db 4 .rodata:08048DF6 db 6Ch ; l .rodata:08048DF7 db 0A3h .rodata:08048DF8 db 73h ; s .rodata:08048DF9 db 0ACh .rodata:08048DFA db 89h .rodata:08048DFB db 0 程序求password #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;string.h&amp;gt; int string1[] = {0x18, 0xd6, 0x15, 0xca, 0xfa, 0x77}; // 为上面string1 int string2[] = {0x50, 0xB3, 0x67, 0xAF, 0xA5, 0x0E, 0x77, 0xA3, 0x4A, 0xA2, 0x9B, 0x01, 0x7D, 0x89, 0x61, 0xA5, 0xA5, 0x02, 0x76, 0xB2, 0x70, 0xB8, 0x89, 0x03, 0x79, 0xB8, 0x71, 0x95, 0x9B, 0x28, 0x74, 0xBF, 0x61, 0xBE, 0x96, 0x12, 0x47, 0x95, 0x3E, 0xE1, 0xA5, 0x04, 0x6C, 0xA3, 0x73, 0xAC, 0x89}; // 上面string2 int main() { int num = sizeof(string2) / sizeof(string2[0]); int i = 0; for (; i &amp;lt; num; i++) { string2[i] ^= string1[i % (sizeof(string1) / sizeof(string1[0]))]; printf(&quot;%c&quot;, string2[i]); } } 执行结果:Here_you_have_to_understand_a_little_C++_stuffs 总结 C++反编译后函数名会比较复杂，识别函数名难度会比较大，所以需要挑选多个工具一起使用； 此题相对简单，只用静态分析就可以，但遇到难度较大的，可以采用静态和动态结合方式。</summary></entry><entry><title type="html">Git自动化合并多个Commit</title><link href="http://localhost:4000/2019/04/28/git_commits.html" rel="alternate" type="text/html" title="Git自动化合并多个Commit" /><published>2019-04-28T23:10:00+08:00</published><updated>2019-04-28T23:10:00+08:00</updated><id>http://localhost:4000/2019/04/28/git_commits</id><content type="html" xml:base="http://localhost:4000/2019/04/28/git_commits.html">&lt;p&gt;当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。&lt;/p&gt;
 
 &lt;h1 id=&quot;git-rebase逻辑&quot;&gt;git rebase逻辑&lt;/h1&gt;
+
 &lt;p&gt;当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要：&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;修改git editor来使用我们提供的；&lt;/li&gt;
@@ -621,12 +510,14 @@ eof
 &lt;/ol&gt;
 
 &lt;h1 id=&quot;git-editor的修改&quot;&gt;git editor的修改&lt;/h1&gt;
+
 &lt;p&gt;git提供config命令来查看配置和修改配置，同样editor也可以这样进行设置。&lt;/p&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    git config core.editor &lt;span class=&quot;c&quot;&gt;#查看当前使用editor&lt;/span&gt;
     git config &lt;span class=&quot;nt&quot;&gt;--local&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--replace-all&lt;/span&gt;  core.editor NEW_EDITOR &lt;span class=&quot;c&quot;&gt;# 修改当前的仓库的editor为NEW_EDITOR&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h1 id=&quot;处理git-rebase-todo文件&quot;&gt;处理git-rebase-todo文件&lt;/h1&gt;
+
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pick 62e0071 first commit
 pick 3bd641a second commit
 pick 92c03c7 third commit
@@ -664,6 +555,7 @@ squash 92c03c7 third commit
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h1 id=&quot;python实现&quot;&gt;Python实现&lt;/h1&gt;
+
 &lt;p&gt;使用python实现上述逻辑&lt;/p&gt;
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env python3
 #encoding: UTF-8
@@ -700,34 +592,11 @@ squash 92c03c7 third commit
 &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</description>
-        <pubDate>Sun, 28 Apr 2019 23:10:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/04/28/git_commits/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/04/28/git_commits/</guid>
-        
-        <category>git</category>
-        
-        
-        <category>工具</category>
-        
-      </item>
-    
-      <item>
-        <title>openssl AES密钥和iv长度问题分析</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#例子&quot; id=&quot;markdown-toc-例子&quot;&gt;例子&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#代码分析&quot; id=&quot;markdown-toc-代码分析&quot;&gt;代码分析&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#openssl-下载编译&quot; id=&quot;markdown-toc-openssl-下载编译&quot;&gt;openssl 下载编译&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#总结&quot; id=&quot;markdown-toc-总结&quot;&gt;总结&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在做&lt;a href=&quot;https://github.com/liwugang/filecrypt&quot;&gt;filecrypt&lt;/a&gt;项目时花费时间最多的是AES256算法的调试上，出现的问题是：
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="git" /><summary type="html">当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。 git rebase逻辑 当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要： 修改git editor来使用我们提供的； 脚本来处理进行git-rebase-todo文件的处理。 git editor的修改 git提供config命令来查看配置和修改配置，同样editor也可以这样进行设置。 git config core.editor #查看当前使用editor git config --local --replace-all core.editor NEW_EDITOR # 修改当前的仓库的editor为NEW_EDITOR 处理git-rebase-todo文件 pick 62e0071 first commit pick 3bd641a second commit pick 92c03c7 third commit # 变基 7073047..92c03c7 到 7073047（3 个提交） # # 命令: # p, pick &amp;lt;提交&amp;gt; = 使用提交 # r, reword &amp;lt;提交&amp;gt; = 使用提交，但修改提交说明 # e, edit &amp;lt;提交&amp;gt; = 使用提交，进入 shell 以便进行提交修补 # s, squash &amp;lt;提交&amp;gt; = 使用提交，但融合到前一个提交 # f, fixup &amp;lt;提交&amp;gt; = 类似于 &quot;squash&quot;，但丢弃提交说明日志 # x, exec &amp;lt;命令&amp;gt; = 使用 shell 运行命令（此行剩余部分） # b, break = 在此处停止（使用 'git rebase --continue' 继续变基） # d, drop &amp;lt;提交&amp;gt; = 删除提交 # l, label &amp;lt;label&amp;gt; = 为当前 HEAD 打上标记 # t, reset &amp;lt;label&amp;gt; = 重置 HEAD 到该标记 # m, merge [-C &amp;lt;commit&amp;gt; | -c &amp;lt;commit&amp;gt;] &amp;lt;label&amp;gt; [# &amp;lt;oneline&amp;gt;] # . 创建一个合并提交，并使用原始的合并提交说明（如果没有指定 # . 原始提交，使用注释部分的 oneline 作为提交说明）。使用 # . -c &amp;lt;提交&amp;gt; 可以编辑提交说明。 # # 可以对这些行重新排序，将从上至下执行。 # # 如果您在这里删除一行，对应的提交将会丢失。 # # 然而，如果您删除全部内容，变基操作将会终止。 # # 注意空提交已被注释掉 上面是有3个commit，需要将后面2个commit合并到第1个，通过后面的注释可以看到，squash是将commit合并到前一个commit上，所以需要将后2个的pick修改为squash，即修改为下面这样： pick 62e0071 first commit squash 3bd641a second commit squash 92c03c7 third commit Python实现 使用python实现上述逻辑 #!/usr/bin/env python3 #encoding: UTF-8 import os import sys def change_editor(current_file): os.system(&quot;git config --local --replace-all core.editor &quot; + current_file) # 将当前脚本设置为editor os.system(&quot;git rebase -i&quot;) # 执行rebase，触发调用该脚本进行rebase os.system(&quot;git config --local --replace-all core.editor vim&quot;) # 执行完后将editor设置回vim def rebase_commits(todo_file): with open(todo_file, &quot;r+&quot;) as f: contents = f.read() # 读取git-rebase-todo文件内容 contents = contents.split(&quot;\n&quot;) first_commit = True f.truncate() f.seek(0) for content in contents: if content.startswith(&quot;pick&quot;): if first_commit: first_commit = False else: content = content.replace(&quot;pick&quot;, &quot;squash&quot;) # 将除了地一个pick修改为squash f.write(content + &quot;\n&quot;) def main(args): if len(args) == 2: # 如果将该脚本作为editor，git会调用该脚本，并以git-rebase-todo文件作为第2个参数 rebase_commits(args[1]) else: change_editor(os.path.abspath(args[0])) # 设置git editor if __name__ == &quot;__main__&quot;: main(sys.argv)</summary></entry><entry><title type="html">openssl AES密钥和iv长度问题分析</title><link href="http://localhost:4000/2019/04/21/openssl_decrypt_fail.html" rel="alternate" type="text/html" title="openssl AES密钥和iv长度问题分析" /><published>2019-04-21T15:13:00+08:00</published><updated>2019-04-21T15:13:00+08:00</updated><id>http://localhost:4000/2019/04/21/openssl_decrypt_fail</id><content type="html" xml:base="http://localhost:4000/2019/04/21/openssl_decrypt_fail.html">&lt;p&gt;在做&lt;a href=&quot;https://github.com/liwugang/filecrypt&quot;&gt;filecrypt&lt;/a&gt;项目时花费时间最多的是AES256算法的调试上，出现的问题是：
 调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。&lt;/p&gt;
 
 &lt;h1 id=&quot;例子&quot;&gt;例子&lt;/h1&gt;
+
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
 &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;aes_encrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -772,6 +641,7 @@ squash 92c03c7 third commit
 &lt;p&gt;可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟.&lt;/p&gt;
 
 &lt;h1 id=&quot;代码分析&quot;&gt;代码分析&lt;/h1&gt;
+
 &lt;h2 id=&quot;openssl-下载编译&quot;&gt;openssl 下载编译&lt;/h2&gt;
 &lt;p&gt;加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本&lt;/p&gt;
 &lt;blockquote&gt;
@@ -784,6 +654,7 @@ squash 92c03c7 third commit
 &lt;/blockquote&gt;
 
 &lt;p&gt;从&lt;a href=&quot;https://github.com/liwugang/filecrypt/blob/master/algs/base.c#L98&quot;&gt;aes_decrypt_common&lt;/a&gt;源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的：&lt;/p&gt;
+
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EVP_DecryptInit_ex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
                        &lt;span class=&quot;n&quot;&gt;ENGINE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;impl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
                        &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -941,43 +812,18 @@ static const EVP_CIPHER aes_##keylen##_##mode = { \
 &lt;p&gt;所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有’\0’，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。&lt;/p&gt;
 
 &lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
+
 &lt;ul&gt;
   &lt;li&gt;openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。&lt;/li&gt;
   &lt;li&gt;超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。&lt;/li&gt;
   &lt;li&gt;在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。&lt;/li&gt;
-&lt;/ul&gt;
+&lt;/ul&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="openssl" /><summary type="html">在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是： 调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。 例子 int aes_encrypt_common(uint8_t *input, uint64_t length, const unsigned char *password, const unsigned char *iv, uint8_t *out, uint64_t *out_length); int aes_decrypt_common(uint8_t *input, uint64_t length, const unsigned char *password, const unsigned char *iv, uint8_t *out, uint64_t *out_length); // 上述加解密函数来自于 https://github.com/liwugang/filecrypt/blob/master/algs/base.c int main() { int i; char text[] = &quot;test&quot;; char *cipher = (char *) malloc(1024); char *plain = (char *) malloc(1024); char key[] = &quot;1234567890&quot;; // 密钥 char iv[] = &quot;1111111&quot;; // iv uint64_t out_length = 0; // 加密 int ret = aes_encrypt_common(text, strlen(text), key, iv, cipher, &amp;amp;out_length); // 使用和加密一样的密钥和iv进行解密 ret = aes_decrypt_common(cipher, out_length, key, iv, plain, &amp;amp;out_length); printf(&quot;first:%d\n&quot;, ret); // 再次调用解密，密钥和iv是复制过来的 char *another_key = (char *) calloc(1, strlen(key) + 1); char *another_iv = (char *) calloc(1, strlen(iv) + 1); ret = aes_decrypt_common(cipher, out_length, another_key, another_iv, plain, &amp;amp;out_length); printf(&quot;second:%d\n&quot;, ret); } 大家认为上述两次执行解密一样吗？ 来看下执行结果 first:1 139868329146176:error:0606506D:digital envelope routines:EVP_DecryptFinal_ex:wrong final block length:crypto/evp/evp_enc.c:559: // 出错日志 second:0 可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟. 代码分析 openssl 下载编译 加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本 ./config -d &amp;amp;&amp;amp; make 然后将编译出来的静态库链接到我们程序中，由于libcrypto.a依赖于pthread和dl库，需要添加上 -pthread -ldl gcc -o openssl_test openssl_test.c ../openssl-1.1.1b/libcrypto.a -pthread -ldl -g 从aes_decrypt_common源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的： int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher, ENGINE *impl, const unsigned char *key, const unsigned char *iv) { return EVP_CipherInit_ex(ctx, cipher, impl, key, iv, 0); } // 接着看EVP_CipherInit_ex int EVP_CipherInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher, ENGINE *impl, const unsigned char *key, const unsigned char *iv, int enc) { ... ... ctx-&amp;gt;cipher = cipher; // ctx-&amp;gt;cipher是我们传的cipher ... ... ctx-&amp;gt;key_len = cipher-&amp;gt;key_len; // ctx-&amp;gt;key_len 是来自ciphter中的key_len ... ... if (!(EVP_CIPHER_flags(EVP_CIPHER_CTX_cipher(ctx)) &amp;amp; EVP_CIPH_CUSTOM_IV)) { switch (EVP_CIPHER_CTX_mode(ctx)) { case EVP_CIPH_STREAM_CIPHER: case EVP_CIPH_ECB_MODE: break; case EVP_CIPH_CFB_MODE: case EVP_CIPH_OFB_MODE: ctx-&amp;gt;num = 0; /* fall-through */ case EVP_CIPH_CBC_MODE: // 我们是使用CBC OPENSSL_assert(EVP_CIPHER_CTX_iv_length(ctx) &amp;lt;= (int)sizeof(ctx-&amp;gt;iv)); if (iv) memcpy(ctx-&amp;gt;oiv, iv, EVP_CIPHER_CTX_iv_length(ctx)); // iv是直接拷贝相应的长度，和字符串是否'\0'无关，从名字看像是iv的字节数，后面在看EVP_CIPHER_CTX_iv_length memcpy(ctx-&amp;gt;iv, ctx-&amp;gt;oiv, EVP_CIPHER_CTX_iv_length(ctx)); break; case EVP_CIPH_CTR_MODE: ctx-&amp;gt;num = 0; /* Don't reuse IV for CTR mode */ if (iv) memcpy(ctx-&amp;gt;iv, iv, EVP_CIPHER_CTX_iv_length(ctx)); break; default: return 0; } } if (key || (ctx-&amp;gt;cipher-&amp;gt;flags &amp;amp; EVP_CIPH_ALWAYS_CALL_INIT)) { if (!ctx-&amp;gt;cipher-&amp;gt;init(ctx, key, iv, enc)) // 此处对密钥key进行处理，通过调试可知实际调用aesni_init_key return 0; } ctx-&amp;gt;buf_len = 0; ctx-&amp;gt;final_used = 0; ctx-&amp;gt;block_mask = ctx-&amp;gt;cipher-&amp;gt;block_size - 1; return 1; } // 接下来看密钥如何处理 static int aesni_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc) { ... ... if ((mode == EVP_CIPH_ECB_MODE || mode == EVP_CIPH_CBC_MODE) &amp;amp;&amp;amp; !enc) { // 走这里， CBC模式并且enc == 0 // 第一个参数为我们提供的密钥，第二个参数为key的bits长度 ret = aesni_set_decrypt_key(key, EVP_CIPHER_CTX_key_length(ctx) * 8, &amp;amp;dat-&amp;gt;ks.ks); ... ... } // aesni_set_decrypt_key是汇编实现，函数调用参数从左到右传递方式：rdi, rsi, rdx, rcx, r8d, r9d，key是第一个参数，长度是第二个参数，需要关注rdi和rsi就行 __aesni_set_encrypt_key: .cfi_startproc ... ... movl $268437504,%r10d movups (%rdi),%xmm0 // 将key的前16字节放到xmm0中 ... ... cmpl $256,%esi // 判断长度 je .L14rounds // 如果长度是256，则跳转到L14rounds cmpl $192,%esi je .L12rounds // 如果长度是192，则跳转到L12rounds cmpl $128,%esi jne .Lbad_keybits // 若长度不是128的话，则keybits是错误的，所以可以看到keybits只支持128,192和256 .L12rounds: movq 16(%rdi),%xmm2 // 是将key + 16的8字节放在xmm2中 movl $11,%esi cmpl $268435456,%r10d je .L12rounds_alt ... ... .L14rounds: movups 16(%rdi),%xmm2 // 此时是将key + 16的16字节放到xmm2中 movl $13,%esi leaq 16(%rax),%rax cmpl $268435456,%r10d je .L14rounds_alt ... ... // 该函数总结为： length只能为256, 192和128. 若length是256，取key的32(16+16)字节，若length为192,取key的24(16+8)字节，length为128,只取16字节。 iv是使用EVP_CIPHER_CTX_iv_length(ctx)字节数，key的使用EVP_CIPHER_CTX_key_length(ctx)字节数，接下来来看这些值怎么确定。 int EVP_CIPHER_CTX_iv_length(const EVP_CIPHER_CTX *ctx) { return ctx-&amp;gt;cipher-&amp;gt;iv_len; } int EVP_CIPHER_CTX_key_length(const EVP_CIPHER_CTX *ctx) { return ctx-&amp;gt;key_len; } // 通过上面分析得到， iv_len和key_len分别为我们传进去的cipher的中iv_len和key_len，我们是使用EVP_aes_256_cbc()来创建的cipher。而该函数是通过下面宏定义的，而该函数返回的变量也是通过宏定义的 const EVP_CIPHER *EVP_aes_##keylen##_##mode(void) \ { return &amp;amp;aes_##keylen##_##mode; } # define BLOCK_CIPHER_generic(nid,keylen,blocksize,ivlen,nmode,mode,MODE,flags) \ static const EVP_CIPHER aes_##keylen##_##mode = { \ nid##_##keylen##_##nmode,blocksize,keylen/8,ivlen, \ flags|EVP_CIPH_##MODE##_MODE, \ aes_init_key, \ aes_##mode##_cipher, \ NULL, \ sizeof(EVP_AES_KEY), \ NULL,NULL,NULL,NULL }; \ // 逆向找到调用的地方： BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) // 接着往上找 #define BLOCK_CIPHER_generic_pack(nid,keylen,flags) \ BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,16,0,ecb,ecb,ECB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,1,16,ofb128,ofb,OFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,1,16,cfb128,cfb,CFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,1,16,cfb1,cfb1,CFB,flags) \ BLOCK_CIPHER_generic(nid,keylen,1,16,cfb8,cfb8,CFB,flags) \ BLOCK_CIPHER_generic(nid,keylen,1,16,ctr,ctr,CTR,flags) // 最终找到 BLOCK_CIPHER_generic_pack(NID_aes, 256, 0) // EVP_aes_256_cbc() 为 LOCK_CIPHER_generic_pack(NID_aes, 256, 0) ==&amp;gt; BLOCK_CIPHER_generic(nid,256,16,16,cbc,cbc,CBC,EVP_CIPH_FLAG_DEFAULT_ASN1) ==&amp;gt; aes_256_cbc {nid_256_cbc, 16, 256/8, 16, EVP_CIPH_FLAG_DEFAULT_ASN1|EVP_CIPH_cbc_MODE, aes_init_key, aes_cbc_cipher, NULL, sizeof(EVP_AES_KEY), NULL,NULL,NULL,NULL } // 从EVP_CIPHER结构体中看到第三个和第四个变量分别为key_len和iv_len，针对EVP_aes_256_cbc() key_len和iv_len分别为32字节和16字节。 所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有’\0’，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。 总结 openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。 超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。 在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。</summary></entry><entry><title type="html">3-Longest Substring Without Repeating Characters @LeetCode</title><link href="http://localhost:4000/2016/01/15/3_longest_substring_without_repeating_characters.html" rel="alternate" type="text/html" title="3-Longest Substring Without Repeating Characters @LeetCode" /><published>2016-01-15T23:10:00+08:00</published><updated>2016-01-15T23:10:00+08:00</updated><id>http://localhost:4000/2016/01/15/3_longest_substring_without_repeating_characters</id><content type="html" xml:base="http://localhost:4000/2016/01/15/3_longest_substring_without_repeating_characters.html">&lt;h1 id=&quot;题目&quot;&gt;题目&lt;/h1&gt;
 
-</description>
-        <pubDate>Sun, 21 Apr 2019 15:13:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/04/21/openssl_decrypt_fail/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/04/21/openssl_decrypt_fail/</guid>
-        
-        <category>openssl</category>
-        
-        
-        <category>Linux</category>
-        
-      </item>
-    
-      <item>
-        <title>3-Longest Substring Without Repeating Characters @LeetCode</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#题目&quot; id=&quot;markdown-toc-题目&quot;&gt;题目&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#题目中得到的信息有&quot; id=&quot;markdown-toc-题目中得到的信息有&quot;&gt;题目中得到的信息有：&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#思路&quot; id=&quot;markdown-toc-思路&quot;&gt;思路&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#c算法&quot; id=&quot;markdown-toc-c算法&quot;&gt;C算法&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#结果&quot; id=&quot;markdown-toc-结果&quot;&gt;结果&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;题目&quot;&gt;题目&lt;/h1&gt;
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/3-1.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;题目中得到的信息有&quot;&gt;题目中得到的信息有：&lt;/h2&gt;
+&lt;h2 id=&quot;题目中得到的信息有&quot;&gt;题目中得到的信息有&lt;/h2&gt;
 &lt;p&gt;一段字符串找出不重复子串的最大长度，只需要长度信息。&lt;/p&gt;
+
 &lt;h3 id=&quot;思路&quot;&gt;思路&lt;/h3&gt;
 &lt;p&gt;肯定是需要将字符串遍历一遍，在遍历过程中就需要查找前面字符串是否出现该字符，因此这是该算法的重点。若没找到，长度加一，若找到了，长度会从前面该字符位置+1处开始算起。下面以图来说明：&lt;/p&gt;
 
@@ -1011,38 +857,163 @@ static const EVP_CIPHER aes_##keylen##_##mode = { \
 	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//最后还需要判断下&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h2 id=&quot;结果&quot;&gt;结果&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/3-3.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+&lt;h3 id=&quot;结果&quot;&gt;结果&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/3-3.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="LeetCode" /><summary type="html">题目 题目中得到的信息有 一段字符串找出不重复子串的最大长度，只需要长度信息。 思路 肯定是需要将字符串遍历一遍，在遍历过程中就需要查找前面字符串是否出现该字符，因此这是该算法的重点。若没找到，长度加一，若找到了，长度会从前面该字符位置+1处开始算起。下面以图来说明： 假如我们以begin为子串的开始，current表示当前处理的位置。1）当前位置的字符没有出现在[begin,current)的区间内，说明将该值加入到区间内满足没有重复条件，长度加一； 2）若当前值已经在该区间内，加入后肯定会出现重复，则应该将begin移动到没有该值的最左边位置，图中 new begin位置满足该条件。 在移动begin之前首先需要判断[begin, current)是否是现有的最大长度，若是则更新，然后将begin移动到该新位置。 还有一个关键点，就是如何查找当前字符是否出现在[begin, current)区间里，若在从该区间遍历一遍肯定费时间，有没有办法可以一次就能判断出来呢？ 对了，可以采用hash的思想，将每个值在字符串的位置放入到以该值为下标的数组中，若数组中保存有值，并且是在[begin,current)范围内，则说明存在。 C算法 int lengthOfLongestSubstring(char* s) { int tmp[128]; //用于保存字符的下标 int begin = 0, max = 0; //begin和最大长度默认为0 int i, index; for (i = 0; s[i] != '\0'; i++) { //遍历字符串 if (tmp[s[i]] != 0) { //判断该值是否出现在前面的字符中 index = tmp[s[i]] - 1; //取保存的上一个该值的位置 if (index &amp;gt;= begin) { //判断是否在[begin, current) if (i - begin &amp;gt; max) //对比是否最大 max = i - begin; begin = index + 1;//begin新的位置，在前一个该字符的后面，即new begin位置 } } tmp[s[i]] = i + 1; //保存该值的最新下标 } return i - begin &amp;gt; max ? i - begin : max;//最后还需要判断下 } 结果</summary></entry><entry><title type="html">1-Two Sum @LeetCode</title><link href="http://localhost:4000/2016/01/13/1_two_sum.html" rel="alternate" type="text/html" title="1-Two Sum @LeetCode" /><published>2016-01-13T21:08:00+08:00</published><updated>2016-01-13T21:08:00+08:00</updated><id>http://localhost:4000/2016/01/13/1_two_sum</id><content type="html" xml:base="http://localhost:4000/2016/01/13/1_two_sum.html">&lt;h1 id=&quot;题目&quot;&gt;题目&lt;/h1&gt;
 
-</description>
-        <pubDate>Fri, 15 Jan 2016 23:10:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/01/15/3_longest_substring_without_repeating_characters/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/01/15/3_longest_substring_without_repeating_characters/</guid>
-        
-        <category>LeetCode</category>
-        
-        
-        <category>LeetCode</category>
-        
-      </item>
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-1.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;思路&quot;&gt;思路&lt;/h1&gt;
+
+&lt;h2 id=&quot;题目中得到的信息有&quot;&gt;题目中得到的信息有&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;都是整数，并且可正可负，也可一个值包含多个；&lt;/li&gt;
+  &lt;li&gt;只有一个正确的结果。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;方法一&quot;&gt;方法一&lt;/h2&gt;
+&lt;p&gt;最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。&lt;/p&gt;
+
+&lt;h2 id=&quot;方法二&quot;&gt;方法二&lt;/h2&gt;
+&lt;p&gt;由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;twoSum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//申请额外空间&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+		&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;		&lt;span class=&quot;c1&quot;&gt;//初始化&lt;/span&gt;
+		
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//采用的是插入排序&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+	&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;           &lt;span class=&quot;c1&quot;&gt;//遍历寻找结果&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; 
+			&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;free&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;结果&quot;&gt;结果&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-2.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;方法三&quot;&gt;方法三&lt;/h2&gt;
+&lt;p&gt;方法二是通过两个值找target，可以换个思路通过一个值和target找另一个值。这种思路需要额外的数据结构，该数据结构必须要满足1）值和下标都能保存；2）可以快速查找出是否包含指定值。hashmap满足该条件。以值作为key,下标作为value。由于hashmap不能有重复key，题目有是允许一个值包含多个，这样可以吗？&lt;/p&gt;
+
+&lt;p&gt;两种情况：1）所求的结果值都是一样的，这样的话一个在hashmap中，另一个还没有插入进去，就找到正确的结果了；2）不相等，并且一个值为多个相同值中的一个，这样会将多个相同值插入到hashmap中，但题目中说正确结果只有一个，因此这种情况不会出现，所以hashmap完全满足该题目。&lt;/p&gt;
+
+&lt;h3 id=&quot;c版本&quot;&gt;c版本&lt;/h3&gt;
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;//采用数组方式存储，冲突的解决是最简单的，线性增加&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;//下标&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;//值&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;//从hash中取特定值，若没有返回-1&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hash_get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;//将值和下标放入到hash中&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hash_put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;twoSum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hash_get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+			&lt;span class=&quot;n&quot;&gt;hash_put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;free&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     
-      <item>
-        <title>2-Add Two Numbers @LeetCode</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#题目&quot; id=&quot;markdown-toc-题目&quot;&gt;题目&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#思路&quot; id=&quot;markdown-toc-思路&quot;&gt;思路&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#题目中得到的信息有&quot; id=&quot;markdown-toc-题目中得到的信息有&quot;&gt;题目中得到的信息有：&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#c算法&quot; id=&quot;markdown-toc-c算法&quot;&gt;C算法&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#结果&quot; id=&quot;markdown-toc-结果&quot;&gt;结果&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h1 id=&quot;题目&quot;&gt;题目&lt;/h1&gt;
+&lt;h3 id=&quot;结果-1&quot;&gt;结果&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-3.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;java版本&quot;&gt;java版本&lt;/h3&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;twoSum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//一遍遍历&lt;/span&gt;
+			&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//在hashmap中取值&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;//若没有，则插入&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;                  &lt;span class=&quot;c1&quot;&gt;//有，则说明已经找到&lt;/span&gt;
+				&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;	
+		&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;结果-2&quot;&gt;结果&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-4.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="LeetCode" /><summary type="html">题目 思路 题目中得到的信息有 都是整数，并且可正可负，也可一个值包含多个； 只有一个正确的结果。 方法一 最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。 方法二 由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。 /** * Note: The returned array must be malloced, assume caller calls free(). */ int* twoSum(int* nums, int numSize, int target) { int *tmp = (int *)malloc(sizeof(int) * numSize);//申请额外空间 for (int i = 0; i &amp;lt; numSize; i++) tmp[i] = i; //初始化 for (int i = 1; i &amp;lt; numSize; i++) { //采用的是插入排序 int value = tmp[i]; int j; for ( j = i - 1; j &amp;gt;= 0; j--) { if (nums[value] &amp;lt; nums[tmp[j]]) { tmp[j+1] = tmp[j]; } else { break; } } tmp[j+1] = value; } int i = 0, j = numSize - 1; while (i &amp;lt; j) { //遍历寻找结果 int ret = nums[tmp[i]] + nums[tmp[j]] - target; if (ret == 0) break; if (ret &amp;gt; 0) j--; else i++; } int *ret = NULL; if (i &amp;lt; j) { ret = (int *)malloc(2*sizeof(int)); if (tmp[i] &amp;lt; tmp[j]) { ret[0] = tmp[i] + 1; ret[1] = tmp[j] + 1; } else { ret[1] = tmp[i] + 1; ret[0] = tmp[j] + 1; } } free(tmp); return ret; } 结果 方法三 方法二是通过两个值找target，可以换个思路通过一个值和target找另一个值。这种思路需要额外的数据结构，该数据结构必须要满足1）值和下标都能保存；2）可以快速查找出是否包含指定值。hashmap满足该条件。以值作为key,下标作为value。由于hashmap不能有重复key，题目有是允许一个值包含多个，这样可以吗？ 两种情况：1）所求的结果值都是一样的，这样的话一个在hashmap中，另一个还没有插入进去，就找到正确的结果了；2）不相等，并且一个值为多个相同值中的一个，这样会将多个相同值插入到hashmap中，但题目中说正确结果只有一个，因此这种情况不会出现，所以hashmap完全满足该题目。 c版本 //采用数组方式存储，冲突的解决是最简单的，线性增加 typedef struct node { int index; //下标 int value; //值 }node; //从hash中取特定值，若没有返回-1 int hash_get(node *hash, int numSize, int value) { int i = (unsigned int)value % numSize; while (hash[i].index != -1) { if (hash[i].value == value) break; i = (i + 1) % numSize; } return hash[i].index; } //将值和下标放入到hash中 void hash_put(node *hash, int numSize, int value, int index) { int i = (unsigned int)value % numSize; while (hash[i].index != -1) { i = (i + 1) % numSize; } hash[i].index = index; hash[i].value = value; } int* twoSum(int* nums, int numSize, int target) { node *hash = (node *)malloc(numSize * sizeof(node)); for (int i = 0; i &amp;lt; numSize; i++) hash[i].index = -1; int index; int *ret = NULL; for (int i = 0; i &amp;lt; numSize; i++) { index = hash_get(hash, numSize, target - nums[i]); if (index == -1) hash_put(hash, numSize, nums[i], i); else { ret = (int *)malloc(2*sizeof(int)); ret[0] = index + 1; ret[1] = i + 1; break; } } free(hash); return ret; } 结果 java版本 public int[] twoSum(int[] nums, int target) { HashMap&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;Integer, Integer&amp;gt;(); for (int i = 0; i &amp;lt; nums.length; i++) { //一遍遍历 Integer value = map.get(target - nums[i]); //在hashmap中取值 if (value == null) //若没有，则插入 map.put(nums[i], i); else { //有，则说明已经找到 int[] ret = new int[2]; ret[0] = value + 1; ret[1] = i + 1; return ret; } } return null; } 结果</summary></entry><entry><title type="html">2-Add Two Numbers @LeetCode</title><link href="http://localhost:4000/2016/01/13/2_add_two_numbers.html" rel="alternate" type="text/html" title="2-Add Two Numbers @LeetCode" /><published>2016-01-13T21:08:00+08:00</published><updated>2016-01-13T21:08:00+08:00</updated><id>http://localhost:4000/2016/01/13/2_add_two_numbers</id><content type="html" xml:base="http://localhost:4000/2016/01/13/2_add_two_numbers.html">&lt;h1 id=&quot;题目&quot;&gt;题目&lt;/h1&gt;
+
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/2-1.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;思路&quot;&gt;思路&lt;/h1&gt;
-&lt;h2 id=&quot;题目中得到的信息有&quot;&gt;题目中得到的信息有：&lt;/h2&gt;
+
+&lt;h2 id=&quot;题目中得到的信息有&quot;&gt;题目中得到的信息有&lt;/h2&gt;
 
 &lt;ol&gt;
   &lt;li&gt;这是两个非负数，每位分别保存在链表的一个结点上；&lt;/li&gt;
@@ -1052,6 +1023,7 @@ static const EVP_CIPHER aes_##keylen##_##mode = { \
 &lt;p&gt;一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。&lt;/p&gt;
 
 &lt;h2 id=&quot;c算法&quot;&gt;C算法&lt;/h2&gt;
+
 &lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/**
  * Definition for singly-linked list. 
  * struct ListNode {
@@ -1111,218 +1083,14 @@ static const EVP_CIPHER aes_##keylen##_##mode = { \
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;h2 id=&quot;结果&quot;&gt;结果&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/2-2.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-</description>
-        <pubDate>Wed, 13 Jan 2016 21:08:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/01/13/2_add_two_numbers/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/01/13/2_add_two_numbers/</guid>
-        
-        <category>LeetCode</category>
-        
-        
-        <category>LeetCode</category>
-        
-      </item>
-    
-      <item>
-        <title>1-Two Sum @LeetCode</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#题目&quot; id=&quot;markdown-toc-题目&quot;&gt;题目&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#思路&quot; id=&quot;markdown-toc-思路&quot;&gt;思路&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#题目中得到的信息有&quot; id=&quot;markdown-toc-题目中得到的信息有&quot;&gt;题目中得到的信息有：&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#方法一&quot; id=&quot;markdown-toc-方法一&quot;&gt;方法一：&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#方法二&quot; id=&quot;markdown-toc-方法二&quot;&gt;方法二：&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#结果&quot; id=&quot;markdown-toc-结果&quot;&gt;结果&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#方法三&quot; id=&quot;markdown-toc-方法三&quot;&gt;方法三：&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#c版本&quot; id=&quot;markdown-toc-c版本&quot;&gt;c版本&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#结果-1&quot; id=&quot;markdown-toc-结果-1&quot;&gt;结果&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#java版本&quot; id=&quot;markdown-toc-java版本&quot;&gt;java版本&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#结果-2&quot; id=&quot;markdown-toc-结果-2&quot;&gt;结果&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/2-2.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="LeetCode" /><summary type="html">题目 思路 题目中得到的信息有 这是两个非负数，每位分别保存在链表的一个结点上； 逆序保存，从低位到高位依次。 一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。 C算法 /** * Definition for singly-linked list. * struct ListNode { * int val; * struct ListNode *next; * }; */ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) { struct ListNode *ret, *p, *prev; p = ret = prev = NULL; int flag = 0; //先是两个整数相加 while((l1 != NULL) &amp;amp;&amp;amp; (l2 != NULL) ) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l1-&amp;gt;val + l2-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); if (prev != NULL) prev-&amp;gt;next = p; prev = p; if (ret == NULL) ret = p; l1 = l1-&amp;gt;next; l2 = l2-&amp;gt;next; } //若是l1还有结点，添加上去 while(l1 != NULL) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l1-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); l1 = l1-&amp;gt;next; if (prev != NULL) prev-&amp;gt;next = p; if (ret == NULL) ret = p; prev-&amp;gt;next = p; prev = p; } //若是l2还有结点，添加上去 while(l2 != NULL) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l2-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); l2 = l2-&amp;gt;next; if (prev != NULL) prev-&amp;gt;next = p; if (ret == NULL) ret = p; prev-&amp;gt;next = p; prev = p; } //最后可能会有进位，要考虑到 if (flag != 0) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = flag; prev-&amp;gt;next = p; prev = p; flag = 0; } prev-&amp;gt;next = NULL; return ret; } 结果</summary></entry><entry><title type="html">LEB128相关知识</title><link href="http://localhost:4000/2016/01/07/LEB128.html" rel="alternate" type="text/html" title="LEB128相关知识" /><published>2016-01-07T14:08:00+08:00</published><updated>2016-01-07T14:08:00+08:00</updated><id>http://localhost:4000/2016/01/07/LEB128</id><content type="html" xml:base="http://localhost:4000/2016/01/07/LEB128.html">&lt;h1 id=&quot;介绍&quot;&gt;介绍&lt;/h1&gt;
+&lt;p&gt;LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于&lt;a href=&quot;http://www.dwarfstd.org/&quot;&gt;DWARF debug file format&lt;/a&gt;。在Android的&lt;a href=&quot;https://source.android.com/devices/tech/dalvik/dex-format.html&quot;&gt;Dalvik Executable format&lt;/a&gt;中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。&lt;/p&gt;
 
-&lt;h1 id=&quot;题目&quot;&gt;题目&lt;/h1&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-1.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+&lt;h1 id=&quot;原理&quot;&gt;原理&lt;/h1&gt;
 
-&lt;h1 id=&quot;思路&quot;&gt;思路&lt;/h1&gt;
-&lt;h2 id=&quot;题目中得到的信息有&quot;&gt;题目中得到的信息有：&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;都是整数，并且可正可负，也可一个值包含多个；&lt;/li&gt;
-  &lt;li&gt;只有一个正确的结果。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;方法一&quot;&gt;方法一：&lt;/h2&gt;
-&lt;p&gt;最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。&lt;/p&gt;
-&lt;h2 id=&quot;方法二&quot;&gt;方法二：&lt;/h2&gt;
-&lt;p&gt;由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。&lt;/p&gt;
-&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/**
- * Note: The returned array must be malloced, assume caller calls free().
- */&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;twoSum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//申请额外空间&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-		&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;		&lt;span class=&quot;c1&quot;&gt;//初始化&lt;/span&gt;
-		
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//采用的是插入排序&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
-	&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;           &lt;span class=&quot;c1&quot;&gt;//遍历寻找结果&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; 
-			&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
-			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;free&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;结果&quot;&gt;结果&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-2.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-&lt;h2 id=&quot;方法三&quot;&gt;方法三：&lt;/h2&gt;
-&lt;p&gt;方法二是通过两个值找target，可以换个思路通过一个值和target找另一个值。这种思路需要额外的数据结构，该数据结构必须要满足1）值和下标都能保存；2）可以快速查找出是否包含指定值。hashmap满足该条件。以值作为key,下标作为value。由于hashmap不能有重复key，题目有是允许一个值包含多个，这样可以吗？&lt;/p&gt;
-
-&lt;p&gt;两种情况：1）所求的结果值都是一样的，这样的话一个在hashmap中，另一个还没有插入进去，就找到正确的结果了；2）不相等，并且一个值为多个相同值中的一个，这样会将多个相同值插入到hashmap中，但题目中说正确结果只有一个，因此这种情况不会出现，所以hashmap完全满足该题目。&lt;/p&gt;
-&lt;h3 id=&quot;c版本&quot;&gt;c版本&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;language-C++&quot;&gt;//采用数组方式存储，冲突的解决是最简单的，线性增加
-typedef struct node { 
-	int index;     //下标
-	int value;     //值
-}node;
-
-//从hash中取特定值，若没有返回-1
-int hash_get(node *hash, int numSize, int value)   {
-	int i = (unsigned int)value % numSize;
-	while (hash[i].index != -1) {
-		if (hash[i].value == value)
-			break;
-		i = (i + 1) % numSize;
-	}
-	return hash[i].index;
-}
-
-//将值和下标放入到hash中
-void hash_put(node *hash, int numSize, int value, int index)
-{
-	int i = (unsigned int)value % numSize;
-	while (hash[i].index != -1) {
-		i = (i + 1) % numSize;
-	}
-	hash[i].index = index;
-	hash[i].value = value;
-}
-
-int* twoSum(int* nums, int numSize, int target) {
-    node *hash = (node *)malloc(numSize * sizeof(node));
-	for (int i = 0; i &amp;lt; numSize; i++)
-		hash[i].index = -1;
-	int index;
-	int *ret = NULL;
-	for (int i = 0; i &amp;lt; numSize; i++) {
-		index = hash_get(hash, numSize, target - nums[i]);
-		if (index == -1) 
-			hash_put(hash, numSize, nums[i], i);
-		else {
-			ret = (int *)malloc(2*sizeof(int));
-			ret[0] = index + 1;
-			ret[1] = i + 1;
-			break;
-		}
-	}
-	free(hash);
-	return ret;
-    
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;结果-1&quot;&gt;结果&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-3.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-&lt;h3 id=&quot;java版本&quot;&gt;java版本&lt;/h3&gt;
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;twoSum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nc&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HashMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;();&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//一遍遍历&lt;/span&gt;
-			&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//在hashmap中取值&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;//若没有，则插入&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nums&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;                  &lt;span class=&quot;c1&quot;&gt;//有，则说明已经找到&lt;/span&gt;
-				&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;	
-		&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;结果-2&quot;&gt;结果&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/1-4.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-</description>
-        <pubDate>Wed, 13 Jan 2016 21:08:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/01/13/1_two_sum/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/01/13/1_two_sum/</guid>
-        
-        <category>LeetCode</category>
-        
-        
-        <category>LeetCode</category>
-        
-      </item>
-    
-      <item>
-        <title>LEB128相关知识</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#介绍&quot; id=&quot;markdown-toc-介绍&quot;&gt;介绍&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#无符号整数&quot; id=&quot;markdown-toc-无符号整数&quot;&gt;无符号整数&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#编码代码为&quot; id=&quot;markdown-toc-编码代码为&quot;&gt;编码代码为：&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#解码代码为&quot; id=&quot;markdown-toc-解码代码为&quot;&gt;解码代码为：&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#有符号数&quot; id=&quot;markdown-toc-有符号数&quot;&gt;有符号数&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#编码代码为-1&quot; id=&quot;markdown-toc-编码代码为-1&quot;&gt;编码代码为：&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#编码代码为-2&quot; id=&quot;markdown-toc-编码代码为-2&quot;&gt;编码代码为：&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#总结&quot; id=&quot;markdown-toc-总结&quot;&gt;总结&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#参考&quot; id=&quot;markdown-toc-参考&quot;&gt;参考&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;介绍&quot;&gt;介绍&lt;/h1&gt;
-&lt;p&gt;LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于&lt;a href=&quot;http://www.dwarfstd.org/&quot;&gt;DWARF debug file format&lt;/a&gt;。在Android的&lt;a href=&quot;https://source.android.com/devices/tech/dalvik/dex-format.html&quot;&gt;Dalvik Executable format&lt;/a&gt;中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
-原理
-==================
-LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
+&lt;p&gt;LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
 LEB128分成有符号数和无符号数两种分别进行处理，不过，只是在编码和解码过程有些不同。&lt;/p&gt;
 
 &lt;table&gt;
@@ -1427,7 +1195,7 @@ LEB128分成有符号数和无符号数两种分别进行处理，不过，只�
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;h3 id=&quot;编码代码为&quot;&gt;编码代码为：&lt;/h3&gt;
+&lt;h3 id=&quot;编码代码为&quot;&gt;编码代码为:&lt;/h3&gt;
 &lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EncodeULEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leb128_buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -1440,19 +1208,19 @@ LEB128分成有符号数和无符号数两种分别进行处理，不过，只�
 	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;h3 id=&quot;解码代码为&quot;&gt;解码代码为：&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;language-C++&quot;&gt;	void DecodeULEB128(unsigned char *leb128_buffer, unsigned int *value)
-	{
-		int pos = 0;
-		int offset = 0;
-		while (buffer[pos] != 0) {
-			*value |= ( (buffer[pos] &amp;amp; 0x7F) &amp;lt;&amp;lt; offset ); //从低到高将 bits 合并到一起
-			offset += 7;
-			if (buffer[pos] &amp;amp; 0x80 == 0)
-				break;
-			pos += 1; 
-		}
-	}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;DecodeULEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leb128_buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//从低到高将 bits 合并到一起&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;h2 id=&quot;有符号数&quot;&gt;有符号数&lt;/h2&gt;
 &lt;p&gt;有符号数分成了正数和负数，在计算机的存储中都是以补码存储，正数和上述无符号数一样的处理，负数的处理会有些区别，以-10000为例说明，&lt;/p&gt;
 
@@ -1508,41 +1276,42 @@ LEB128分成有符号数和无符号数两种分别进行处理，不过，只�
 
 &lt;h3 id=&quot;编码代码为-1&quot;&gt;编码代码为：&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-C++&quot;&gt;	void EncodeLEB128(int value, unsigned char *buffer)
-	{
-		int pos = 0;
-		int more = 1;
-		while (more) {
-			unsigned char byte = value &amp;amp; 0x7F;
-			value &amp;gt;&amp;gt;= 7;
-			if ( ((value == 0) &amp;amp;&amp;amp; (byte &amp;amp; 0x40) == 0) ||  //正数
-				((value == -1) &amp;amp;&amp;amp; (byte &amp;amp; 0x40) != 0) ) //负数
-				more = 0;
-			if (more != 0)
-				byte != 0x80;
-			buffer[pos++] = byte;
-		}
-	}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EncodeLEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//正数&lt;/span&gt;
+				&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//负数&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;h3 id=&quot;编码代码为-2&quot;&gt;编码代码为：&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-C++&quot;&gt;	void DecodeLEB128(unsigned char *buffer, int *value)
-	{
-		int pos = 0;
-		int offset = 0;
-		unsigned char byte = buffer[pos++];
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;DecodeLEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 		
-		while (byte &amp;gt;= 0x80) {
-			*value |= (byte &amp;amp; 0x7f) &amp;lt;&amp;lt; offset;
-			offset += 7;
-			byte = buffer[pos++];
-		}
-		if (byte &amp;amp; 0x40)
-			*value |= -(1 &amp;lt;&amp;lt; offset);
-	}
-&lt;/code&gt;&lt;/pre&gt;
+		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
+
 &lt;p&gt;LEB128的理解难点是在有符号数上，编码结束条件不像无符号数那么明显（value等于0），分两种情况：&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;若为正数，7bits中的最高位为0 并且 value == 0结束，value ==0 表示高字节没有数据，而7bits最高位为0用于表示是正数，用于解码；&lt;/li&gt;
@@ -1550,20 +1319,7 @@ LEB128分成有符号数和无符号数两种分别进行处理，不过，只�
 &lt;/ol&gt;
 
 &lt;h1 id=&quot;参考&quot;&gt;参考&lt;/h1&gt;
+
 &lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/LEB128&quot;&gt;https://en.wikipedia.org/wiki/LEB128&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://llvm.org/docs/doxygen/html/LEB128_8h_source.html&quot;&gt;http://llvm.org/docs/doxygen/html/LEB128_8h_source.html&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 07 Jan 2016 14:08:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/01/07/LEB128/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/01/07/LEB128/</guid>
-        
-        <category>Android</category>
-        
-        
-        <category>Android</category>
-        
-      </item>
-    
-  </channel>
-</rss>
+&lt;p&gt;&lt;a href=&quot;http://llvm.org/docs/doxygen/html/LEB128_8h_source.html&quot;&gt;http://llvm.org/docs/doxygen/html/LEB128_8h_source.html&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><summary type="html">介绍 LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。 原理 LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。 LEB128分成有符号数和无符号数两种分别进行处理，不过，只是在编码和解码过程有些不同。 低地址 +1 +2 +3 +4 0 xxxxxxx         1 xxxxxxx 0 xxxxxxx       1 xxxxxxx 1 xxxxxxx 0 xxxxxxx     1 xxxxxxx 1 xxxxxxx 1 xxxxxxx 0 xxxxxxx   1 xxxxxxx 1 xxxxxxx 1 xxxxxxx 1 xxxxxxx 0 xxxxxxx 无符号整数 将无符号整数写成二进制形式，从低位到高位7个bits为一个整体组合成一个字节，在该字节最高位填入上述所说的标识信息。 下面以10000为例，编码过程： 二进制形式为 10 0111 0001 0000 以7bits为整体 1001110 0010000 添加标识组合成新的字节(从后往前，即低bits到高bits） 01001110(0x4E) 10010000(0x90) (最高位标识设置为0，表示没有后续字节) LEB128 则为 0x90 0x4F (小端存放) 解码过程： LEB128 0x90 0x4E 二进制形式 10010000 01001110 去掉标识信息 0010000（低7bits) 1001110（高7bits） 组合的结果为 10011100010000 （10000） 编码代码为: void EncodeULEB128(unsigned int value, unsigned char *leb128_buffer) { int pos = 0; while (value != 0) { leb128_buffer[pos++] = value &amp;amp; 0x7F | 0x80; //每个字节标识信息都设为1 value &amp;gt;&amp;gt;= 7; } if (pos &amp;gt; 0) leb128_buffer[pos-1] &amp;amp;= 0x7F; //将最后一个字节的标识信息设为0 } 解码代码为： void DecodeULEB128(unsigned char *leb128_buffer, unsigned int *value) { int pos = 0; int offset = 0; while (buffer[pos] != 0) { *value |= ( (buffer[pos] &amp;amp; 0x7F) &amp;lt;&amp;lt; offset ); //从低到高将 bits 合并到一起 offset += 7; if (buffer[pos] &amp;amp; 0x80 == 0) break; pos += 1; } } 有符号数 有符号数分成了正数和负数，在计算机的存储中都是以补码存储，正数和上述无符号数一样的处理，负数的处理会有些区别，以-10000为例说明， 编码过程： 二进制补码 11111111 11111111 11111100 00011000（可以看出最高两字节都是符号扩展的1） 以7bits为整体 1111 1111111 1111111 1111000 0011000 添加标识信息组合新的字节(从后往前，即低bits到高bits） 01111000 10011000（此处结束条件不像上面那么明显，若前面和该7bits的最高位都为1时停止） LEB128则为 0x98 0x78 解码过程： LEB128 0x98 0x78 二进制形式 10011000 01111000 去掉标识信息 0011000 1111000 (若最后一个字节中7bits的最高位为1，则前面需要符号扩展都添加1） 组合结果 11111111 11111111 1111100 00011000 (-10000) 编码代码为： void EncodeLEB128(int value, unsigned char *buffer) { int pos = 0; int more = 1; while (more) { unsigned char byte = value &amp;amp; 0x7F; value &amp;gt;&amp;gt;= 7; if ( ((value == 0) &amp;amp;&amp;amp; (byte &amp;amp; 0x40) == 0) || //正数 ((value == -1) &amp;amp;&amp;amp; (byte &amp;amp; 0x40) != 0) ) //负数 more = 0; if (more != 0) byte != 0x80; buffer[pos++] = byte; } } 编码代码为： void DecodeLEB128(unsigned char *buffer, int *value) { int pos = 0; int offset = 0; unsigned char byte = buffer[pos++]; while (byte &amp;gt;= 0x80) { *value |= (byte &amp;amp; 0x7f) &amp;lt;&amp;lt; offset; offset += 7; byte = buffer[pos++]; } if (byte &amp;amp; 0x40) *value |= -(1 &amp;lt;&amp;lt; offset); } 总结 LEB128的理解难点是在有符号数上，编码结束条件不像无符号数那么明显（value等于0），分两种情况： 若为正数，7bits中的最高位为0 并且 value == 0结束，value ==0 表示高字节没有数据，而7bits最高位为0用于表示是正数，用于解码； 若为负数，7bits中的最高位为1 并且 value == -1结束， value == -1表示高字节都是符号扩展出来的1， 7bits最高位为1用于表示是负数，在解码时高位填充1。 参考 https://en.wikipedia.org/wiki/LEB128 http://llvm.org/docs/doxygen/html/LEB128_8h_source.html</summary></entry></feed>

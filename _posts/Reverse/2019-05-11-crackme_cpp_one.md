@@ -1,36 +1,32 @@
 ---
-layout: post
+layout: article
 
 title:  简单C++ crackme分析
 date:   2019-05-11 15:20:00 +0800
-categories: reverse
+ 
 tag: crackme
+key: crackme_cpp_01
 ---
-
-* content
-{:toc}
-
-
 
 该crackme来自于[这里](https://www.root-me.org/en/Challenges/Cracking/ELF-C-0-protection),也可以从[这里]({{ "/assets/crackme/cpp_001" | absolute_url }})下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。
 
-工具选择
-===============
+# 工具选择
+
 Linux静态分析工具使用[cutter](https://github.com/radareorg/cutter), ，但由于cutter对C++的函数识别不好，故也使用IDA一起进行分析。
 
-静态分析
-==============
+# 静态分析
+
 
 先静态分析，了解程序的大概轮廓，并找到关键部分，在结合动态调试，可以达到事半功倍的效果。
 
-### 搜索关键字符串
+## 搜索关键字符串
 ```c
 .rodata:08048DFC	00000037	C	Bravo, tu peux valider en utilisant ce mot de passe... 
 .rodata:08048E34	00000031	C	Congratz. You can validate with this password... // 可以推断出来这是成功的提示
 .rodata:08048E65	00000014	C	Password incorrect. // 这是失败的提示
 ```
 
-### 根据字符串来看流程
+## 根据字符串来看流程
 ![graph]({{"/assets/pictures/crackme_cpp_one/graph.jpg" | prepend:site.baseurl}})
 
 图中蓝色部分为上面成功的提示的地方，所以需要执行的代码路径为1--> 2 --> 3。
@@ -341,8 +337,8 @@ int main()
 
 > 执行结果:Here_you_have_to_understand_a_little_C++_stuffs
 
-总结
-============
+# 总结
+
 
 * C++反编译后函数名会比较复杂，识别函数名难度会比较大，所以需要挑选多个工具一起使用；
 * 此题相对简单，只用静态分析就可以，但遇到难度较大的，可以采用静态和动态结合方式。

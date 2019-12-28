@@ -1,22 +1,21 @@
 ---
-layout: post
+layout: article
 
 title:  3-Longest Substring Without Repeating Characters @LeetCode
 date:   2016-01-15 23:10:00 +0800
-categories: LeetCode
+ 
 tag: LeetCode
+key: leetcode_03
 ---
 
-* content
-{:toc}
 
+# 题目
 
-题目
-====================
 ![graph]({{"/assets/pictures/leetcode/3-1.png" | prepend:site.baseurl}})
 
-## 题目中得到的信息有：
+## 题目中得到的信息有
 一段字符串找出不重复子串的最大长度，只需要长度信息。
+
 ### 思路
 肯定是需要将字符串遍历一遍，在遍历过程中就需要查找前面字符串是否出现该字符，因此这是该算法的重点。若没找到，长度加一，若找到了，长度会从前面该字符位置+1处开始算起。下面以图来说明：
 
@@ -51,6 +50,6 @@ int lengthOfLongestSubstring(char* s) {
 	return i - begin > max ? i - begin : max;//最后还需要判断下
 }
 ```
-## 结果
+### 结果
 ![graph]({{"/assets/pictures/leetcode/3-3.png" | prepend:site.baseurl}})
 

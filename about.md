@@ -1,0 +1,24 @@
+---
+layout: article
+---
+
+# 关于博主
+
+博主目前就职于小米公司
+
+该博客主要记录我日常的技术总结，并且会有相应专题系统文章。我主要专注在Android、安全、逆向、Linux等方面。
+
+# 开源贡献
+
+| Software | Patch
+| - |- 
+| AOSP | https://android-review.googlesource.com/c/platform/system/core/+/709724
+| AOSP | https://android-review.googlesource.com/c/platform/system/core/+/715567
+| AOSP | https://android-review.googlesource.com/c/platform/external/selinux/+/736822
+| AOSP | https://android-review.googlesource.com/c/platform/system/sepolicy/+/826502
+| AOSP | https://android-review.googlesource.com/c/platform/system/sepolicy/+/827780
+| AOSP | https://android-review.googlesource.com/c/platform/external/toybox/+/941262
+| AOSP | https://android-review.googlesource.com/c/platform/external/selinux/+/948444
+| AOSP | https://android-review.googlesource.com/c/platform/system/sepolicy/+/1008771
+| SELinux | https://github.com/SELinuxProject/selinux/commit/98a951fa76dfb25638cbbd6be7b8db8cf99bc0a1
+| toybox | https://github.com/landley/toybox/commit/063e8a8deaa89ca35ce6795f216c870e2df0743d

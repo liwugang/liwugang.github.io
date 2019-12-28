@@ -1,18 +1,15 @@
 ---
-layout: post
+layout: article
 
 title:  ARM中的STM和LDM指令的解析
 date:   2019-07-06 14:00:00 +0800
-categories: arm
+ 
 tag: arm
+key: arm_stm_ldm
 ---
 
-* content
-{:toc}
+# STM指令
 
-
-STM指令
-=================
 STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。
 > 格式： STM[xx] Rn[!], registers
 
@@ -45,7 +42,7 @@ xx用于确认放置根据下面两个条件区分：
 * IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4
 * DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4
 
-LDM指令
-==================
+# LDM指令
+
 和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。
 

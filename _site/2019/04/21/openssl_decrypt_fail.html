@@ -1,0 +1,1165 @@
+<!DOCTYPE html><html lang="en">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>openssl AES密钥和iv长度问题分析 - liwugang</title>
+
+<meta name="description" content="在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是：调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。例子int aes_encrypt_common(uint8_t ...">
+<link rel="canonical" href="http://localhost:4000/2019/04/21/openssl_decrypt_fail.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+
+<meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
+
+<meta name="theme-color" content="#ffffff">
+<!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" ><!-- start custom head snippets -->
+<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- end custom head snippets --><script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.isOverallScroller = function(node) {
+    return node === document.documentElement || node === document.body || node === window;
+  };
+
+  window.isFormElement = function(node) {
+    var tagName = node.tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i;
+      loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cbs[i]();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();
+(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();
+(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();
+</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      version: '2.2.5',
+      sources: {
+        font_awesome: 'https://use.fontawesome.com/releases/v5.0.13/css/all.css',
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn.jsdelivr.net/npm/leancloud-storage@3.13.2/dist/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js',
+          css: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css'
+        },
+        valine: 'https://unpkg.com/valine/dist/Valine.min.js',
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h1,h2,h3'
+        }
+      },
+      paths: {
+        search_js: '/assets/search.js'
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script></head>
+  <body>
+    <div class="root" data-is-touch="false">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+
+      <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
+      <div class="header__title">
+        <div class="header__brand"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24">
+<style type="text/css">
+	.st0{fill:#515151;}
+</style>
+<path class="st0" d="M1.7,22.3c5.7-5.7,11.3-5.7,17,0c3.3-3.3,3.5-5.3,0.8-6c2.7,0.7,3.5-1.1,2.3-5.6s-3.3-5.2-6.3-2.1
+	c3-3,2.3-5.2-2.1-6.3S7,1.8,7.7,4.6C7,1.8,5,2.1,1.7,5.3C7.3,11,7.3,16.7,1.7,22.3"/>
+</svg><a title="Patient && Courage
+" href="/">liwugang</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
+        <ul><li class="navigation__item"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+      </nav></div>
+  </header>
+</div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
+
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
+
+              <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
+
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>openssl AES密钥和iv长度问题分析</h1></header></div><meta itemprop="headline" content="openssl AES密钥和iv长度问题分析"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=openssl">openssl</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-21T15:13:00+08:00">
+    <meta itemprop="keywords" content="openssl"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>在做<a href="https://github.com/liwugang/filecrypt">filecrypt</a>项目时花费时间最多的是AES256算法的调试上，出现的问题是：
+调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。</p>
+
+<h1 id="例子">例子</h1>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kt">int</span> <span class="nf">aes_encrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
+        <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">out_length</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">aes_decrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
+        <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">out_length</span><span class="p">);</span>
+
+<span class="c1">// 上述加解密函数来自于 https://github.com/liwugang/filecrypt/blob/master/algs/base.c</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">text</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"test"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">cipher</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">plain</span>  <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span>
+
+    <span class="kt">char</span> <span class="n">key</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"1234567890"</span><span class="p">;</span> <span class="c1">// 密钥</span>
+    <span class="kt">char</span> <span class="n">iv</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"1111111"</span><span class="p">;</span> <span class="c1">// iv</span>
+
+    <span class="kt">uint64_t</span> <span class="n">out_length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="c1">// 加密</span>
+    <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">aes_encrypt_common</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">cipher</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">out_length</span><span class="p">);</span> 
+    <span class="c1">// 使用和加密一样的密钥和iv进行解密</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">aes_decrypt_common</span><span class="p">(</span><span class="n">cipher</span><span class="p">,</span> <span class="n">out_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">plain</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">out_length</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"first:%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+
+    <span class="c1">// 再次调用解密，密钥和iv是复制过来的</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">another_key</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">another_iv</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">iv</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">aes_decrypt_common</span><span class="p">(</span><span class="n">cipher</span><span class="p">,</span> <span class="n">out_length</span><span class="p">,</span> <span class="n">another_key</span><span class="p">,</span> <span class="n">another_iv</span><span class="p">,</span> <span class="n">plain</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">out_length</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"second:%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+<p>大家认为上述两次执行解密一样吗？</p>
+
+<p>来看下执行结果</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">first:</span><span class="mi">1</span>
+<span class="mi">139868329146176</span><span class="o">:</span><span class="n">error</span><span class="o">:</span><span class="mo">0606506</span><span class="n">D</span><span class="o">:</span><span class="n">digital</span> <span class="n">envelope</span> <span class="n">routines</span><span class="o">:</span><span class="n">EVP_DecryptFinal_ex</span><span class="o">:</span><span class="n">wrong</span> <span class="n">final</span> <span class="n">block</span> <span class="n">length</span><span class="o">:</span><span class="n">crypto</span><span class="o">/</span><span class="n">evp</span><span class="o">/</span><span class="n">evp_enc</span><span class="p">.</span><span class="n">c</span><span class="o">:</span><span class="mi">559</span><span class="o">:</span> <span class="c1">// 出错日志</span>
+<span class="n">second</span><span class="o">:</span><span class="mi">0</span>
+</code></pre></div></div>
+<p>可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟.</p>
+
+<h1 id="代码分析">代码分析</h1>
+
+<h2 id="openssl-下载编译">openssl 下载编译</h2>
+<p>加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本</p>
+<blockquote>
+  <p>./config -d &amp;&amp; make</p>
+</blockquote>
+
+<p>然后将编译出来的静态库链接到我们程序中，由于libcrypto.a依赖于pthread和dl库，需要添加上 -pthread -ldl</p>
+<blockquote>
+  <p>gcc -o  openssl_test openssl_test.c  ../openssl-1.1.1b/libcrypto.a -pthread -ldl -g</p>
+</blockquote>
+
+<p>从<a href="https://github.com/liwugang/filecrypt/blob/master/algs/base.c#L98">aes_decrypt_common</a>源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">EVP_DecryptInit_ex</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">EVP_CIPHER</span> <span class="o">*</span><span class="n">cipher</span><span class="p">,</span>
+                       <span class="n">ENGINE</span> <span class="o">*</span><span class="n">impl</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
+                       <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">EVP_CipherInit_ex</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">cipher</span><span class="p">,</span> <span class="n">impl</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// 接着看EVP_CipherInit_ex</span>
+
+<span class="kt">int</span> <span class="nf">EVP_CipherInit_ex</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">EVP_CIPHER</span> <span class="o">*</span><span class="n">cipher</span><span class="p">,</span>
+                      <span class="n">ENGINE</span> <span class="o">*</span><span class="n">impl</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
+                      <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">enc</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="p">...</span> <span class="p">...</span>
+        <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span> <span class="o">=</span> <span class="n">cipher</span><span class="p">;</span> <span class="c1">// ctx-&gt;cipher是我们传的cipher</span>
+        <span class="p">...</span> <span class="p">...</span>
+      
+        <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">key_len</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">-&gt;</span><span class="n">key_len</span><span class="p">;</span> <span class="c1">// ctx-&gt;key_len 是来自ciphter中的key_len</span>
+        <span class="p">...</span> <span class="p">...</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">EVP_CIPHER_flags</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX_cipher</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">EVP_CIPH_CUSTOM_IV</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">EVP_CIPHER_CTX_mode</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span> <span class="p">{</span>
+
+        <span class="k">case</span> <span class="n">EVP_CIPH_STREAM_CIPHER</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">EVP_CIPH_ECB_MODE</span><span class="p">:</span>
+            <span class="k">break</span><span class="p">;</span>
+
+        <span class="k">case</span> <span class="n">EVP_CIPH_CFB_MODE</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">EVP_CIPH_OFB_MODE</span><span class="p">:</span>
+
+            <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="cm">/* fall-through */</span>
+
+        <span class="k">case</span> <span class="n">EVP_CIPH_CBC_MODE</span><span class="p">:</span> <span class="c1">// 我们是使用CBC</span>
+
+            <span class="n">OPENSSL_assert</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="o">&lt;=</span>
+                           <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">iv</span><span class="p">));</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">iv</span><span class="p">)</span>
+                <span class="n">memcpy</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">oiv</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span> <span class="c1">// iv是直接拷贝相应的长度，和字符串是否'\0'无关，从名字看像是iv的字节数，后面在看EVP_CIPHER_CTX_iv_length</span>
+            <span class="n">memcpy</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">iv</span><span class="p">,</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">oiv</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span>
+            <span class="k">break</span><span class="p">;</span>
+
+        <span class="k">case</span> <span class="n">EVP_CIPH_CTR_MODE</span><span class="p">:</span>
+            <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="cm">/* Don't reuse IV for CTR mode */</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">iv</span><span class="p">)</span>
+                <span class="n">memcpy</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">iv</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span>
+            <span class="k">break</span><span class="p">;</span>
+
+        <span class="nl">default:</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">||</span> <span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">EVP_CIPH_ALWAYS_CALL_INIT</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">init</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">enc</span><span class="p">))</span> <span class="c1">// 此处对密钥key进行处理，通过调试可知实际调用aesni_init_key</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">buf_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">final_used</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">block_mask</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">block_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 接下来看密钥如何处理</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">aesni_init_key</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
+                          <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">enc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span> <span class="p">...</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">mode</span> <span class="o">==</span> <span class="n">EVP_CIPH_ECB_MODE</span> <span class="o">||</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">EVP_CIPH_CBC_MODE</span><span class="p">)</span>
+        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">enc</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// 走这里， CBC模式并且enc == 0</span>
+        <span class="c1">// 第一个参数为我们提供的密钥，第二个参数为key的bits长度</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">aesni_set_decrypt_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_key_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span>
+                                    <span class="o">&amp;</span><span class="n">dat</span><span class="o">-&gt;</span><span class="n">ks</span><span class="p">.</span><span class="n">ks</span><span class="p">);</span>
+    <span class="p">...</span> <span class="p">...</span> 
+<span class="p">}</span>
+<span class="c1">// aesni_set_decrypt_key是汇编实现，函数调用参数从左到右传递方式：rdi, rsi, rdx, rcx, r8d, r9d，key是第一个参数，长度是第二个参数，需要关注rdi和rsi就行</span>
+
+<span class="nl">__aesni_set_encrypt_key:</span>
+<span class="p">.</span><span class="n">cfi_startproc</span>	
+    <span class="p">...</span> <span class="p">...</span>
+	<span class="n">movl</span>	<span class="err">$</span><span class="mi">268437504</span><span class="p">,</span><span class="o">%</span><span class="n">r10d</span>
+	<span class="n">movups</span>	<span class="p">(</span><span class="o">%</span><span class="n">rdi</span><span class="p">),</span><span class="o">%</span><span class="n">xmm0</span> <span class="c1">// 将key的前16字节放到xmm0中</span>
+    <span class="p">...</span> <span class="p">...</span>
+	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">256</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span> <span class="c1">// 判断长度</span>
+	<span class="n">je</span>	<span class="p">.</span><span class="n">L14rounds</span> <span class="c1">// 如果长度是256，则跳转到L14rounds</span>
+	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">192</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
+	<span class="n">je</span>	<span class="p">.</span><span class="n">L12rounds</span> <span class="c1">// 如果长度是192，则跳转到L12rounds</span>
+	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">128</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
+	<span class="n">jne</span>	<span class="p">.</span><span class="n">Lbad_keybits</span> <span class="c1">// 若长度不是128的话，则keybits是错误的，所以可以看到keybits只支持128,192和256</span>
+
+
+<span class="p">.</span><span class="n">L12rounds</span><span class="o">:</span>
+	<span class="n">movq</span>	<span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rdi</span><span class="p">),</span><span class="o">%</span><span class="n">xmm2</span> <span class="c1">// 是将key + 16的8字节放在xmm2中</span>
+	<span class="n">movl</span>	<span class="err">$</span><span class="mi">11</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
+	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">268435456</span><span class="p">,</span><span class="o">%</span><span class="n">r10d</span>
+	<span class="n">je</span>	<span class="p">.</span><span class="n">L12rounds_alt</span>
+    <span class="p">...</span> <span class="p">...</span>
+
+<span class="p">.</span><span class="n">L14rounds</span><span class="o">:</span>
+	<span class="n">movups</span>	<span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rdi</span><span class="p">),</span><span class="o">%</span><span class="n">xmm2</span> <span class="c1">// 此时是将key + 16的16字节放到xmm2中</span>
+	<span class="n">movl</span>	<span class="err">$</span><span class="mi">13</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
+	<span class="n">leaq</span>	<span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rax</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
+	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">268435456</span><span class="p">,</span><span class="o">%</span><span class="n">r10d</span>
+	<span class="n">je</span>	<span class="p">.</span><span class="n">L14rounds_alt</span>
+    <span class="p">...</span> <span class="p">...</span>
+
+<span class="c1">// 该函数总结为： length只能为256, 192和128. 若length是256，取key的32(16+16)字节，若length为192,取key的24(16+8)字节，length为128,只取16字节。</span>
+</code></pre></div></div>
+<p>iv是使用EVP_CIPHER_CTX_iv_length(ctx)字节数，key的使用EVP_CIPHER_CTX_key_length(ctx)字节数，接下来来看这些值怎么确定。</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="k">const</span> <span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">iv_len</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">EVP_CIPHER_CTX_key_length</span><span class="p">(</span><span class="k">const</span> <span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">key_len</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 通过上面分析得到， iv_len和key_len分别为我们传进去的cipher的中iv_len和key_len，我们是使用EVP_aes_256_cbc()来创建的cipher。而该函数是通过下面宏定义的，而该函数返回的变量也是通过宏定义的</span>
+
+<span class="k">const</span> <span class="n">EVP_CIPHER</span> <span class="o">*</span><span class="n">EVP_aes_</span><span class="err">##</span><span class="n">keylen</span><span class="err">##</span><span class="n">_</span><span class="err">##</span><span class="n">mode</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> \
+<span class="p">{</span> <span class="k">return</span> <span class="o">&amp;</span><span class="n">aes_</span><span class="err">##</span><span class="n">keylen</span><span class="err">##</span><span class="n">_</span><span class="err">##</span><span class="n">mode</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="cp"># define BLOCK_CIPHER_generic(nid,keylen,blocksize,ivlen,nmode,mode,MODE,flags) \
+static const EVP_CIPHER aes_##keylen##_##mode = { \
+        nid##_##keylen##_##nmode,blocksize,keylen/8,ivlen, \
+        flags|EVP_CIPH_##MODE##_MODE,   \
+        aes_init_key,                   \
+        aes_##mode##_cipher,            \
+        NULL,                           \
+        sizeof(EVP_AES_KEY),            \
+        NULL,NULL,NULL,NULL }; \
+
+</span><span class="c1">// 逆向找到调用的地方：</span>
+<span class="n">BLOCK_CIPHER_generic</span><span class="p">(</span><span class="n">nid</span><span class="p">,</span><span class="n">keylen</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="n">cbc</span><span class="p">,</span><span class="n">cbc</span><span class="p">,</span><span class="n">CBC</span><span class="p">,</span><span class="n">flags</span><span class="o">|</span><span class="n">EVP_CIPH_FLAG_DEFAULT_ASN1</span><span class="p">)</span>
+<span class="c1">// 接着往上找</span>
+<span class="cp">#define BLOCK_CIPHER_generic_pack(nid,keylen,flags)             \
+        BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)     \
+        BLOCK_CIPHER_generic(nid,keylen,16,0,ecb,ecb,ECB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)      \
+        BLOCK_CIPHER_generic(nid,keylen,1,16,ofb128,ofb,OFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)   \
+        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb128,cfb,CFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)   \
+        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb1,cfb1,CFB,flags)       \
+        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb8,cfb8,CFB,flags)       \
+        BLOCK_CIPHER_generic(nid,keylen,1,16,ctr,ctr,CTR,flags)
+</span>
+<span class="c1">// 最终找到</span>
+<span class="n">BLOCK_CIPHER_generic_pack</span><span class="p">(</span><span class="n">NID_aes</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">// EVP_aes_256_cbc() 为 LOCK_CIPHER_generic_pack(NID_aes, 256, 0) ==&gt; BLOCK_CIPHER_generic(nid,256,16,16,cbc,cbc,CBC,EVP_CIPH_FLAG_DEFAULT_ASN1) ==&gt; aes_256_cbc {nid_256_cbc, 16, 256/8, 16, EVP_CIPH_FLAG_DEFAULT_ASN1|EVP_CIPH_cbc_MODE, aes_init_key, aes_cbc_cipher, NULL, sizeof(EVP_AES_KEY), NULL,NULL,NULL,NULL }</span>
+
+<span class="c1">// 从EVP_CIPHER结构体中看到第三个和第四个变量分别为key_len和iv_len，针对EVP_aes_256_cbc() key_len和iv_len分别为32字节和16字节。</span>
+
+</code></pre></div></div>
+<p>所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有’\0’，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。</p>
+
+<h1 id="总结">总结</h1>
+
+<ul>
+  <li>openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。</li>
+  <li>超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。</li>
+  <li>在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。</li>
+</ul>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2019-04-21T15:13:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html">3-Longest Substring Without Repeating Characters @LeetCode</a></div><div class="next"><span>NEXT</span><a href="/2019/04/28/git_commits.html">Git自动化合并多个Commit</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+
+<!-- end custom main bottom snippet --></div>
+            </div></div></div><div class="page__footer d-print-none">
+<footer class="footer py-4 js-page-footer">
+  <div class="main"><div itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liwugang"><meta itemprop="url" content="/liwugang.github.io"><meta itemprop="description" content="Patient && Courage"><div class="footer__author-links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><link itemprop="url" href="liwugang.github.io"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:liwugang@outlook.com" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Twitter.">
+        <a class="button button--circle twitter-button" itemprop="sameAs" href="https://twitter.com/liwugang" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1024.032 194.432c-37.664 16.704-78.176 28-120.672 33.088 43.36-26.016 76.672-67.168 92.384-116.224-40.608 24.064-85.568 41.568-133.408 50.976-38.336-40.832-92.928-66.336-153.344-66.336-116.032 0-210.08 94.048-210.08 210.08 0 16.48 1.856 32.512 5.44 47.872-174.592-8.768-329.408-92.416-433.024-219.52-18.08 31.04-28.448 67.104-28.448 105.632 0 72.896 37.088 137.184 93.472 174.88-34.432-1.088-66.816-10.528-95.168-26.272-0.032 0.864-0.032 1.76-0.032 2.656 0 101.792 72.416 186.688 168.512 205.984-17.632 4.8-36.192 7.36-55.36 7.36-13.536 0-26.688-1.312-39.52-3.776 26.72 83.456 104.32 144.192 196.256 145.888-71.904 56.352-162.496 89.92-260.928 89.92-16.96 0-33.664-0.992-50.112-2.944 92.96 59.616 203.392 94.4 322.048 94.4 386.432 0 597.728-320.128 597.728-597.76 0-9.12-0.192-18.176-0.608-27.168 41.056-29.632 76.672-66.624 104.832-108.736z" />
+</svg>
+</div>
+        </a>
+      </li><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/liwugang" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+    </div><div class="site-info mt-2">
+      <div>© liwugang 2019,
+        Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a super customizable Jekyll theme." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.
+      </div>
+    </div>
+  </div>
+</footer></div></div>
+    </div><script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $body = $('body'), $window = $(window);
+    var $pageRoot = $('.js-page-root'), $pageMain = $('.js-page-main');
+    var activeCount = 0;
+    function modal(options) {
+      var $root = this, visible, onChange, hideWhenWindowScroll = false;
+      var scrollTop;
+      function setOptions(options) {
+        var _options = options || {};
+        visible = _options.initialVisible === undefined ? false : show;
+        onChange = _options.onChange;
+        hideWhenWindowScroll = _options.hideWhenWindowScroll;
+      }
+      function init() {
+        setState(visible);
+      }
+      function setState(isShow) {
+        if (isShow === visible) {
+          return;
+        }
+        visible = isShow;
+        if (visible) {
+          activeCount++;
+          scrollTop = $(window).scrollTop() || $pageMain.scrollTop();
+          $root.addClass('modal--show');
+          $pageMain.scrollTop(scrollTop);
+          activeCount === 1 && ($pageRoot.addClass('show-modal'), $body.addClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.on('scroll', hide);
+          $window.on('keyup', handleKeyup);
+        } else {
+          activeCount > 0 && activeCount--;
+          $root.removeClass('modal--show');
+          $window.scrollTop(scrollTop);
+          activeCount === 0 && ($pageRoot.removeClass('show-modal'), $body.removeClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.off('scroll', hide);
+          $window.off('keyup', handleKeyup);
+        }
+        onChange && onChange(visible);
+      }
+      function show() {
+        setState(true);
+      }
+      function hide() {
+        setState(false);
+      }
+      function handleKeyup(e) {
+        // Char Code: 27  ESC
+        if (e.which ===  27) {
+          hide();
+        }
+      }
+      setOptions(options);
+      init();
+      return {
+        show: show,
+        hide: hide,
+        $el: $root
+      };
+    }
+    $.fn.modal = modal;
+  });
+})();
+</script><div class="modal modal--overflow page__search-modal d-print-none js-page-search-modal"><script>
+(function () {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    // search panel
+    var search = (window.search || (window.search = {}));
+    var useDefaultSearchBox = window.useDefaultSearchBox === undefined ?
+      true : window.useDefaultSearchBox ;
+
+    var $searchModal = $('.js-page-search-modal');
+    var $searchToggle = $('.js-search-toggle');
+    var searchModal = $searchModal.modal({ onChange: handleModalChange, hideWhenWindowScroll: true });
+    var modalVisible = false;
+    search.searchModal = searchModal;
+
+    var $searchBox = null;
+    var $searchInput = null;
+    var $searchClear = null;
+
+    function getModalVisible() {
+      return modalVisible;
+    }
+    search.getModalVisible = getModalVisible;
+
+    function handleModalChange(visible) {
+      modalVisible = visible;
+      if (visible) {
+        search.onShow && search.onShow();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].focus();
+      } else {
+        search.onShow && search.onHide();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].blur();
+        setTimeout(function() {
+          useDefaultSearchBox && ($searchInput.val(''), $searchBox.removeClass('not-empty'));
+          search.clear && search.clear();
+          window.pageAsideAffix && window.pageAsideAffix.refresh();
+        }, 400);
+      }
+    }
+
+    $searchToggle.on('click', function() {
+      modalVisible ? searchModal.hide() : searchModal.show();
+    });
+    // Char Code: 83  S, 191 /
+    $(window).on('keyup', function(e) {
+      if (!modalVisible && !window.isFormElement(e.target || e.srcElement) && (e.which === 83 || e.which === 191)) {
+        modalVisible || searchModal.show();
+      }
+    });
+
+    if (useDefaultSearchBox) {
+      $searchBox = $('.js-search-box');
+      $searchInput = $searchBox.children('input');
+      $searchClear = $searchBox.children('.js-icon-clear');
+      search.getSearchInput = function() {
+        return $searchInput.get(0);
+      };
+      search.getVal = function() {
+        return $searchInput.val();
+      };
+      search.setVal = function(val) {
+        $searchInput.val(val);
+      };
+
+      $searchInput.on('focus', function() {
+        $(this).addClass('focus');
+      });
+      $searchInput.on('blur', function() {
+        $(this).removeClass('focus');
+      });
+      $searchInput.on('input', window.throttle(function() {
+        var val = $(this).val();
+        if (val === '' || typeof val !== 'string') {
+          search.clear && search.clear();
+        } else {
+          $searchBox.addClass('not-empty');
+          search.onInputNotEmpty && search.onInputNotEmpty(val);
+        }
+      }, 400));
+      $searchClear.on('click', function() {
+        $searchInput.val(''); $searchBox.removeClass('not-empty');
+        search.clear && search.clear();
+      });
+    }
+  });
+})();
+</script><div class="search search--dark">
+  <div class="main">
+    <div class="search__header">Search</div>
+    <div class="search-bar">
+      <div class="search-box js-search-box">
+        <div class="search-box__icon-search"><i class="fas fa-search"></i></div>
+        <input type="text" />
+        <div class="search-box__icon-clear js-icon-clear">
+          <a><i class="fas fa-times"></i></a>
+        </div>
+      </div>
+      <button class="button button--theme-dark button--pill search__cancel js-search-toggle">
+        Cancel</button>
+    </div>
+    <div class="search-result js-search-result"></div>
+  </div>
+</div>
+<script>var SOURCES = window.TEXT_VARIABLES.sources;
+var PAHTS = window.TEXT_VARIABLES.paths;
+window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
+  var search = (window.search || (window.search = {}));
+  var searchData = window.TEXT_SEARCH_DATA || {};
+
+  function memorize(f) {
+    var cache = {};
+    return function () {
+      var key = Array.prototype.join.call(arguments, ',');
+      if (key in cache) return cache[key];
+      else return cache[key] = f.apply(this, arguments);
+    };
+  }
+
+  /// search
+  function searchByQuery(query) {
+    var i, j, key, keys, cur, _title, result = {};
+    keys = Object.keys(searchData);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      for (j = 0; j < searchData[key].length; j++) {
+        cur = searchData[key][j], _title = cur.title;
+        if ((result[key] === undefined || result[key] && result[key].length < 4 )
+          && _title.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          if (result[key] === undefined) {
+            result[key] = [];
+          }
+          result[key].push(cur);
+        }
+      }
+    }
+    return result;
+  }
+
+  var renderHeader = memorize(function(header) {
+    return $('<p class="search-result__header">' + header + '</p>');
+  });
+
+  var renderItem = function(index, title, url) {
+    return $('<li class="search-result__item" data-index="' + index + '"><a class="button" href="' + url + '">' + title + '</a></li>');
+  };
+
+  function render(data) {
+    if (!data) { return null; }
+    var $root = $('<ul></ul>'), i, j, key, keys, cur, itemIndex = 0;
+    keys = Object.keys(data);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      $root.append(renderHeader(key));
+      for (j = 0; j < data[key].length; j++) {
+        cur = data[key][j];
+        $root.append(renderItem(itemIndex++, cur.title, cur.url));
+      }
+    }
+    return $root;
+  }
+
+  // search box
+  var $result = $('.js-search-result'), $resultItems;
+  var lastActiveIndex, activeIndex;
+
+  function clear() {
+    $result.html(null);
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+  }
+  function onInputNotEmpty(val) {
+    $result.html(render(searchByQuery(val)));
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+    $resultItems.eq(0).addClass('active');
+  }
+
+  search.clear = clear;
+  search.onInputNotEmpty = onInputNotEmpty;
+
+  function updateResultItems() {
+    lastActiveIndex >= 0 && $resultItems.eq(lastActiveIndex).removeClass('active');
+    activeIndex >= 0 && $resultItems.eq(activeIndex).addClass('active');
+  }
+
+  function moveActiveIndex(direction) {
+    var itemsCount = $resultItems ? $resultItems.length : 0;
+    if (itemsCount > 1) {
+      lastActiveIndex = activeIndex;
+      if (direction === 'up') {
+        activeIndex = (activeIndex - 1 + itemsCount) % itemsCount;
+      } else if (direction === 'down') {
+        activeIndex = (activeIndex + 1 + itemsCount) % itemsCount;
+      }
+      updateResultItems();
+    }
+  }
+
+  // Char Code: 13  Enter, 37  ⬅, 38  ⬆, 39  ➡, 40  ⬇
+  $(window).on('keyup', function(e) {
+    var modalVisible = search.getModalVisible && search.getModalVisible();
+    if (modalVisible) {
+      if (e.which === 38) {
+        modalVisible && moveActiveIndex('up');
+      } else if (e.which === 40) {
+        modalVisible && moveActiveIndex('down');
+      } else if (e.which === 13) {
+        modalVisible && $resultItems && activeIndex >= 0 && $resultItems.eq(activeIndex).children('a')[0].click();
+      }
+    }
+  });
+
+  $result.on('mouseover', '.search-result__item > a', function() {
+    var itemIndex = $(this).parent().data('index');
+    itemIndex >= 0 && (lastActiveIndex = activeIndex, activeIndex = itemIndex, updateResultItems());
+  });
+});
+</script></div></div>
+
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function scrollToAnchor(anchor, duration, callback) {
+      var $root = this;
+      $root.animate({ scrollTop: $(anchor).position().top }, duration, function() {
+        window.history.replaceState(null, '', window.location.href.split('#')[0] + anchor);
+        callback && callback();
+      });
+    }
+    $.fn.scrollToAnchor = scrollToAnchor;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function affix(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroll,
+        offsetBottom = 0, scrollTarget = window, scroll = window.document, disabled = false, isOverallScroller = true,
+        rootTop, rootLeft, rootHeight, scrollBottom, rootBottomTop,
+        hasInit = false, curState;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.offsetBottom && (offsetBottom = _options.offsetBottom);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroll && (scroll = _options.scroll);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $scrollTarget = $(scrollTarget);
+        isOverallScroller = window.isOverallScroller($scrollTarget[0]);
+        $scroll = $(scroll);
+      }
+      function preCalc() {
+        top();
+        rootHeight = $root.outerHeight();
+        rootTop = $root.offset().top + (isOverallScroller ? 0 :  $scrollTarget.scrollTop());
+        rootLeft = $root.offset().left;
+      }
+      function calc(needPreCalc) {
+        needPreCalc && preCalc();
+        scrollBottom = $scroll.outerHeight() - offsetBottom - rootHeight;
+        rootBottomTop = scrollBottom - rootTop;
+      }
+      function top() {
+        if (curState !== 'top') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: 0
+          });
+          curState = 'top';
+        }
+      }
+      function fixed() {
+        if (curState !== 'fixed') {
+          $root.addClass('fixed').css({
+            left: rootLeft + 'px',
+            top: 0
+          });
+          curState = 'fixed';
+        }
+      }
+      function bottom() {
+        if (curState !== 'bottom') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: rootBottomTop + 'px'
+          });
+          curState = 'bottom';
+        }
+      }
+      function setState() {
+        var scrollTop = $scrollTarget.scrollTop();
+        if (scrollTop >= rootTop && scrollTop <= scrollBottom) {
+          fixed();
+        } else if (scrollTop < rootTop) {
+          top();
+        } else {
+          bottom();
+        }
+      }
+      function init() {
+        if(!hasInit) {
+          var interval, timeout;
+          calc(true); setState();
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState();
+          });
+          $window.on('resize', function() {
+            disabled || (calc(true), setState());
+          });
+          hasInit = true;
+        }
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions,
+        refresh: function() {
+          calc(true, { animation: false }); setState();
+        }
+      };
+    }
+    $.fn.affix = affix;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function toc(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroller, $tocUl = $('<ul class="toc toc--ellipsis"></ul>'), $tocLi, $headings, $activeLast, $activeCur,
+        selectors = 'h1,h2,h3', container = 'body', scrollTarget = window, scroller = 'html, body', disabled = false,
+        headingsPos, scrolling = false, hasRendered = false, hasInit = false;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.selectors && (selectors = _options.selectors);
+        _options.container && (container = _options.container);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroller && (scroller = _options.scroller);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $headings = $(container).find(selectors).filter('[id]');
+        $scrollTarget = $(scrollTarget);
+        $scroller = $(scroller);
+      }
+      function calc() {
+        headingsPos = [];
+        $headings.each(function() {
+          headingsPos.push(Math.floor($(this).position().top));
+        });
+      }
+      function setState(element, disabled) {
+        var scrollTop = $scrollTarget.scrollTop(), i;
+        if (disabled || !headingsPos || headingsPos.length < 1) { return; }
+        if (element) {
+          $activeCur = element;
+        } else {
+          for (i = 0; i < headingsPos.length; i++) {
+            if (scrollTop >= headingsPos[i]) {
+              $activeCur = $tocLi.eq(i);
+            } else {
+              $activeCur || ($activeCur = $tocLi.eq(i));
+              break;
+            }
+          }
+        }
+        $activeLast && $activeLast.removeClass('active');
+        ($activeLast = $activeCur).addClass('active');
+      }
+      function render() {
+        if(!hasRendered) {
+          $root.append($tocUl);
+          $headings.each(function() {
+            var $this = $(this);
+            $tocUl.append($('<li></li>').addClass('toc-' + $this.prop('tagName').toLowerCase())
+              .append($('<a></a>').text($this.text()).attr('href', '#' + $this.prop('id'))));
+          });
+          $tocLi = $tocUl.children('li');
+          $tocUl.on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            scrolling = true;
+            setState($this.parent());
+            $scroller.scrollToAnchor($this.attr('href'), 400, function() {
+              scrolling = false;
+            });
+          });
+        }
+        hasRendered = true;
+      }
+      function init() {
+        var interval, timeout;
+        if(!hasInit) {
+          render(); calc(); setState(null, scrolling);
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState(null, scrolling);
+          });
+          $window.on('resize', window.throttle(function() {
+            if (!disabled) {
+              render(); calc(); setState(null, scrolling);
+            }
+          }, 100));
+        }
+        hasInit = true;
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions
+      };
+    }
+    $.fn.toc = toc;
+  });
+})();
+/*(function () {
+
+})();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
+</script>
+    </div>
+    <script>(function () {
+  var $root = document.getElementsByClassName('root')[0];
+  if (window.hasEvent('touchstart')) {
+    $root.dataset.isTouch = true;
+    document.addEventListener('touchstart', function(){}, false);
+  }
+})();
+</script>
+  </body>
+</html>
