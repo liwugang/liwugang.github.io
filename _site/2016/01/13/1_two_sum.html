@@ -1,10 +1,19 @@
 <!DOCTYPE html><html lang="en">
-  <head><meta charset="utf-8">
+  <head><!-- Global site tag (gtag.js) - Baidu Analytics -->
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d2fe4c4c213d17757e0b1a94713ead0";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>1-Two Sum @LeetCode - liwugang</title>
 
 <meta name="description" content="题目思路题目中得到的信息有  都是整数，并且可正可负，也可一个值包含多个；  只有一个正确的结果。方法一最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。方法二由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外...">
-<link rel="canonical" href="http://localhost:4000/2016/01/13/1_two_sum.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://liwugang.github.io//2016/01/13/1_two_sum.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -461,7 +470,25 @@
     });
   });
 })();
-</script></div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css');
+		window.Lazyload.js('https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'leetcode_01'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">

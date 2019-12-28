@@ -159,7 +159,7 @@ pageview:
 ## => Search
 ##############################
 search:
-  provider: "default" # (default), false, "google", "baidu", "custom"
+  provider: "default" # (default), false, "google", "custom"
 
   ## Google Custom Search Engine
   google:
@@ -169,7 +169,7 @@ search:
 ## => Analytics
 ##############################
 analytics:
-  provider: custom # false (default), "google", "baidu", "custom"
+  provider: baidu # false (default), "google", "baidu", "custom"
 
   ## Baidu Analytics
   baidu:
