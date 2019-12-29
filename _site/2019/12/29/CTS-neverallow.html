@@ -10,10 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>ARM中的STM和LDM指令的解析 - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Android CTS中neverallow规则生成过程 - liwugang</title>
 
-<meta name="description" content="STM指令STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。  格式： STM[xx] Rn[!], registersRn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器...">
-<link rel="canonical" href="https://liwugang.github.io//2019/07/06/arm_stm_and_ldm.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且...">
+<link rel="canonical" href="https://liwugang.github.io//2019/12/29/CTS-neverallow.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -283,85 +283,317 @@
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>ARM中的STM和LDM指令的解析</h1></header></div><meta itemprop="headline" content="ARM中的STM和LDM指令的解析"><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Android CTS中neverallow规则生成过程</h1></header></div><meta itemprop="headline" content="Android CTS中neverallow规则生成过程"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=arm">arm</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jul 06, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-07-06T14:00:00+08:00">
-    <meta itemprop="keywords" content="arm"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=CTS">CTS</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=SELinux">SELinux</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 29, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-29T08:51:00+08:00">
+    <meta itemprop="keywords" content="Android,CTS,SELinux"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><h1 id="stm指令">STM指令</h1>
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</p>
 
-<p>STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。</p>
+<h2 id="makefile">Makefile</h2>
+
+<p>首先看下SELinuxNeverallowRulesTest.java的生成的<a href="http://androidxref.com/9.0.0_r3/xref/cts/hostsidetests/security/Android.mk#69">Makefile</a>.</p>
+
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">selinux_general_policy</span> <span class="o">:=</span> <span class="nf">$(</span><span class="nb">call</span> intermediates-dir-for,ETC,general_sepolicy.conf<span class="nf">)</span>/general_sepolicy.conf
+
+<span class="nv">selinux_neverallow_gen</span> <span class="o">:=</span> cts/tools/selinux/SELinuxNeverallowTestGen.py
+
+<span class="nv">selinux_neverallow_gen_data</span> <span class="o">:=</span> cts/tools/selinux/SELinuxNeverallowTestFrame.py
+
+<span class="nv">LOCAL_ADDITIONAL_DEPENDENCIES</span> <span class="o">:=</span> <span class="nv">$(COMPATIBILITY_TESTCASES_OUT_cts)</span>/sepolicy-analyze
+
+<span class="nv">LOCAL_GENERATED_SOURCES</span> <span class="o">:=</span> <span class="nf">$(</span><span class="nb">call</span> local-generated-sources-dir<span class="nf">)</span>/android/cts/security/SELinuxNeverallowRulesTest.java <span class="c"># 目标文件</span>
+
+<span class="nl">$(LOCAL_GENERATED_SOURCES) </span><span class="o">:</span> <span class="nf">PRIVATE_SELINUX_GENERAL_POLICY := $(selinux_general_policy)</span>
+<span class="nl">$(LOCAL_GENERATED_SOURCES) </span><span class="o">:</span> <span class="nf">$(selinux_neverallow_gen) $(selinux_general_policy) $(selinux_neverallow_gen_data)</span>
+	<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nf">$(</span><span class="nb">dir</span> <span class="nv">$@</span><span class="nf">)</span>
+	<span class="nv">$&lt;</span> <span class="nv">$(PRIVATE_SELINUX_GENERAL_POLICY)</span> <span class="nv">$@</span>
+<span class="c"># $&lt; 为：右边依赖的第一个元素， 即 $(selinux_neverallow_gen) = cts/tools/selinux/SELinuxNeverallowTestGen.py
+# $@ 为：左边目标，即要生成的目标文件SELinuxNeverallowRulesTest.java
+# 这条命令相当于 cts/tools/selinux/SELinuxNeverallowTestGen.py $(call intermediates-dirfor,ETC,general_sepolicy.conf)/general_sepolicy.conf SELinuxNeverallowRulesTest.java
+</span>
+<span class="k">include</span><span class="sx"> $(BUILD_CTS_HOST_JAVA_LIBRARY)</span>
+</code></pre></div></div>
+
+<p>从上面可以看到，执行SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java会生成SELinuxNeverallowRulesTest.java文件。</p>
+
+<h2 id="general_sepolicyconf-生成">general_sepolicy.conf 生成</h2>
+
+<p>该文件的生成<a href="http://androidxref.com/9.0.0_r3/xref/system/sepolicy/Android.mk#773">Makfile</a></p>
+
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># SELinux policy embedded into CTS.
+# CTS checks neverallow rules of this policy against the policy of the device under test.
+##################################
+</span><span class="k">include</span><span class="sx"> $(CLEAR_VARS)</span>
+
+<span class="nv">LOCAL_MODULE</span> <span class="o">:=</span> general_sepolicy.conf <span class="c"># 目标文件</span>
+<span class="nv">LOCAL_MODULE_CLASS</span> <span class="o">:=</span> ETC
+<span class="nv">LOCAL_MODULE_TAGS</span> <span class="o">:=</span> tests
+
+<span class="k">include</span><span class="sx"> $(BUILD_SYSTEM)/base_rules.mk</span>
+
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_MLS_SENS := $(MLS_SENS)</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_MLS_CATS := $(MLS_CATS)</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_TARGET_BUILD_VARIANT := user</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_TGT_ARCH := $(my_target_arch)</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_WITH_ASAN := false</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_SEPOLICY_SPLIT := cts</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">PRIVATE_COMPATIBLE_PROPERTY := cts</span>
+<span class="nl">$(LOCAL_BUILT_MODULE)</span><span class="o">:</span> <span class="nf">$(call build_policy</span><span class="p">,</span><span class="nf"> $(sepolicy_build_files)</span><span class="p">,</span><span class="nf"> </span>\
+<span class="nf">$(PLAT_PUBLIC_POLICY) $(PLAT_PRIVATE_POLICY)) </span><span class="c">#</span><span class="nf"> PLAT_PUBLIC_POLICY = syetem/sepolicy/public PLAT_PRIVATE_POLICY = system/sepolicy/private</span>
+	<span class="err">$</span><span class="o">(</span>transform-policy-to-conf<span class="o">)</span> <span class="c"># 这里是使用m4将te规则文件都处理合成为目标文件$@，即general_sepolicy.conf</span>
+	<span class="nv">$(hide)</span> <span class="nb">sed</span> <span class="s1">'/dontaudit/d'</span> <span class="nv">$@</span> <span class="o">&gt;</span> <span class="nv">$@</span>.dontaudit
+
+<span class="c">##################################
+</span></code></pre></div></div>
+
+<p>可以看到，general_sepolicy.conf 文件是将system/sepolicy/public和system/sepolicy/private规则文件整合在一起，而这些目录包含的是AOSP sepolicy大多数配置信息。</p>
+
+<h2 id="selinuxneverallowtestgenpy-脚本逻辑">SELinuxNeverallowTestGen.py 脚本逻辑</h2>
+
+<p>生成的逻辑都是在该脚本中，下面脚本我调整了顺序，方便说明执行的逻辑，<a href="http://androidxref.com/9.0.0_r3/xref/cts/tools/selinux/SELinuxNeverallowTestGen.py">脚本代码</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python
+</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">SELinuxNeverallowTestFrame</span>
+
+<span class="n">usage</span> <span class="o">=</span> <span class="s">"Usage: ./SELinuxNeverallowTestGen.py &lt;input policy file&gt; &lt;output cts java source&gt;"</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="c1"># check usage
+</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">usage</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">input_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># 这三个变量是同目录下SELinuxNeverallowTestFrame.py文件中的内容，是生成java文件的模版
+</span>    <span class="n">src_header</span> <span class="o">=</span> <span class="n">SELinuxNeverallowTestFrame</span><span class="o">.</span><span class="n">src_header</span>
+    <span class="n">src_body</span> <span class="o">=</span> <span class="n">SELinuxNeverallowTestFrame</span><span class="o">.</span><span class="n">src_body</span>
+    <span class="n">src_footer</span> <span class="o">=</span> <span class="n">SELinuxNeverallowTestFrame</span><span class="o">.</span><span class="n">src_footer</span>
+
+    <span class="c1"># grab the neverallow rules from the policy file and transform into tests
+</span>    <span class="n">neverallow_rules</span> <span class="o">=</span> <span class="n">extract_neverallow_rules</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span> <span class="c1"># 提取neverallow规则从general_sepolicy.conf中
+</span>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">neverallow_rules</span><span class="p">:</span>
+        <span class="n">src_body</span> <span class="o">+=</span> <span class="n">neverallow_rule_to_test</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># 然后将neverallow规则写入到SELinuxNeverallowRulesTest.java文件中
+</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_file</span><span class="p">:</span>
+        <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">src_header</span><span class="p">)</span>
+        <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">src_body</span><span class="p">)</span>
+        <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">src_footer</span><span class="p">)</span>
+
+<span class="c1"># extract_neverallow_rules - takes an intermediate policy file and pulls out the
+# neverallow rules by taking all of the non-commented text between the 'neverallow'
+# keyword and a terminating ';'
+# returns: a list of rules
+</span><span class="k">def</span> <span class="nf">extract_neverallow_rules</span><span class="p">(</span><span class="n">policy_file</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">policy_file</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">in_file</span><span class="p">:</span>
+        <span class="n">policy_str</span> <span class="o">=</span> <span class="n">in_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="c1"># full-Treble only tests are inside sections delimited by BEGIN_TREBLE_ONLY
+</span>        <span class="c1"># and END_TREBLE_ONLY comments.
+</span>
+        <span class="c1"># uncomment TREBLE_ONLY section delimiter lines
+</span>        <span class="n">remaining</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+            <span class="s">r'^\s*#\s*(BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|END_COMPATIBLE_PROPERTY_ONLY)'</span><span class="p">,</span>
+            <span class="s">r'\1'</span><span class="p">,</span> <span class="c1"># group 引用
+</span>            <span class="n">policy_str</span><span class="p">,</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span> <span class="c1"># 该方法是将 #开头的注释行任意空格后跟着BEGIN_TREBLE_ONLY、END_TREBLE_ONLY、BEGIN_COMPATIBLE_PROPERTY_ONLY和END_COMPATIBLE_PROPERTY_ONLY时，替换为这些关键字，即去掉注释
+</span>        <span class="c1"># remove comments 
+</span>        <span class="n">remaining</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r'#.+?$'</span><span class="p">,</span> <span class="s">r''</span><span class="p">,</span> <span class="n">remaining</span><span class="p">,</span> <span class="n">flags</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>  <span class="c1"># 将文件中的 # 开头注释行去掉
+</span>        <span class="c1"># match neverallow rules
+</span>        <span class="n">lines</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+            <span class="s">r'^\s*(neverallow\s.+?;|BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|END_COMPATIBLE_PROPERTY_ONLY)'</span><span class="p">,</span>
+            <span class="n">remaining</span><span class="p">,</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">M</span> <span class="o">|</span><span class="n">re</span><span class="o">.</span><span class="n">S</span><span class="p">)</span> <span class="c1"># 将neverallow和以这几个关键字开头的行取出来
+</span>
+        <span class="c1"># extract neverallow rules from the remaining lines
+</span>        <span class="c1"># 这些关键字会修饰里面的neverallowrules，若treble_only_depth &gt; 1 说明是适用于treble系统， 若compatible_property_only_depth &gt; 1，说明适用于 compatible_property 系统
+</span>        <span class="n">rules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">treble_only_depth</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">compatible_property_only_depth</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">"BEGIN_TREBLE_ONLY"</span><span class="p">):</span>
+                <span class="n">treble_only_depth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">"END_TREBLE_ONLY"</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">treble_only_depth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">exit</span><span class="p">(</span><span class="s">"ERROR: END_TREBLE_ONLY outside of TREBLE_ONLY section"</span><span class="p">)</span>
+                <span class="n">treble_only_depth</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">"BEGIN_COMPATIBLE_PROPERTY_ONLY"</span><span class="p">):</span>
+                <span class="n">compatible_property_only_depth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">"END_COMPATIBLE_PROPERTY_ONLY"</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">compatible_property_only_depth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">exit</span><span class="p">(</span><span class="s">"ERROR: END_COMPATIBLE_PROPERTY_ONLY outside of COMPATIBLE_PROPERTY_ONLY section"</span><span class="p">)</span>
+                <span class="n">compatible_property_only_depth</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">NeverallowRule</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">rule</span><span class="o">.</span><span class="n">treble_only</span> <span class="o">=</span> <span class="p">(</span><span class="n">treble_only_depth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">rule</span><span class="o">.</span><span class="n">compatible_property_only</span> <span class="o">=</span> <span class="p">(</span><span class="n">compatible_property_only_depth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">treble_only_depth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">exit</span><span class="p">(</span><span class="s">"ERROR: end of input while inside TREBLE_ONLY section"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">compatible_property_only_depth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">exit</span><span class="p">(</span><span class="s">"ERROR: end of input while inside COMPATIBLE_PROPERTY_ONLY section"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">rules</span>
+
+<span class="c1"># neverallow_rule_to_test - takes a neverallow statement and transforms it into
+# the output necessary to form a cts unit test in a java source file.
+# returns: a string representing a generic test method based on this rule.
+</span>
+<span class="c1"># 将neverallowrules 替换到java模版中
+</span><span class="k">def</span> <span class="nf">neverallow_rule_to_test</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">test_num</span><span class="p">):</span>
+    <span class="n">squashed_neverallow</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">statement</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="s">" "</span><span class="p">)</span>
+    <span class="n">method</span>  <span class="o">=</span> <span class="n">SELinuxNeverallowTestFrame</span><span class="o">.</span><span class="n">src_method</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">"testNeverallowRules()"</span><span class="p">,</span>
+        <span class="s">"testNeverallowRules"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">test_num</span><span class="p">)</span> <span class="o">+</span> <span class="s">"()"</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">"$NEVERALLOW_RULE_HERE$"</span><span class="p">,</span> <span class="n">squashed_neverallow</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="s">"$FULL_TREBLE_ONLY_BOOL_HERE$"</span><span class="p">,</span>
+        <span class="s">"true"</span> <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">treble_only</span> <span class="k">else</span> <span class="s">"false"</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="s">"$COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$"</span><span class="p">,</span>
+        <span class="s">"true"</span> <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">compatible_property_only</span> <span class="k">else</span> <span class="s">"false"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">method</span>
+
+</code></pre></div></div>
+<h4 id="总结下脚本功能">总结下脚本功能</h4>
+
+<ol>
+  <li>将BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|
+END_COMPATIBLE_PROPERTY_ONLY这几个关键字前面的注释去掉，以便后面解析时使用；</li>
+  <li>删除冗余的注释行；</li>
+  <li>
+    <p>取neverallow和上面四个关键字的部分进行解析，并根据下面情况对treble_only和compatible_property_only进行设置；</p>
+
+    <ul>
+      <li>neverallow 包含在BEGIN_TREBLE_ONLY和END_TREBLE_ONLY之间，treble_only被设置为true；</li>
+      <li>neverallow 包含在BEGIN_COMPATIBLE_PROPERTY_ONLY和END_COMPATIBLE_PROPERTY_ONLY之间，compatible_property_only被设置为true；</li>
+      <li>neverallow 不在任何BEGIN_TREBLE_ONLY/END_TREBLE_ONLY和BEGIN_COMPATIBLE_PROPERTY_ONLY/END_COMPATIBLE_PROPERTY_ONLY之间，则treble_only和compatible_property_only都被设置为false。</li>
+    </ul>
+  </li>
+  <li>然后用neverallow部分、treble_only和compatible_property_only值对下面方法模板中的$NEVERALLOW_RULE_HERE$、$FULL_TREBLE_ONLY_BOOL_HERE$和$COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$分别替换。
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">src_method</span> <span class="o">=</span> <span class="s">"""
+ @RestrictedBuildTest
+ public void testNeverallowRules() throws Exception {
+     String neverallowRule = "</span><span class="n">$NEVERALLOW_RULE_HERE</span><span class="err">$</span><span class="s">";
+     boolean fullTrebleOnly = $FULL_TREBLE_ONLY_BOOL_HERE$;
+     boolean compatiblePropertyOnly = $COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$;
+
+     if ((fullTrebleOnly) &amp;&amp; (!isFullTrebleDevice())) {
+         // This test applies only to Treble devices but this device isn't one
+         return;
+     }
+     if ((compatiblePropertyOnly) &amp;&amp; (!isCompatiblePropertyEnforcedDevice())) {
+         // This test applies only to devices on which compatible property is enforced but this
+         // device isn't one
+         return;
+     }
+
+     // If sepolicy is split and vendor sepolicy version is behind platform's,
+     // only test against platform policy.
+     File policyFile =
+             (isSepolicySplit() &amp;&amp; mVendorSepolicyVersion &lt; P_SEPOLICY_VERSION) ?
+             deviceSystemPolicyFile :
+             devicePolicyFile;
+
+     /* run sepolicy-analyze neverallow check on policy file using given neverallow rules */
+     ProcessBuilder pb = new ProcessBuilder(sepolicyAnalyze.getAbsolutePath(),
+             policyFile.getAbsolutePath(), "</span><span class="n">neverallow</span><span class="s">", "</span><span class="o">-</span><span class="n">w</span><span class="s">", "</span><span class="o">-</span><span class="n">n</span><span class="s">",
+             neverallowRule);
+     pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
+     pb.redirectErrorStream(true);
+     Process p = pb.start();
+     p.waitFor();
+     BufferedReader result = new BufferedReader(new InputStreamReader(p.getInputStream()));
+     String line;
+     StringBuilder errorString = new StringBuilder();
+     while ((line = result.readLine()) != null) {
+         errorString.append(line);
+         errorString.append("</span><span class="err">\\</span><span class="n">n</span><span class="s">");
+     }
+     assertTrue("</span><span class="nc">The</span> <span class="n">following</span> <span class="n">errors</span> <span class="n">were</span> <span class="n">encountered</span> <span class="n">when</span> <span class="n">validating</span> <span class="n">the</span> <span class="nc">SELinux</span><span class="s">"
+                + "</span><span class="n">neverallow</span> <span class="nl">rule:</span><span class="err">\\</span><span class="n">n</span><span class="s">" + neverallowRule + "</span><span class="err">\\</span><span class="n">n</span><span class="err">"</span> <span class="o">+</span> <span class="n">errorString</span><span class="o">,</span>
+                <span class="n">errorString</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">);</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="本地生成-selinuxneverallowrulestestjava-文件">本地生成 SELinuxNeverallowRulesTest.java 文件</h2>
+
+<p>在修改SELinux后，想确定下是否满足neverallow规则，虽然编译过程中会进行neverallow检查，但由于打包时间比较耗时，如果在本地生成的话，那速度会更快。</p>
+
+<h3 id="本地生成-selinuxneverallowrulestestjava-命令">本地生成 SELinuxNeverallowRulesTest.java 命令</h3>
+
+<p>默认是在源码的根目录</p>
+
 <blockquote>
-  <p>格式： STM[xx] Rn[!], registers</p>
+  <p>make general_sepolicy.conf</p>
 </blockquote>
 
-<p>Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。</p>
+<blockquote>
+  <p>cts/tools/selinux/SELinuxNeverallowTestGen.py out/target/product/cepheus/obj/ETC/general_sepolicy.conf_intermediates/general_sepolicy.conf  SELinuxNeverallowRulesTest.java</p>
+</blockquote>
 
-<p>xx用于确认放置根据下面两个条件区分：
-1.base地址之前和之后;
-2.地址是放置前增加还是后增加。</p>
+<p>由于某些规则是使用attribute，可能不是很明显，还需要结合其他方法来确定。</p>
 
-<p>由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。</p>
+<h2 id="总结">总结</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">xx</th>
-      <th style="text-align: center">name</th>
-      <th style="text-align: center">介绍</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">IA(EA)</td>
-      <td style="text-align: center">Increment After(Empty Ascending)</td>
-      <td style="text-align: center">放置后地址增加，address = Rn</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">DA(ED)</td>
-      <td style="text-align: center">Decrement After(Empty Descending)</td>
-      <td style="text-align: center">放置后地址减少，address = Rn - len(registers) + 4</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">DB(FD)</td>
-      <td style="text-align: center">Decrement Before(Full Descending)</td>
-      <td style="text-align: center">放置前地址减少，addrss = Rn - len(registers)</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">IB(FA)</td>
-      <td style="text-align: center">Increment Before(Full Ascending)</td>
-      <td style="text-align: center">放置前地址增加，address = Rn + 4</td>
-    </tr>
-  </tbody>
-</table>
+<p>从生成代码中可以看到，neverallow规则都属于AOSP system/sepolicy/private和system/sepolicy/public中的neverallow，所以在添加规则时不能修改neverallow，也不能违背。</p>
 
-<h2 id="stmdastmed">STMDA(STMED)</h2>
-<p>来看下为什么 address = Rn - len(registers) + 4 ?</p>
+<h2 id="附件">附件</h2>
 
-<ul>
-  <li>放置后地址减少;</li>
-  <li>寄存器编号按从低到高放置在存储空间的从低到高的位置;</li>
-</ul>
+<p><a href="https://github.com/liwugang/liwugang.github.io/tree/master/assets/files/cts_neverallow.zip">cts_neverallow.zip</a>，中包含有：</p>
 
-<p>所以先倒数第一的寄存器需要放置在base地址中，即mem[Rn] = R[end], 接下来倒数第二为 mem[Rn - 4] = R[end-1], 类似第一个就是mem[Rn - len(registers) + 4] = R[first]了。</p>
+<blockquote>
+  <p>SELinuxNeverallowTestGen.py 脚本</p>
+</blockquote>
 
-<h2 id="回写base寄存器">回写base寄存器</h2>
+<blockquote>
+  <p>general_sepolicy.conf</p>
+</blockquote>
 
-<p>若需要回写base寄存器</p>
-<ul>
-  <li>IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4</li>
-  <li>DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4</li>
-</ul>
+<blockquote>
+  <p>SELinuxNeverallowTestFrame.py Java测试代码模板</p>
+</blockquote>
 
-<h1 id="ldm指令">LDM指令</h1>
+<blockquote>
+  <p>first 为SELinuxNeverallowTestGen.py第一步执行的结果</p>
+</blockquote>
 
-<p>和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。</p>
+<blockquote>
+  <p>second 为SELinuxNeverallowTestGen.py第二步执行的结果</p>
+</blockquote>
 
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2019-07-06T14:00:00+08:00"><!-- start custom article footer snippet -->
+<blockquote>
+  <p>SELinuxNeverallowRulesTest.java 为生成的文件</p>
+</blockquote>
 
-<!-- end custom article footer snippet --></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2019/05/18/feof_using.html">feof的陷阱</a></div><div class="next"><span>NEXT</span><a href="/2019/12/29/CTS-neverallow.html">Android CTS中neverallow规则生成过程</a></div></div></div>
+<p>后面三个文件是前三个文件所生成，执行命令为：</p>
+
+<blockquote>
+  <p>SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java</p>
+</blockquote>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2019-12-29T08:51:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2019/07/06/arm_stm_and_ldm.html">ARM中的STM和LDM指令的解析</a></div></div></div>
 
 </div>
 
@@ -403,7 +635,7 @@
 				repo: 'liwugang.github.io',
 				owner: 'liwugang',
 				admin: ['liwugang'],
-				id: 'arm_stm_ldm'
+				id: 'cts_neverallow'
 			});
 			gitalk.render('js-gitalk-container');
 		});

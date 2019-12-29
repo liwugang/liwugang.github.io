@@ -1,5 +1,299 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io//" rel="alternate" type="text/html" /><updated>2019-12-28T18:26:34+08:00</updated><id>https://liwugang.github.io//feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">ARM中的STM和LDM指令的解析</title><link href="https://liwugang.github.io//2019/07/06/arm_stm_and_ldm.html" rel="alternate" type="text/html" title="ARM中的STM和LDM指令的解析" /><published>2019-07-06T14:00:00+08:00</published><updated>2019-07-06T14:00:00+08:00</updated><id>https://liwugang.github.io//2019/07/06/arm_stm_and_ldm</id><content type="html" xml:base="https://liwugang.github.io//2019/07/06/arm_stm_and_ldm.html">&lt;h1 id=&quot;stm指令&quot;&gt;STM指令&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io//" rel="alternate" type="text/html" /><updated>2019-12-29T16:19:17+08:00</updated><id>https://liwugang.github.io//feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Android CTS中neverallow规则生成过程</title><link href="https://liwugang.github.io//2019/12/29/CTS-neverallow.html" rel="alternate" type="text/html" title="Android CTS中neverallow规则生成过程" /><published>2019-12-29T08:51:00+08:00</published><updated>2019-12-29T08:51:00+08:00</updated><id>https://liwugang.github.io//2019/12/29/CTS-neverallow</id><content type="html" xml:base="https://liwugang.github.io//2019/12/29/CTS-neverallow.html">&lt;p&gt;CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。&lt;/p&gt;
+
+&lt;h2 id=&quot;makefile&quot;&gt;Makefile&lt;/h2&gt;
+
+&lt;p&gt;首先看下SELinuxNeverallowRulesTest.java的生成的&lt;a href=&quot;http://androidxref.com/9.0.0_r3/xref/cts/hostsidetests/security/Android.mk#69&quot;&gt;Makefile&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-makefile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;selinux_general_policy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;call&lt;/span&gt; intermediates-dir-for,ETC,general_sepolicy.conf&lt;span class=&quot;nf&quot;&gt;)&lt;/span&gt;/general_sepolicy.conf
+
+&lt;span class=&quot;nv&quot;&gt;selinux_neverallow_gen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; cts/tools/selinux/SELinuxNeverallowTestGen.py
+
+&lt;span class=&quot;nv&quot;&gt;selinux_neverallow_gen_data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; cts/tools/selinux/SELinuxNeverallowTestFrame.py
+
+&lt;span class=&quot;nv&quot;&gt;LOCAL_ADDITIONAL_DEPENDENCIES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$(COMPATIBILITY_TESTCASES_OUT_cts)&lt;/span&gt;/sepolicy-analyze
+
+&lt;span class=&quot;nv&quot;&gt;LOCAL_GENERATED_SOURCES&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;call&lt;/span&gt; local-generated-sources-dir&lt;span class=&quot;nf&quot;&gt;)&lt;/span&gt;/android/cts/security/SELinuxNeverallowRulesTest.java &lt;span class=&quot;c&quot;&gt;# 目标文件&lt;/span&gt;
+
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_GENERATED_SOURCES) &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_SELINUX_GENERAL_POLICY := $(selinux_general_policy)&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_GENERATED_SOURCES) &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;$(selinux_neverallow_gen) $(selinux_general_policy) $(selinux_neverallow_gen_data)&lt;/span&gt;
+	&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;nv&quot;&gt;$&amp;lt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$(PRIVATE_SELINUX_GENERAL_POLICY)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# $&amp;lt; 为：右边依赖的第一个元素， 即 $(selinux_neverallow_gen) = cts/tools/selinux/SELinuxNeverallowTestGen.py
+# $@ 为：左边目标，即要生成的目标文件SELinuxNeverallowRulesTest.java
+# 这条命令相当于 cts/tools/selinux/SELinuxNeverallowTestGen.py $(call intermediates-dirfor,ETC,general_sepolicy.conf)/general_sepolicy.conf SELinuxNeverallowRulesTest.java
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt; $(BUILD_CTS_HOST_JAVA_LIBRARY)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从上面可以看到，执行SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java会生成SELinuxNeverallowRulesTest.java文件。&lt;/p&gt;
+
+&lt;h2 id=&quot;general_sepolicyconf-生成&quot;&gt;general_sepolicy.conf 生成&lt;/h2&gt;
+
+&lt;p&gt;该文件的生成&lt;a href=&quot;http://androidxref.com/9.0.0_r3/xref/system/sepolicy/Android.mk#773&quot;&gt;Makfile&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-makefile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# SELinux policy embedded into CTS.
+# CTS checks neverallow rules of this policy against the policy of the device under test.
+##################################
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt; $(CLEAR_VARS)&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;LOCAL_MODULE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; general_sepolicy.conf &lt;span class=&quot;c&quot;&gt;# 目标文件&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;LOCAL_MODULE_CLASS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; ETC
+&lt;span class=&quot;nv&quot;&gt;LOCAL_MODULE_TAGS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; tests
+
+&lt;span class=&quot;k&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;sx&quot;&gt; $(BUILD_SYSTEM)/base_rules.mk&lt;/span&gt;
+
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_MLS_SENS := $(MLS_SENS)&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_MLS_CATS := $(MLS_CATS)&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_TARGET_BUILD_VARIANT := user&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_TGT_ARCH := $(my_target_arch)&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_WITH_ASAN := false&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_SEPOLICY_SPLIT := cts&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;PRIVATE_COMPATIBLE_PROPERTY := cts&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;$(LOCAL_BUILT_MODULE)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;$(call build_policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt; $(sepolicy_build_files)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt; &lt;/span&gt;\
+&lt;span class=&quot;nf&quot;&gt;$(PLAT_PUBLIC_POLICY) $(PLAT_PRIVATE_POLICY)) &lt;/span&gt;&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt; PLAT_PUBLIC_POLICY = syetem/sepolicy/public PLAT_PRIVATE_POLICY = system/sepolicy/private&lt;/span&gt;
+	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;transform-policy-to-conf&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 这里是使用m4将te规则文件都处理合成为目标文件$@，即general_sepolicy.conf&lt;/span&gt;
+	&lt;span class=&quot;nv&quot;&gt;$(hide)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/dontaudit/d'&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;.dontaudit
+
+&lt;span class=&quot;c&quot;&gt;##################################
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以看到，general_sepolicy.conf 文件是将system/sepolicy/public和system/sepolicy/private规则文件整合在一起，而这些目录包含的是AOSP sepolicy大多数配置信息。&lt;/p&gt;
+
+&lt;h2 id=&quot;selinuxneverallowtestgenpy-脚本逻辑&quot;&gt;SELinuxNeverallowTestGen.py 脚本逻辑&lt;/h2&gt;
+
+&lt;p&gt;生成的逻辑都是在该脚本中，下面脚本我调整了顺序，方便说明执行的逻辑，&lt;a href=&quot;http://androidxref.com/9.0.0_r3/xref/cts/tools/selinux/SELinuxNeverallowTestGen.py&quot;&gt;脚本代码&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env python
+&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;re&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;SELinuxNeverallowTestFrame&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;usage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Usage: ./SELinuxNeverallowTestGen.py &amp;lt;input policy file&amp;gt; &amp;lt;output cts java source&amp;gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# check usage
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;usage&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;input_file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;output_file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# 这三个变量是同目录下SELinuxNeverallowTestFrame.py文件中的内容，是生成java文件的模版
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;src_header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SELinuxNeverallowTestFrame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_header&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;src_body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SELinuxNeverallowTestFrame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_body&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;src_footer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SELinuxNeverallowTestFrame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_footer&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# grab the neverallow rules from the policy file and transform into tests
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;neverallow_rules&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;extract_neverallow_rules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 提取neverallow规则从general_sepolicy.conf中
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;neverallow_rules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;src_body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;neverallow_rule_to_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 然后将neverallow规则写入到SELinuxNeverallowRulesTest.java文件中
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'w'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;out_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_header&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;out_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;out_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_footer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# extract_neverallow_rules - takes an intermediate policy file and pulls out the
+# neverallow rules by taking all of the non-commented text between the 'neverallow'
+# keyword and a terminating ';'
+# returns: a list of rules
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;extract_neverallow_rules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;policy_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;policy_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;policy_str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# full-Treble only tests are inside sections delimited by BEGIN_TREBLE_ONLY
+&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# and END_TREBLE_ONLY comments.
+&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# uncomment TREBLE_ONLY section delimiter lines
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;remaining&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;r'^\s*#\s*(BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|END_COMPATIBLE_PROPERTY_ONLY)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;r'\1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# group 引用
+&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;policy_str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;M&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 该方法是将 #开头的注释行任意空格后跟着BEGIN_TREBLE_ONLY、END_TREBLE_ONLY、BEGIN_COMPATIBLE_PROPERTY_ONLY和END_COMPATIBLE_PROPERTY_ONLY时，替换为这些关键字，即去掉注释
+&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# remove comments 
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;remaining&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;r'#.+?$'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;r''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;remaining&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;M&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# 将文件中的 # 开头注释行去掉
+&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# match neverallow rules
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;lines&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;findall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;r'^\s*(neverallow\s.+?;|BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|END_COMPATIBLE_PROPERTY_ONLY)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;remaining&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;M&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;re&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 将neverallow和以这几个关键字开头的行取出来
+&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# extract neverallow rules from the remaining lines
+&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# 这些关键字会修饰里面的neverallowrules，若treble_only_depth &amp;gt; 1 说明是适用于treble系统， 若compatible_property_only_depth &amp;gt; 1，说明适用于 compatible_property 系统
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;rules&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;treble_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;compatible_property_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startswith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;BEGIN_TREBLE_ONLY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;treble_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startswith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;END_TREBLE_ONLY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;treble_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                    &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ERROR: END_TREBLE_ONLY outside of TREBLE_ONLY section&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;treble_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startswith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;BEGIN_COMPATIBLE_PROPERTY_ONLY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;compatible_property_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startswith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;END_COMPATIBLE_PROPERTY_ONLY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;compatible_property_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                    &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ERROR: END_COMPATIBLE_PROPERTY_ONLY outside of COMPATIBLE_PROPERTY_ONLY section&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;compatible_property_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NeverallowRule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;treble_only&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;treble_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compatible_property_only&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compatible_property_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;treble_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ERROR: end of input while inside TREBLE_ONLY section&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;compatible_property_only_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ERROR: end of input while inside COMPATIBLE_PROPERTY_ONLY section&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rules&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# neverallow_rule_to_test - takes a neverallow statement and transforms it into
+# the output necessary to form a cts unit test in a java source file.
+# returns: a string representing a generic test method based on this rule.
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# 将neverallowrules 替换到java模版中
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;neverallow_rule_to_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;test_num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;squashed_neverallow&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;statement&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SELinuxNeverallowTestFrame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src_method&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;testNeverallowRules()&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;testNeverallowRules&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;test_num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;()&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;$NEVERALLOW_RULE_HERE$&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;squashed_neverallow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;$FULL_TREBLE_ONLY_BOOL_HERE$&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;true&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;treble_only&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;false&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;$COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;true&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compatible_property_only&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;false&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;总结下脚本功能&quot;&gt;总结下脚本功能&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;将BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|
+END_COMPATIBLE_PROPERTY_ONLY这几个关键字前面的注释去掉，以便后面解析时使用；&lt;/li&gt;
+  &lt;li&gt;删除冗余的注释行；&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;取neverallow和上面四个关键字的部分进行解析，并根据下面情况对treble_only和compatible_property_only进行设置；&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;neverallow 包含在BEGIN_TREBLE_ONLY和END_TREBLE_ONLY之间，treble_only被设置为true；&lt;/li&gt;
+      &lt;li&gt;neverallow 包含在BEGIN_COMPATIBLE_PROPERTY_ONLY和END_COMPATIBLE_PROPERTY_ONLY之间，compatible_property_only被设置为true；&lt;/li&gt;
+      &lt;li&gt;neverallow 不在任何BEGIN_TREBLE_ONLY/END_TREBLE_ONLY和BEGIN_COMPATIBLE_PROPERTY_ONLY/END_COMPATIBLE_PROPERTY_ONLY之间，则treble_only和compatible_property_only都被设置为false。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;然后用neverallow部分、treble_only和compatible_property_only值对下面方法模板中的$NEVERALLOW_RULE_HERE$、$FULL_TREBLE_ONLY_BOOL_HERE$和$COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$分别替换。
+    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;src_method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+ @RestrictedBuildTest
+ public void testNeverallowRules() throws Exception {
+     String neverallowRule = &quot;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;$NEVERALLOW_RULE_HERE&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;;
+     boolean fullTrebleOnly = $FULL_TREBLE_ONLY_BOOL_HERE$;
+     boolean compatiblePropertyOnly = $COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$;
+
+     if ((fullTrebleOnly) &amp;amp;&amp;amp; (!isFullTrebleDevice())) {
+         // This test applies only to Treble devices but this device isn't one
+         return;
+     }
+     if ((compatiblePropertyOnly) &amp;amp;&amp;amp; (!isCompatiblePropertyEnforcedDevice())) {
+         // This test applies only to devices on which compatible property is enforced but this
+         // device isn't one
+         return;
+     }
+
+     // If sepolicy is split and vendor sepolicy version is behind platform's,
+     // only test against platform policy.
+     File policyFile =
+             (isSepolicySplit() &amp;amp;&amp;amp; mVendorSepolicyVersion &amp;lt; P_SEPOLICY_VERSION) ?
+             deviceSystemPolicyFile :
+             devicePolicyFile;
+
+     /* run sepolicy-analyze neverallow check on policy file using given neverallow rules */
+     ProcessBuilder pb = new ProcessBuilder(sepolicyAnalyze.getAbsolutePath(),
+             policyFile.getAbsolutePath(), &quot;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;neverallow&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;, &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;, &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;,
+             neverallowRule);
+     pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
+     pb.redirectErrorStream(true);
+     Process p = pb.start();
+     p.waitFor();
+     BufferedReader result = new BufferedReader(new InputStreamReader(p.getInputStream()));
+     String line;
+     StringBuilder errorString = new StringBuilder();
+     while ((line = result.readLine()) != null) {
+         errorString.append(line);
+         errorString.append(&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;);
+     }
+     assertTrue(&quot;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;The&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;were&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;encountered&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;validating&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SELinux&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;
+                + &quot;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;neverallow&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;rule:&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; + neverallowRule + &quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errorString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;errorString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+ &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;本地生成-selinuxneverallowrulestestjava-文件&quot;&gt;本地生成 SELinuxNeverallowRulesTest.java 文件&lt;/h2&gt;
+
+&lt;p&gt;在修改SELinux后，想确定下是否满足neverallow规则，虽然编译过程中会进行neverallow检查，但由于打包时间比较耗时，如果在本地生成的话，那速度会更快。&lt;/p&gt;
+
+&lt;h3 id=&quot;本地生成-selinuxneverallowrulestestjava-命令&quot;&gt;本地生成 SELinuxNeverallowRulesTest.java 命令&lt;/h3&gt;
+
+&lt;p&gt;默认是在源码的根目录&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;make general_sepolicy.conf&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;cts/tools/selinux/SELinuxNeverallowTestGen.py out/target/product/cepheus/obj/ETC/general_sepolicy.conf_intermediates/general_sepolicy.conf  SELinuxNeverallowRulesTest.java&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;由于某些规则是使用attribute，可能不是很明显，还需要结合其他方法来确定。&lt;/p&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;从生成代码中可以看到，neverallow规则都属于AOSP system/sepolicy/private和system/sepolicy/public中的neverallow，所以在添加规则时不能修改neverallow，也不能违背。&lt;/p&gt;
+
+&lt;h2 id=&quot;附件&quot;&gt;附件&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/liwugang/liwugang.github.io/tree/master/assets/files/cts_neverallow.zip&quot;&gt;cts_neverallow.zip&lt;/a&gt;，中包含有：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SELinuxNeverallowTestGen.py 脚本&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;general_sepolicy.conf&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SELinuxNeverallowTestFrame.py Java测试代码模板&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;first 为SELinuxNeverallowTestGen.py第一步执行的结果&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;second 为SELinuxNeverallowTestGen.py第二步执行的结果&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SELinuxNeverallowRulesTest.java 为生成的文件&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;后面三个文件是前三个文件所生成，执行命令为：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><category term="CTS" /><category term="SELinux" /><summary type="html">CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。 Makefile 首先看下SELinuxNeverallowRulesTest.java的生成的Makefile. selinux_general_policy := $(call intermediates-dir-for,ETC,general_sepolicy.conf)/general_sepolicy.conf selinux_neverallow_gen := cts/tools/selinux/SELinuxNeverallowTestGen.py selinux_neverallow_gen_data := cts/tools/selinux/SELinuxNeverallowTestFrame.py LOCAL_ADDITIONAL_DEPENDENCIES := $(COMPATIBILITY_TESTCASES_OUT_cts)/sepolicy-analyze LOCAL_GENERATED_SOURCES := $(call local-generated-sources-dir)/android/cts/security/SELinuxNeverallowRulesTest.java # 目标文件 $(LOCAL_GENERATED_SOURCES) : PRIVATE_SELINUX_GENERAL_POLICY := $(selinux_general_policy) $(LOCAL_GENERATED_SOURCES) : $(selinux_neverallow_gen) $(selinux_general_policy) $(selinux_neverallow_gen_data) mkdir -p $(dir $@) $&amp;lt; $(PRIVATE_SELINUX_GENERAL_POLICY) $@ # $&amp;lt; 为：右边依赖的第一个元素， 即 $(selinux_neverallow_gen) = cts/tools/selinux/SELinuxNeverallowTestGen.py # $@ 为：左边目标，即要生成的目标文件SELinuxNeverallowRulesTest.java # 这条命令相当于 cts/tools/selinux/SELinuxNeverallowTestGen.py $(call intermediates-dirfor,ETC,general_sepolicy.conf)/general_sepolicy.conf SELinuxNeverallowRulesTest.java include $(BUILD_CTS_HOST_JAVA_LIBRARY) 从上面可以看到，执行SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java会生成SELinuxNeverallowRulesTest.java文件。 general_sepolicy.conf 生成 该文件的生成Makfile # SELinux policy embedded into CTS. # CTS checks neverallow rules of this policy against the policy of the device under test. ################################## include $(CLEAR_VARS) LOCAL_MODULE := general_sepolicy.conf # 目标文件 LOCAL_MODULE_CLASS := ETC LOCAL_MODULE_TAGS := tests include $(BUILD_SYSTEM)/base_rules.mk $(LOCAL_BUILT_MODULE): PRIVATE_MLS_SENS := $(MLS_SENS) $(LOCAL_BUILT_MODULE): PRIVATE_MLS_CATS := $(MLS_CATS) $(LOCAL_BUILT_MODULE): PRIVATE_TARGET_BUILD_VARIANT := user $(LOCAL_BUILT_MODULE): PRIVATE_TGT_ARCH := $(my_target_arch) $(LOCAL_BUILT_MODULE): PRIVATE_WITH_ASAN := false $(LOCAL_BUILT_MODULE): PRIVATE_SEPOLICY_SPLIT := cts $(LOCAL_BUILT_MODULE): PRIVATE_COMPATIBLE_PROPERTY := cts $(LOCAL_BUILT_MODULE): $(call build_policy, $(sepolicy_build_files), \ $(PLAT_PUBLIC_POLICY) $(PLAT_PRIVATE_POLICY)) # PLAT_PUBLIC_POLICY = syetem/sepolicy/public PLAT_PRIVATE_POLICY = system/sepolicy/private $(transform-policy-to-conf) # 这里是使用m4将te规则文件都处理合成为目标文件$@，即general_sepolicy.conf $(hide) sed '/dontaudit/d' $@ &amp;gt; $@.dontaudit ################################## 可以看到，general_sepolicy.conf 文件是将system/sepolicy/public和system/sepolicy/private规则文件整合在一起，而这些目录包含的是AOSP sepolicy大多数配置信息。 SELinuxNeverallowTestGen.py 脚本逻辑 生成的逻辑都是在该脚本中，下面脚本我调整了顺序，方便说明执行的逻辑，脚本代码 #!/usr/bin/env python import re import sys import SELinuxNeverallowTestFrame usage = &quot;Usage: ./SELinuxNeverallowTestGen.py &amp;lt;input policy file&amp;gt; &amp;lt;output cts java source&amp;gt;&quot; if __name__ == &quot;__main__&quot;: # check usage if len(sys.argv) != 3: print usage exit(1) input_file = sys.argv[1] output_file = sys.argv[2] # 这三个变量是同目录下SELinuxNeverallowTestFrame.py文件中的内容，是生成java文件的模版 src_header = SELinuxNeverallowTestFrame.src_header src_body = SELinuxNeverallowTestFrame.src_body src_footer = SELinuxNeverallowTestFrame.src_footer # grab the neverallow rules from the policy file and transform into tests neverallow_rules = extract_neverallow_rules(input_file) # 提取neverallow规则从general_sepolicy.conf中 i = 0 for rule in neverallow_rules: src_body += neverallow_rule_to_test(rule, i) i += 1 # 然后将neverallow规则写入到SELinuxNeverallowRulesTest.java文件中 with open(output_file, 'w') as out_file: out_file.write(src_header) out_file.write(src_body) out_file.write(src_footer) # extract_neverallow_rules - takes an intermediate policy file and pulls out the # neverallow rules by taking all of the non-commented text between the 'neverallow' # keyword and a terminating ';' # returns: a list of rules def extract_neverallow_rules(policy_file): with open(policy_file, 'r') as in_file: policy_str = in_file.read() # full-Treble only tests are inside sections delimited by BEGIN_TREBLE_ONLY # and END_TREBLE_ONLY comments. # uncomment TREBLE_ONLY section delimiter lines remaining = re.sub( r'^\s*#\s*(BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|END_COMPATIBLE_PROPERTY_ONLY)', r'\1', # group 引用 policy_str, flags = re.M) # 该方法是将 #开头的注释行任意空格后跟着BEGIN_TREBLE_ONLY、END_TREBLE_ONLY、BEGIN_COMPATIBLE_PROPERTY_ONLY和END_COMPATIBLE_PROPERTY_ONLY时，替换为这些关键字，即去掉注释 # remove comments remaining = re.sub(r'#.+?$', r'', remaining, flags = re.M) # 将文件中的 # 开头注释行去掉 # match neverallow rules lines = re.findall( r'^\s*(neverallow\s.+?;|BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY|END_COMPATIBLE_PROPERTY_ONLY)', remaining, flags = re.M |re.S) # 将neverallow和以这几个关键字开头的行取出来 # extract neverallow rules from the remaining lines # 这些关键字会修饰里面的neverallowrules，若treble_only_depth &amp;gt; 1 说明是适用于treble系统， 若compatible_property_only_depth &amp;gt; 1，说明适用于 compatible_property 系统 rules = list() treble_only_depth = 0 compatible_property_only_depth = 0 for line in lines: if line.startswith(&quot;BEGIN_TREBLE_ONLY&quot;): treble_only_depth += 1 continue elif line.startswith(&quot;END_TREBLE_ONLY&quot;): if treble_only_depth &amp;lt; 1: exit(&quot;ERROR: END_TREBLE_ONLY outside of TREBLE_ONLY section&quot;) treble_only_depth -= 1 continue elif line.startswith(&quot;BEGIN_COMPATIBLE_PROPERTY_ONLY&quot;): compatible_property_only_depth += 1 continue elif line.startswith(&quot;END_COMPATIBLE_PROPERTY_ONLY&quot;): if compatible_property_only_depth &amp;lt; 1: exit(&quot;ERROR: END_COMPATIBLE_PROPERTY_ONLY outside of COMPATIBLE_PROPERTY_ONLY section&quot;) compatible_property_only_depth -= 1 continue rule = NeverallowRule(line) rule.treble_only = (treble_only_depth &amp;gt; 0) rule.compatible_property_only = (compatible_property_only_depth &amp;gt; 0) rules.append(rule) if treble_only_depth != 0: exit(&quot;ERROR: end of input while inside TREBLE_ONLY section&quot;) if compatible_property_only_depth != 0: exit(&quot;ERROR: end of input while inside COMPATIBLE_PROPERTY_ONLY section&quot;) return rules # neverallow_rule_to_test - takes a neverallow statement and transforms it into # the output necessary to form a cts unit test in a java source file. # returns: a string representing a generic test method based on this rule. # 将neverallowrules 替换到java模版中 def neverallow_rule_to_test(rule, test_num): squashed_neverallow = rule.statement.replace(&quot;\n&quot;, &quot; &quot;) method = SELinuxNeverallowTestFrame.src_method method = method.replace(&quot;testNeverallowRules()&quot;, &quot;testNeverallowRules&quot; + str(test_num) + &quot;()&quot;) method = method.replace(&quot;$NEVERALLOW_RULE_HERE$&quot;, squashed_neverallow) method = method.replace( &quot;$FULL_TREBLE_ONLY_BOOL_HERE$&quot;, &quot;true&quot; if rule.treble_only else &quot;false&quot;) method = method.replace( &quot;$COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$&quot;, &quot;true&quot; if rule.compatible_property_only else &quot;false&quot;) return method 总结下脚本功能 将BEGIN_TREBLE_ONLY|END_TREBLE_ONLY|BEGIN_COMPATIBLE_PROPERTY_ONLY| END_COMPATIBLE_PROPERTY_ONLY这几个关键字前面的注释去掉，以便后面解析时使用； 删除冗余的注释行； 取neverallow和上面四个关键字的部分进行解析，并根据下面情况对treble_only和compatible_property_only进行设置； neverallow 包含在BEGIN_TREBLE_ONLY和END_TREBLE_ONLY之间，treble_only被设置为true； neverallow 包含在BEGIN_COMPATIBLE_PROPERTY_ONLY和END_COMPATIBLE_PROPERTY_ONLY之间，compatible_property_only被设置为true； neverallow 不在任何BEGIN_TREBLE_ONLY/END_TREBLE_ONLY和BEGIN_COMPATIBLE_PROPERTY_ONLY/END_COMPATIBLE_PROPERTY_ONLY之间，则treble_only和compatible_property_only都被设置为false。 然后用neverallow部分、treble_only和compatible_property_only值对下面方法模板中的$NEVERALLOW_RULE_HERE$、$FULL_TREBLE_ONLY_BOOL_HERE$和$COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$分别替换。 src_method = &quot;&quot;&quot; @RestrictedBuildTest public void testNeverallowRules() throws Exception { String neverallowRule = &quot;$NEVERALLOW_RULE_HERE$&quot;; boolean fullTrebleOnly = $FULL_TREBLE_ONLY_BOOL_HERE$; boolean compatiblePropertyOnly = $COMPATIBLE_PROPERTY_ONLY_BOOL_HERE$; if ((fullTrebleOnly) &amp;amp;&amp;amp; (!isFullTrebleDevice())) { // This test applies only to Treble devices but this device isn't one return; } if ((compatiblePropertyOnly) &amp;amp;&amp;amp; (!isCompatiblePropertyEnforcedDevice())) { // This test applies only to devices on which compatible property is enforced but this // device isn't one return; } // If sepolicy is split and vendor sepolicy version is behind platform's, // only test against platform policy. File policyFile = (isSepolicySplit() &amp;amp;&amp;amp; mVendorSepolicyVersion &amp;lt; P_SEPOLICY_VERSION) ? deviceSystemPolicyFile : devicePolicyFile; /* run sepolicy-analyze neverallow check on policy file using given neverallow rules */ ProcessBuilder pb = new ProcessBuilder(sepolicyAnalyze.getAbsolutePath(), policyFile.getAbsolutePath(), &quot;neverallow&quot;, &quot;-w&quot;, &quot;-n&quot;, neverallowRule); pb.redirectOutput(ProcessBuilder.Redirect.PIPE); pb.redirectErrorStream(true); Process p = pb.start(); p.waitFor(); BufferedReader result = new BufferedReader(new InputStreamReader(p.getInputStream())); String line; StringBuilder errorString = new StringBuilder(); while ((line = result.readLine()) != null) { errorString.append(line); errorString.append(&quot;\\n&quot;); } assertTrue(&quot;The following errors were encountered when validating the SELinux&quot; + &quot;neverallow rule:\\n&quot; + neverallowRule + &quot;\\n&quot; + errorString, errorString.length() == 0); } 本地生成 SELinuxNeverallowRulesTest.java 文件 在修改SELinux后，想确定下是否满足neverallow规则，虽然编译过程中会进行neverallow检查，但由于打包时间比较耗时，如果在本地生成的话，那速度会更快。 本地生成 SELinuxNeverallowRulesTest.java 命令 默认是在源码的根目录 make general_sepolicy.conf cts/tools/selinux/SELinuxNeverallowTestGen.py out/target/product/cepheus/obj/ETC/general_sepolicy.conf_intermediates/general_sepolicy.conf SELinuxNeverallowRulesTest.java 由于某些规则是使用attribute，可能不是很明显，还需要结合其他方法来确定。 总结 从生成代码中可以看到，neverallow规则都属于AOSP system/sepolicy/private和system/sepolicy/public中的neverallow，所以在添加规则时不能修改neverallow，也不能违背。 附件 cts_neverallow.zip，中包含有： SELinuxNeverallowTestGen.py 脚本 general_sepolicy.conf SELinuxNeverallowTestFrame.py Java测试代码模板 first 为SELinuxNeverallowTestGen.py第一步执行的结果 second 为SELinuxNeverallowTestGen.py第二步执行的结果 SELinuxNeverallowRulesTest.java 为生成的文件 后面三个文件是前三个文件所生成，执行命令为： SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java</summary></entry><entry><title type="html">ARM中的STM和LDM指令的解析</title><link href="https://liwugang.github.io//2019/07/06/arm_stm_and_ldm.html" rel="alternate" type="text/html" title="ARM中的STM和LDM指令的解析" /><published>2019-07-06T14:00:00+08:00</published><updated>2019-07-06T14:00:00+08:00</updated><id>https://liwugang.github.io//2019/07/06/arm_stm_and_ldm</id><content type="html" xml:base="https://liwugang.github.io//2019/07/06/arm_stm_and_ldm.html">&lt;h1 id=&quot;stm指令&quot;&gt;STM指令&lt;/h1&gt;
 
 &lt;p&gt;STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -1085,241 +1379,4 @@ static const EVP_CIPHER aes_##keylen##_##mode = { \
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;结果&quot;&gt;结果&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/2-2.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="LeetCode" /><summary type="html">题目 思路 题目中得到的信息有 这是两个非负数，每位分别保存在链表的一个结点上； 逆序保存，从低位到高位依次。 一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。 C算法 /** * Definition for singly-linked list. * struct ListNode { * int val; * struct ListNode *next; * }; */ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) { struct ListNode *ret, *p, *prev; p = ret = prev = NULL; int flag = 0; //先是两个整数相加 while((l1 != NULL) &amp;amp;&amp;amp; (l2 != NULL) ) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l1-&amp;gt;val + l2-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); if (prev != NULL) prev-&amp;gt;next = p; prev = p; if (ret == NULL) ret = p; l1 = l1-&amp;gt;next; l2 = l2-&amp;gt;next; } //若是l1还有结点，添加上去 while(l1 != NULL) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l1-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); l1 = l1-&amp;gt;next; if (prev != NULL) prev-&amp;gt;next = p; if (ret == NULL) ret = p; prev-&amp;gt;next = p; prev = p; } //若是l2还有结点，添加上去 while(l2 != NULL) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l2-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); l2 = l2-&amp;gt;next; if (prev != NULL) prev-&amp;gt;next = p; if (ret == NULL) ret = p; prev-&amp;gt;next = p; prev = p; } //最后可能会有进位，要考虑到 if (flag != 0) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = flag; prev-&amp;gt;next = p; prev = p; flag = 0; } prev-&amp;gt;next = NULL; return ret; } 结果</summary></entry><entry><title type="html">LEB128相关知识</title><link href="https://liwugang.github.io//2016/01/07/LEB128.html" rel="alternate" type="text/html" title="LEB128相关知识" /><published>2016-01-07T14:08:00+08:00</published><updated>2016-01-07T14:08:00+08:00</updated><id>https://liwugang.github.io//2016/01/07/LEB128</id><content type="html" xml:base="https://liwugang.github.io//2016/01/07/LEB128.html">&lt;h1 id=&quot;介绍&quot;&gt;介绍&lt;/h1&gt;
-&lt;p&gt;LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于&lt;a href=&quot;http://www.dwarfstd.org/&quot;&gt;DWARF debug file format&lt;/a&gt;。在Android的&lt;a href=&quot;https://source.android.com/devices/tech/dalvik/dex-format.html&quot;&gt;Dalvik Executable format&lt;/a&gt;中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。&lt;/p&gt;
-
-&lt;h1 id=&quot;原理&quot;&gt;原理&lt;/h1&gt;
-
-&lt;p&gt;LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
-LEB128分成有符号数和无符号数两种分别进行处理，不过，只是在编码和解码过程有些不同。&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;低地址&lt;/th&gt;
-      &lt;th&gt;+1&lt;/th&gt;
-      &lt;th&gt;+2&lt;/th&gt;
-      &lt;th&gt;+3&lt;/th&gt;
-      &lt;th&gt;+4&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0 xxxxxxx&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;0 xxxxxxx&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;0 xxxxxxx&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;0 xxxxxxx&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;1 xxxxxxx&lt;/td&gt;
-      &lt;td&gt;0 xxxxxxx&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;无符号整数&quot;&gt;无符号整数&lt;/h2&gt;
-&lt;p&gt;将无符号整数写成二进制形式，从低位到高位7个bits为一个整体组合成一个字节，在该字节最高位填入上述所说的标识信息。&lt;/p&gt;
-
-&lt;p&gt;下面以10000为例，编码过程：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;二进制形式为&lt;/th&gt;
-      &lt;th&gt;10 0111 0001 0000&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;以7bits为整体&lt;/td&gt;
-      &lt;td&gt;1001110 0010000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;添加标识组合成新的字节(从后往前，即低bits到高bits）&lt;/td&gt;
-      &lt;td&gt;01001110(0x4E)    10010000(0x90) (最高位标识设置为0，表示没有后续字节)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LEB128 则为&lt;/td&gt;
-      &lt;td&gt;0x90 0x4F (小端存放)&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;解码过程：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;LEB128&lt;/th&gt;
-      &lt;th&gt;0x90 0x4E&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;二进制形式&lt;/td&gt;
-      &lt;td&gt;10010000 01001110&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;去掉标识信息&lt;/td&gt;
-      &lt;td&gt;0010000（低7bits) 1001110（高7bits）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;组合的结果为&lt;/td&gt;
-      &lt;td&gt;10011100010000 （10000）&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;编码代码为&quot;&gt;编码代码为:&lt;/h3&gt;
-&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EncodeULEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leb128_buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;leb128_buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7F&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//每个字节标识信息都设为1&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;leb128_buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//将最后一个字节的标识信息设为0&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;解码代码为&quot;&gt;解码代码为：&lt;/h3&gt;
-&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;DecodeULEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leb128_buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//从低到高将 bits 合并到一起&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h2 id=&quot;有符号数&quot;&gt;有符号数&lt;/h2&gt;
-&lt;p&gt;有符号数分成了正数和负数，在计算机的存储中都是以补码存储，正数和上述无符号数一样的处理，负数的处理会有些区别，以-10000为例说明，&lt;/p&gt;
-
-&lt;p&gt;编码过程：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;二进制补码&lt;/th&gt;
-      &lt;th&gt;11111111 11111111 11111100 00011000（可以看出最高两字节都是符号扩展的1）&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;以7bits为整体&lt;/td&gt;
-      &lt;td&gt;1111 1111111 1111111 1111000 0011000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;添加标识信息组合新的字节(从后往前，即低bits到高bits）&lt;/td&gt;
-      &lt;td&gt;01111000  10011000（此处结束条件不像上面那么明显，若前面和该7bits的最高位都为1时停止）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LEB128则为&lt;/td&gt;
-      &lt;td&gt;0x98 0x78&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;解码过程：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;LEB128&lt;/th&gt;
-      &lt;th&gt;0x98 0x78&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;二进制形式&lt;/td&gt;
-      &lt;td&gt;10011000 01111000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;去掉标识信息&lt;/td&gt;
-      &lt;td&gt;0011000 1111000  (若最后一个字节中7bits的最高位为1，则前面需要符号扩展都添加1）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;组合结果&lt;/td&gt;
-      &lt;td&gt;11111111 11111111 1111100 00011000 (-10000)&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;编码代码为-1&quot;&gt;编码代码为：&lt;/h3&gt;
-
-&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EncodeLEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//正数&lt;/span&gt;
-				&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//负数&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;编码代码为-2&quot;&gt;编码代码为：&lt;/h3&gt;
-
-&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;DecodeLEB128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-		
-		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
-
-&lt;p&gt;LEB128的理解难点是在有符号数上，编码结束条件不像无符号数那么明显（value等于0），分两种情况：&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;若为正数，7bits中的最高位为0 并且 value == 0结束，value ==0 表示高字节没有数据，而7bits最高位为0用于表示是正数，用于解码；&lt;/li&gt;
-  &lt;li&gt;若为负数，7bits中的最高位为1 并且 value == -1结束， value == -1表示高字节都是符号扩展出来的1， 7bits最高位为1用于表示是负数，在解码时高位填充1。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h1 id=&quot;参考&quot;&gt;参考&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/LEB128&quot;&gt;https://en.wikipedia.org/wiki/LEB128&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://llvm.org/docs/doxygen/html/LEB128_8h_source.html&quot;&gt;http://llvm.org/docs/doxygen/html/LEB128_8h_source.html&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><summary type="html">介绍 LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。 原理 LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。 LEB128分成有符号数和无符号数两种分别进行处理，不过，只是在编码和解码过程有些不同。 低地址 +1 +2 +3 +4 0 xxxxxxx         1 xxxxxxx 0 xxxxxxx       1 xxxxxxx 1 xxxxxxx 0 xxxxxxx     1 xxxxxxx 1 xxxxxxx 1 xxxxxxx 0 xxxxxxx   1 xxxxxxx 1 xxxxxxx 1 xxxxxxx 1 xxxxxxx 0 xxxxxxx 无符号整数 将无符号整数写成二进制形式，从低位到高位7个bits为一个整体组合成一个字节，在该字节最高位填入上述所说的标识信息。 下面以10000为例，编码过程： 二进制形式为 10 0111 0001 0000 以7bits为整体 1001110 0010000 添加标识组合成新的字节(从后往前，即低bits到高bits） 01001110(0x4E) 10010000(0x90) (最高位标识设置为0，表示没有后续字节) LEB128 则为 0x90 0x4F (小端存放) 解码过程： LEB128 0x90 0x4E 二进制形式 10010000 01001110 去掉标识信息 0010000（低7bits) 1001110（高7bits） 组合的结果为 10011100010000 （10000） 编码代码为: void EncodeULEB128(unsigned int value, unsigned char *leb128_buffer) { int pos = 0; while (value != 0) { leb128_buffer[pos++] = value &amp;amp; 0x7F | 0x80; //每个字节标识信息都设为1 value &amp;gt;&amp;gt;= 7; } if (pos &amp;gt; 0) leb128_buffer[pos-1] &amp;amp;= 0x7F; //将最后一个字节的标识信息设为0 } 解码代码为： void DecodeULEB128(unsigned char *leb128_buffer, unsigned int *value) { int pos = 0; int offset = 0; while (buffer[pos] != 0) { *value |= ( (buffer[pos] &amp;amp; 0x7F) &amp;lt;&amp;lt; offset ); //从低到高将 bits 合并到一起 offset += 7; if (buffer[pos] &amp;amp; 0x80 == 0) break; pos += 1; } } 有符号数 有符号数分成了正数和负数，在计算机的存储中都是以补码存储，正数和上述无符号数一样的处理，负数的处理会有些区别，以-10000为例说明， 编码过程： 二进制补码 11111111 11111111 11111100 00011000（可以看出最高两字节都是符号扩展的1） 以7bits为整体 1111 1111111 1111111 1111000 0011000 添加标识信息组合新的字节(从后往前，即低bits到高bits） 01111000 10011000（此处结束条件不像上面那么明显，若前面和该7bits的最高位都为1时停止） LEB128则为 0x98 0x78 解码过程： LEB128 0x98 0x78 二进制形式 10011000 01111000 去掉标识信息 0011000 1111000 (若最后一个字节中7bits的最高位为1，则前面需要符号扩展都添加1） 组合结果 11111111 11111111 1111100 00011000 (-10000) 编码代码为： void EncodeLEB128(int value, unsigned char *buffer) { int pos = 0; int more = 1; while (more) { unsigned char byte = value &amp;amp; 0x7F; value &amp;gt;&amp;gt;= 7; if ( ((value == 0) &amp;amp;&amp;amp; (byte &amp;amp; 0x40) == 0) || //正数 ((value == -1) &amp;amp;&amp;amp; (byte &amp;amp; 0x40) != 0) ) //负数 more = 0; if (more != 0) byte != 0x80; buffer[pos++] = byte; } } 编码代码为： void DecodeLEB128(unsigned char *buffer, int *value) { int pos = 0; int offset = 0; unsigned char byte = buffer[pos++]; while (byte &amp;gt;= 0x80) { *value |= (byte &amp;amp; 0x7f) &amp;lt;&amp;lt; offset; offset += 7; byte = buffer[pos++]; } if (byte &amp;amp; 0x40) *value |= -(1 &amp;lt;&amp;lt; offset); } 总结 LEB128的理解难点是在有符号数上，编码结束条件不像无符号数那么明显（value等于0），分两种情况： 若为正数，7bits中的最高位为0 并且 value == 0结束，value ==0 表示高字节没有数据，而7bits最高位为0用于表示是正数，用于解码； 若为负数，7bits中的最高位为1 并且 value == -1结束， value == -1表示高字节都是符号扩展出来的1， 7bits最高位为1用于表示是负数，在解码时高位填充1。 参考 https://en.wikipedia.org/wiki/LEB128 http://llvm.org/docs/doxygen/html/LEB128_8h_source.html</summary></entry></feed>
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/leetcode/2-2.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="LeetCode" /><summary type="html">题目 思路 题目中得到的信息有 这是两个非负数，每位分别保存在链表的一个结点上； 逆序保存，从低位到高位依次。 一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。 C算法 /** * Definition for singly-linked list. * struct ListNode { * int val; * struct ListNode *next; * }; */ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) { struct ListNode *ret, *p, *prev; p = ret = prev = NULL; int flag = 0; //先是两个整数相加 while((l1 != NULL) &amp;amp;&amp;amp; (l2 != NULL) ) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l1-&amp;gt;val + l2-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); if (prev != NULL) prev-&amp;gt;next = p; prev = p; if (ret == NULL) ret = p; l1 = l1-&amp;gt;next; l2 = l2-&amp;gt;next; } //若是l1还有结点，添加上去 while(l1 != NULL) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l1-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); l1 = l1-&amp;gt;next; if (prev != NULL) prev-&amp;gt;next = p; if (ret == NULL) ret = p; prev-&amp;gt;next = p; prev = p; } //若是l2还有结点，添加上去 while(l2 != NULL) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = l2-&amp;gt;val + flag; flag = p-&amp;gt;val / 10; p-&amp;gt;val -= (flag &amp;gt; 0 ? 10 : 0); l2 = l2-&amp;gt;next; if (prev != NULL) prev-&amp;gt;next = p; if (ret == NULL) ret = p; prev-&amp;gt;next = p; prev = p; } //最后可能会有进位，要考虑到 if (flag != 0) { p = (struct ListNode *)malloc(sizeof(struct ListNode)); p-&amp;gt;val = flag; prev-&amp;gt;next = p; prev = p; flag = 0; } prev-&amp;gt;next = NULL; return ret; } 结果</summary></entry></feed>
