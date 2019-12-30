@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>A Tool To Automate Multiple Commits Into One - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io//page2/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone ...">
+<link rel="canonical" href="https://liwugang.github.io//2019/12/30/git_commits_en.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -262,7 +261,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -280,131 +279,213 @@
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html"><h2 itemprop="headline" class="item__header">3-Longest Substring Without Repeating Characters @LeetCode</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">题目
-
-
-
-题目中得到的信息有
-一段字符串找出不重复子串的最大长度，只需要长度信息。
-
-思路
-肯定是需要将字符串遍历一遍，在遍历过程中就需要查找前面字符串是否出现该字符，因此这是该算法的重点。若没找到，长度加一，若找到了，长度会从前面该字符位置+1处开始算起。下面以图来说明：
-
-
-
-假如我们以begin为子串的开始，current表示当前处理的位置。1）当前位置的字符没有出现在[begin,current)的区间内，说明将该值加入到区间内满足没有重复条件，长度加一；
-2）若当前值已经在该区间内，加入后肯定会出现重复，则应该将begin移动到没有该值的最左边位置，图中 new begin位置满足该条件。
-
-在移动begin之前首先需要判断[begin, current)是否是现有的最大长...</div><p><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>A Tool To Automate Multiple Commits Into One</h1></header></div><meta itemprop="headline" content="A Tool To Automate Multiple Commits Into One"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 15, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-15T23:10:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/13/2_add_two_numbers.html"><h2 itemprop="headline" class="item__header">2-Add Two Numbers @LeetCode</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+                href="/archive.html?tag=git">git</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 30, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-30T21:55:00+08:00">
+    <meta itemprop="keywords" content="git"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that <strong>git rebase -i</strong> can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to automate multiple commits into one.</p>
 
+<p>excerpt_separator: <!--more--></p>
 
-思路
+<h2 id="the-logic-of-git-rebase">The logic of “git rebase”</h2>
 
-题目中得到的信息有
+<p>When using “git rebase -i”, git generates the git-rebase-todo file in the current .git/rebase-merge directory, and then invokes the git editor to let users edit the git-rebase-todo file for processing. So the tool needs to meet:</p>
 
+<ul>
+  <li>Modify the git editor to the tool which we provided;</li>
+  <li>The tool processes the git-rebase-todo file.</li>
+</ul>
 
-  这是两个非负数，每位分别保存在链表的一个结点上；
-  逆序保存，从低位到高位依次。
+<h2 id="modify-the-default-git-editor">Modify the default git editor</h2>
 
+<p>Git provides the config command to view the configuration and modify the configuration, and the editor can also be set in this way.</p>
 
-一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+    git config core.editor  <span class="c">#View the currently used editor</span>
+    git config <span class="nt">--local</span> <span class="nt">--replace-all</span> core.editor NEW_EDITOR <span class="c"># Set the editor to NEW_EDITOR</span>
 
-C算法
+</code></pre></div></div>
 
-/**
- * Definition for singly-linked list. 
- * struct ListNode {
- *     int val;
- *     struct ListNode *next;
- * };
- */
-struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
-    struct ListNode *ret, *p, ...</div><p><a href="/2016/01/13/2_add_two_numbers.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/13/1_two_sum.html"><h2 itemprop="headline" class="item__header">1-Two Sum @LeetCode</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+<h2 id="process-the-git-rebase-todo-file">Process the git-rebase-todo file</h2>
 
+<p><img src="/assets/tools/git_log.png" alt="graph" /></p>
 
+<p>Now we have three commits and use “git rebase -i”, git uses the git editor to open the git-rebase-todo file, as follows:</p>
 
-思路
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+pick 310b091 First commit
+pick 757b5e5 The second commit
+pick c5ca4a9 The third commit
 
-题目中得到的信息有
+<span class="c"># Rebase a7e56eb..c5ca4a9 onto a7e56eb (3 commands)</span>
+<span class="c">#</span>
+<span class="c"># Commands:</span>
+<span class="c"># p, pick &lt;commit&gt; = use commit</span>
+<span class="c"># r, reword &lt;commit&gt; = use commit, but edit the commit message</span>
+<span class="c"># e, edit &lt;commit&gt; = use commit, but stop for amending</span>
+<span class="c"># s, squash &lt;commit&gt; = use commit, but meld into previous commit</span>
+<span class="c"># f, fixup &lt;commit&gt; = like "squash", but discard this commit's log message</span>
+<span class="c"># x, exec &lt;command&gt; = run command (the rest of the line) using shell</span>
+<span class="c"># b, break = stop here (continue rebase later with 'git rebase --continue')</span>
+<span class="c"># d, drop &lt;commit&gt; = remove commit</span>
+<span class="c"># l, label &lt;label&gt; = label current HEAD with a name</span>
+<span class="c"># t, reset &lt;label&gt; = reset HEAD to a label</span>
+<span class="c"># m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]</span>
+<span class="c"># .       create a merge commit using the original merge commit's</span>
+<span class="c"># .       message (or the oneline, if no original merge commit was</span>
+<span class="c"># .       specified). Use -c &lt;commit&gt; to reword the commit message.</span>
+<span class="c">#</span>
+<span class="c"># These lines can be re-ordered; they are executed from top to bottom.</span>
+<span class="c">#</span>
+<span class="c"># If you remove a line here THAT COMMIT WILL BE LOST.</span>
+<span class="c">#</span>
+<span class="c"># However, if you remove everything, the rebase will be aborted.</span>
+<span class="c">#</span>
+<span class="c"># Note that empty commits are commented out</span>
+</code></pre></div></div>
 
+<p>There are three commit in the above. We need to merge the next two commit into the first one. As you can see from the comments, squash merges the commit into the previous commit. Therefore, you need to change the last two pick to squash, which is as follows:</p>
 
-  都是整数，并且可正可负，也可一个值包含多个；
-  只有一个正确的结果。
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pick 310b091 First commit
+squash 757b5e5 The second commit
+squash c5ca4a9 The third commit
+</code></pre></div></div>
 
+<h2 id="the-tool">The tool</h2>
 
-方法一
-最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。
+<p>The tool is a python script.</p>
 
-方法二
-由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+#encoding: UTF-8
+</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, in...</div><p><a href="/2016/01/13/1_two_sum.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
-LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
+<span class="k">def</span> <span class="nf">change_editor</span><span class="p">(</span><span class="n">current_file</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">"git config --local --replace-all  core.editor "</span> <span class="o">+</span> <span class="n">current_file</span><span class="p">)</span> <span class="c1"># Set current_file as git editor
+</span>    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">"git rebase -i"</span><span class="p">)</span> <span class="c1"># execute the "git rebase -i" and will invoke the python file later with git-rebase-todo file as argument
+</span>    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">"git config --local --replace-all core.editor vim"</span><span class="p">)</span> <span class="c1"># after work reset the git editor to default
+</span>
+<span class="k">def</span> <span class="nf">rebase_commits</span><span class="p">(</span><span class="n">todo_file</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">todo_file</span><span class="p">,</span> <span class="s">"r+"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read git-rebase-todo's content
+</span>        <span class="n">contents</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">first_commit</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">"pick"</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">first_commit</span><span class="p">:</span>
+                    <span class="n">first_commit</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">"pick"</span><span class="p">,</span> <span class="s">"squash"</span><span class="p">)</span> <span class="c1"># replace the pick to squash except for the first pick
+</span>            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span> <span class="o">+</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
 
-原理
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">rebase_commits</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># process the git-rebase-todo
+</span>    <span class="k">else</span><span class="p">:</span>
+        <span class="n">change_editor</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="c1"># set git editor to this tool
+</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</code></pre></div></div>
 
-LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
-LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 07, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>12 post articles, 2 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-              <div class="button button--primary button--circle focus"><span>2</span></div>
-            </li><li><div class="button button--secondary button--circle disabled">
-            <i class="fas fa-angle-right"></i>
-          </div></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
+<h2 id="result">Result</h2>
 
-})();*/
-</script>
+<p>After to execute the tool, it merges above three commits into one and retains the messages of them.</p>
 
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>On branch master
+Your branch is ahead of <span class="s1">'origin/master'</span> by 1 commit.
+  <span class="o">(</span>use <span class="s2">"git push"</span> to publish your <span class="nb">local </span>commits<span class="o">)</span>
 
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+nothing to commit, working tree clean
+
+</code></pre></div></div>
+<p>Just one commit.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+commit e1ac798cfe0162f38c908d47720fcadc2d3b0ddd <span class="o">(</span>HEAD -&gt; master<span class="o">)</span>
+Author: liwugang &lt;liwugang@163.com&gt;
+Date:   Mon Dec 30 22:04:56 2019 +0800
+
+    First commit
+    
+    The first commit message
+    
+    Signed-off-by: liwugang &lt;liwugang@163.com&gt;
+    
+    The second commit
+    
+    The second commit message
+    
+    Signed-off-by: liwugang &lt;liwugang@163.com&gt;
+    
+    The third commit
+    
+    The third commit message
+    
+    Signed-off-by: liwugang &lt;liwugang@163.com&gt;
+
+</code></pre></div></div>
+
+<p>The three commit messages are preserved.</p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2019-12-30T21:55:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2019/12/29/CTS-neverallow.html">Android CTS中neverallow规则生成过程</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css');
+		window.Lazyload.js('https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'git_merge_commit_en'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -955,6 +1036,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
