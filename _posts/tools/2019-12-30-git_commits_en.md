@@ -10,7 +10,7 @@ key: git_merge_commit_en
 
 If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that **git rebase -i** can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to automate multiple commits into one.
 
-excerpt_separator: <!--more-->
+<!--more-->
 
 ## The logic of "git rebase"
 

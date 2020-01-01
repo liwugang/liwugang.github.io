@@ -9,6 +9,8 @@ key: cts_neverallow
 
 CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。
 
+<!--more-->
+
 ## Makefile
 
 首先看下SELinuxNeverallowRulesTest.java的生成的[Makefile](http://androidxref.com/9.0.0_r3/xref/cts/hostsidetests/security/Android.mk#69).

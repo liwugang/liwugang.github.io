@@ -1,5 +1,7 @@
 ---
 layout: article
+
+key: page_about
 ---
 
 # 关于博主
