@@ -1,6 +1,8 @@
 ---
 layout: article
 
+show_subscribe: true
+
 key: page_about
 ---
 
