@@ -1731,7 +1731,7 @@ a > .item__header.disabled, a > .item__header:disabled, a.item__header.disabled,
 
 .article__content hr::before { display: block; font-size: 1.9rem; color: #888; text-align: center; letter-spacing: 1.5rem; content: "..."; }
 
-.article__content blockquote { padding-left: 1rem; font-size: 0.85rem; color: #888; border: 0 solid #cccccc; border-left-width: 4px; }
+.article__content blockquote { padding-left: 1rem; font-size: 1rem; color: #888; border: 0 solid #cccccc; border-left-width: 4px; }
 
 .article__content blockquote p { margin: 0.5rem 0; }
 
