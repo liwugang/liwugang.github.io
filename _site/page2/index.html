@@ -285,6 +285,26 @@
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2019/04/28/git_commits.html"><h2 itemprop="headline" class="item__header">Git自动化合并多个Commit</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。
+
+git rebase逻辑
+
+当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要：
+
+  修改git editor来使用我们提供的；
+  脚本来处理进行git-rebase-todo文件的处理。
+
+
+git editor的修改
+
+...</div><p><a href="/2019/04/28/git_commits.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=git">git</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 28, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-28T23:10:00+08:00">
+    <meta itemprop="keywords" content="git"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2019/04/21/openssl_decrypt_fail.html"><h2 itemprop="headline" class="item__header">openssl AES密钥和iv长度问题分析</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是：
 调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。
@@ -401,7 +421,7 @@ LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more<
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
     <meta itemprop="keywords" content="Android"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>13 post articles, 2 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>14 post articles, 2 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/">
             <i class="fas fa-angle-left"></i>
