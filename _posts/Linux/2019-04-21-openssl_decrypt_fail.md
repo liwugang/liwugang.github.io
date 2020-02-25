@@ -43,6 +43,8 @@ int main() {
     // 再次调用解密，密钥和iv是复制过来的
     char *another_key = (char *) calloc(1, strlen(key) + 1);
     char *another_iv = (char *) calloc(1, strlen(iv) + 1);
+    strcpy(another_key, key);
+    strcpy(another_iv, iv);
     ret = aes_decrypt_common(cipher, out_length, another_key, another_iv, plain, &out_length);
     printf("second:%d\n", ret);
 }
