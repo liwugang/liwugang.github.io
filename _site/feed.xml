@@ -1,5 +1,298 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-02-25T21:59:55+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Python实现自动化点击和输入功能</title><link href="https://liwugang.github.io/2020/01/11/auto_input_and_click.html" rel="alternate" type="text/html" title="Python实现自动化点击和输入功能" /><published>2020-01-11T19:48:00+08:00</published><updated>2020-01-11T19:48:00+08:00</updated><id>https://liwugang.github.io/2020/01/11/auto_input_and_click</id><content type="html" xml:base="https://liwugang.github.io/2020/01/11/auto_input_and_click.html">&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-02-29T11:53:36+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Coredomain 创建新的 property type</title><link href="https://liwugang.github.io/2020/02/29/coredomain_create_new_property.html" rel="alternate" type="text/html" title="Coredomain 创建新的 property type" /><published>2020-02-29T08:53:00+08:00</published><updated>2020-02-29T08:53:00+08:00</updated><id>https://liwugang.github.io/2020/02/29/coredomain_create_new_property</id><content type="html" xml:base="https://liwugang.github.io/2020/02/29/coredomain_create_new_property.html">&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;coredomain&quot;&gt;Coredomain&lt;/h2&gt;
+
+&lt;h3 id=&quot;哪些是-coredomain&quot;&gt;哪些是 coredomain?&lt;/h3&gt;
+
+&lt;p&gt;Coredomain 是 attribute，属于 domain (针对进程)或者 type(针对对象，如文件等)的集合。coremain 可以理解为包含 system 下可执行文件和 apps 所运行的 domain 或者说包含所有属于 Android 的 domain。&lt;/p&gt;
+
+&lt;h3 id=&quot;如何查看&quot;&gt;如何查看？&lt;/h3&gt;
+
+&lt;h4 id=&quot;代码中查看&quot;&gt;代码中查看&lt;/h4&gt;
+
+&lt;p&gt;有两种定义方式：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    1. &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;XXX ..., coredomain ...&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    2. typeattribute XXX coredomain&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上面两种方式都是将 XXX 放入到 coredomain 集合中，即 XXX 是属于 coredomain，对 coredomain 配置的权限也会同步给 XXX，同样对 coredomain 的限制也会限制 XXX。&lt;/p&gt;
+
+&lt;h4 id=&quot;工具查看&quot;&gt;工具查看&lt;/h4&gt;
+
+&lt;p&gt;Android system/sepolicy 源码下有 sepolicy-analyze 工具，然后需要编译好的 sepolicy 文件，使用下面命令可以查看 coredomain 都包含那些 domain：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    sepolicy-analyze 编译好的sepolicy  attribute coredomain
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p class=&quot;warning&quot;&gt;编译好的policy，手机上可以从这两个地方取：1. /vendor(或者odm)/etc/selinux/precompiled_sepolicy; 2. /sys/fs/selinux/policy&lt;/p&gt;
+
+&lt;h2 id=&quot;android-p&quot;&gt;Android P&lt;/h2&gt;
+
+&lt;h3 id=&quot;新增限制&quot;&gt;新增限制&lt;/h3&gt;
+
+&lt;p&gt;升级 Android P 后发现 property 新增了一个 neverallow(neverallow 用于限制配置，明确指定不能干什么)。来看下该 neverallow：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#https://cs.android.com/android/platform/superproject/+/android-9.0.0_r11:system/sepolicy/public/property.te;l=314&lt;/span&gt;
+compatible_property_only&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# Neverallow coredomain to set vendor properties&lt;/span&gt;
+  neverallow &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    coredomain
+    &lt;span class=&quot;nt&quot;&gt;-init&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-system_writes_vendor_properties_violators&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    property_type
+    &lt;span class=&quot;nt&quot;&gt;-apexd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-audio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-bluetooth_a2dp_offload_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-bluetooth_audio_hal_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-bluetooth_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-bootloader_boot_reason_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-boottime_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-bpf_progs_loaded_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-config_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-cppreopt_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_adbd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_bootanim_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_bugreport_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_console_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_default_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_dumpstate_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_fuse_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_gsid_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_interface_restart_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_interface_start_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_interface_stop_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_mdnsd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_restart_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_rildaemon_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_sigstop_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_start_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ctl_stop_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-dalvik_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-debug_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-debuggerd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-default_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_logging_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-dhcp_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-dumpstate_options_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-dumpstate_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported2_config_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported2_default_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported2_radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported2_system_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported2_vold_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported3_default_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported3_radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported3_system_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_bluetooth_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_config_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_dalvik_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_default_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_dumpstate_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_ffs_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_fingerprint_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_overlay_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_pm_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_secure_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_system_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_system_radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_vold_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-exported_wifi_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-extended_core_property_type&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-ffs_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-fingerprint_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-firstboot_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_activity_manager_native_boot_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_reset_performed_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_boot_count_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_input_native_boot_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_netd_native_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_runtime_native_boot_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_runtime_native_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-device_config_media_native_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-dynamic_system_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-gsid_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-heapprofd_enabled_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-heapprofd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-hwservicemanager_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-last_boot_reason_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-system_lmk_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-log_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-log_tag_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-logd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-logpersistd_logging_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-lowpan_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-lpdumpd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-mmc_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-net_dns_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-net_radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-netd_stable_secret_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-nfc_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-overlay_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-pan_result_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-persist_debug_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-persistent_properties_ready_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-pm_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-powerctl_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-restorecon_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-safemode_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-serialno_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-shell_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-system_boot_reason_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-system_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-system_radio_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-system_trace_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-test_boot_reason_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-test_harness_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-theme_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-time_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-traced_enabled_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-traced_lazy_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-vendor_default_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-vendor_security_patch_level_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-vold_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-wifi_log_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-wifi_prop&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;:property_service &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;')
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以看到限制的是除了 init 和 system_writes_vendor_properties_violators 的 coredomain， 这些 domains 不能设置上述白名单之外的 property type， 这些属于AOSP 定义的 types，所以是限制 system domains 不能设置 vendor properties，符合 Prject Treble 设计思想。&lt;/p&gt;
+
+&lt;h3 id=&quot;如何绕过限制&quot;&gt;如何绕过限制？&lt;/h3&gt;
+
+&lt;p&gt;由于厂商基本都会：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;定义新的 property type，用于细粒度控制访问权限，如 platform_app 或者 system_app 设置新的property，三方 app 可以读；&lt;/li&gt;
+  &lt;li&gt;coredomain 需要设置 vendor properties。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但现在增加了 neverallow 限制，这些规则在编译阶段就会报错，所以需要想办法绕过限制。&lt;/p&gt;
+
+&lt;p&gt;从上面可以看到限制会排除 init 和 system_writes_vendor_properties_violators，init 是 domain，不能满足要求，我们是需要 platform_app 或者 system_app 有权限。看下 system_writes_vendor_properties_violators 的定义：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# All system domains which violate the requirement of not writing vendor&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# properties.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# TODO(b/78598545): Remove this once there are no violations&lt;/span&gt;
+attribute system_writes_vendor_properties_violators&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;首先是 attribute，不是具体的 type， 并且从注释上看到，表示 system domains 违反去写 vendor properties 的集合。这个也是 google 用于在升级中故意新增的，用于临时绕过 neverallow 限制。所以，我们可以需要违反 neverallow 的添加上该 attribute。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;解决方案为：  为需要违反的 domain 添加 system_writes_vendor_properties_violators。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如要给 platform_app 添加，配置下面规则：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    typeattribute platform_app system_writes_vendor_properties_violators&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;android-q&quot;&gt;Android Q&lt;/h2&gt;
+
+&lt;h3 id=&quot;新增限制-1&quot;&gt;新增限制&lt;/h3&gt;
+
+&lt;p&gt;google 在 GTS 中新增了一条测试 case:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;com.google.android.security.gts.SELinuxHostTest#testNoExemptionsForCoreWritingVendorSysprops
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;SELinuxHostTest 是在 GTS GtsSecurityHostTestCases.jar 中，使用 JD-GUI 反编译找到 testNoExemptionsForCoreWritingVendorSysprops 方法：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;testNoExemptionsForCoreWritingVendorSysprops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;mFirstApiLevel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 使用 firstApi 排除升级的老机型&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// 是获取有 attribute 是 system_writes_vendor_properties_violators 的 domain&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Set&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;types&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sepolicyAnalyzeGetTypesAssociatedWithAttribute&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;system_writes_vendor_properties_violators&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; 
+    
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isEmpty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sortedTypes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;nc&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortedTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;fail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Policy exempts core domains from ban on writing vendor system properties: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sortedTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 不为空，则测试失败&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; 
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从上面看到： 1）针对的是 Q 新机型； 2）若指定有 system_writes_vendor_properties_violators 的则失败，即不能为 domain 指定 system_writes_vendor_properties_violators。&lt;/p&gt;
+
+&lt;p&gt;所有针对 Q 新机型，不能采用 P 绕过方式。&lt;/p&gt;
+
+&lt;h3 id=&quot;如何绕过限制-1&quot;&gt;如何绕过限制？&lt;/h3&gt;
+
+&lt;h4 id=&quot;使用现有的-aosp-property-type&quot;&gt;使用现有的 AOSP property type&lt;/h4&gt;
+
+&lt;p&gt;Neverallow 不能从 domain 进行绕过，只能选择从 property type，即不能定义新的 property，只能使用现有的。这样有两个弊端：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;不能对权限细粒度控制，只能在现有权限的基础上增加，而不能减少，这样修改的话势必导致权限扩大；&lt;/li&gt;
+  &lt;li&gt;type 名字选择都是有意义，但现在只能从权限和名字上找到平衡，可能权限满足，但名字意义差太远。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;那有没有更好的方式？&lt;/p&gt;
+
+&lt;h4 id=&quot;定义新的-property-type&quot;&gt;定义新的 property type&lt;/h4&gt;
+
+&lt;p&gt;通过对 neverallow 中的每个 type 分析，发现 extended_core_property_type 是 attribute，而不是具体的 type：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;c&quot;&gt;# All properties that are not specific to device but are added from&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# outside of AOSP. (e.g. OEM-specific properties)&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# These properties are not accessible from device-specific domains&lt;/span&gt;
+attribute extended_core_property_type&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从注释可以看到，这个 attribute 是 google 专门给厂商保留的，太好了。 但是 “These properties are not accessible from device-specific domains” 表示 device-specific domains 不能访问，来看下是怎么限制的：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Prevent properties from being read&lt;/span&gt;
+  neverallow &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    domain
+    &lt;span class=&quot;nt&quot;&gt;-coredomain&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-appdomain&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-vendor_init&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    core_property_type
+    extended_core_property_type &lt;span class=&quot;c&quot;&gt;# it&lt;/span&gt;
+    exported_dalvik_prop
+    exported_ffs_prop
+    exported_system_radio_prop
+    exported2_config_prop
+    exported2_system_prop
+    exported2_vold_prop
+    exported3_default_prop
+    exported3_system_prop
+    &lt;span class=&quot;nt&quot;&gt;-debug_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-logd_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-nfc_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-powerctl_prop&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-radio_prop&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;:file no_rw_file_perms&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以看到除了 coredomain, appdomain, vendor_init 外都不能访问，那这种方式定义的 property 只能由 coredomain, appdomain 和 vendor_init 来访问。虽然有限制，但是已经能满足大部分需求，如上面提到的规则： platform_app 或者 system_app 设置，三方 apps 去读。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;解决方案：为新定义的 property type 指定 extended_core_property_type。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p class=&quot;warning&quot;&gt;这种方式 vendor domain没有权限去读写。&lt;/p&gt;
+
+&lt;h2 id=&quot;思考&quot;&gt;思考&lt;/h2&gt;
+
+&lt;p&gt;如果有需求是需要 coredomain 和 vendor domain 同时有读写权限，那怎么办？&lt;/p&gt;
+
+&lt;p&gt;目前来看，新建 property type不能满足需求，现有 AOSP 存在的 property type 如果没有限制，也尽量不要使用，防止以后有变动，建议：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1. 业务逻辑上重新设计，尽量避免这种情况出现；&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2. 使用 init 或者 vendor_init 代替设置，init 和 vendor_init 权限较高，并且限制较少，如对 init script 中配置自动 setprop 规则。&lt;/strong&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="SELinux" /><category term="Android" /><summary type="html">背景 Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</summary></entry><entry><title type="html">Python实现自动化点击和输入功能</title><link href="https://liwugang.github.io/2020/01/11/auto_input_and_click.html" rel="alternate" type="text/html" title="Python实现自动化点击和输入功能" /><published>2020-01-11T19:48:00+08:00</published><updated>2020-01-11T19:48:00+08:00</updated><id>https://liwugang.github.io/2020/01/11/auto_input_and_click</id><content type="html" xml:base="https://liwugang.github.io/2020/01/11/auto_input_and_click.html">&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
 
 &lt;p&gt;由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。&lt;/p&gt;
 
@@ -1466,231 +1759,4 @@ squash 92c03c7 third commit
 &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="git" /><summary type="html">当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。 git rebase逻辑 当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要： 修改git editor来使用我们提供的； 脚本来处理进行git-rebase-todo文件的处理。 git editor的修改 git提供config命令来查看配置和修改配置，同样editor也可以这样进行设置。 git config core.editor #查看当前使用editor git config --local --replace-all core.editor NEW_EDITOR # 修改当前的仓库的editor为NEW_EDITOR 处理git-rebase-todo文件 pick 62e0071 first commit pick 3bd641a second commit pick 92c03c7 third commit # 变基 7073047..92c03c7 到 7073047（3 个提交） # # 命令: # p, pick &amp;lt;提交&amp;gt; = 使用提交 # r, reword &amp;lt;提交&amp;gt; = 使用提交，但修改提交说明 # e, edit &amp;lt;提交&amp;gt; = 使用提交，进入 shell 以便进行提交修补 # s, squash &amp;lt;提交&amp;gt; = 使用提交，但融合到前一个提交 # f, fixup &amp;lt;提交&amp;gt; = 类似于 &quot;squash&quot;，但丢弃提交说明日志 # x, exec &amp;lt;命令&amp;gt; = 使用 shell 运行命令（此行剩余部分） # b, break = 在此处停止（使用 'git rebase --continue' 继续变基） # d, drop &amp;lt;提交&amp;gt; = 删除提交 # l, label &amp;lt;label&amp;gt; = 为当前 HEAD 打上标记 # t, reset &amp;lt;label&amp;gt; = 重置 HEAD 到该标记 # m, merge [-C &amp;lt;commit&amp;gt; | -c &amp;lt;commit&amp;gt;] &amp;lt;label&amp;gt; [# &amp;lt;oneline&amp;gt;] # . 创建一个合并提交，并使用原始的合并提交说明（如果没有指定 # . 原始提交，使用注释部分的 oneline 作为提交说明）。使用 # . -c &amp;lt;提交&amp;gt; 可以编辑提交说明。 # # 可以对这些行重新排序，将从上至下执行。 # # 如果您在这里删除一行，对应的提交将会丢失。 # # 然而，如果您删除全部内容，变基操作将会终止。 # # 注意空提交已被注释掉 上面是有3个commit，需要将后面2个commit合并到第1个，通过后面的注释可以看到，squash是将commit合并到前一个commit上，所以需要将后2个的pick修改为squash，即修改为下面这样： pick 62e0071 first commit squash 3bd641a second commit squash 92c03c7 third commit Python实现 使用python实现上述逻辑 #!/usr/bin/env python3 #encoding: UTF-8 import os import sys def change_editor(current_file): os.system(&quot;git config --local --replace-all core.editor &quot; + current_file) # 将当前脚本设置为editor os.system(&quot;git rebase -i&quot;) # 执行rebase，触发调用该脚本进行rebase os.system(&quot;git config --local --replace-all core.editor vim&quot;) # 执行完后将editor设置回vim def rebase_commits(todo_file): with open(todo_file, &quot;r+&quot;) as f: contents = f.read() # 读取git-rebase-todo文件内容 contents = contents.split(&quot;\n&quot;) first_commit = True f.truncate() f.seek(0) for content in contents: if content.startswith(&quot;pick&quot;): if first_commit: first_commit = False else: content = content.replace(&quot;pick&quot;, &quot;squash&quot;) # 将除了地一个pick修改为squash f.write(content + &quot;\n&quot;) def main(args): if len(args) == 2: # 如果将该脚本作为editor，git会调用该脚本，并以git-rebase-todo文件作为第2个参数 rebase_commits(args[1]) else: change_editor(os.path.abspath(args[0])) # 设置git editor if __name__ == &quot;__main__&quot;: main(sys.argv)</summary></entry><entry><title type="html">openssl AES密钥和iv长度问题分析</title><link href="https://liwugang.github.io/2019/04/21/openssl_decrypt_fail.html" rel="alternate" type="text/html" title="openssl AES密钥和iv长度问题分析" /><published>2019-04-21T15:13:00+08:00</published><updated>2019-04-21T15:13:00+08:00</updated><id>https://liwugang.github.io/2019/04/21/openssl_decrypt_fail</id><content type="html" xml:base="https://liwugang.github.io/2019/04/21/openssl_decrypt_fail.html">&lt;p&gt;在做&lt;a href=&quot;https://github.com/liwugang/filecrypt&quot;&gt;filecrypt&lt;/a&gt;项目时花费时间最多的是AES256算法的调试上，出现的问题是：
-调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。&lt;/p&gt;
-
-&lt;h1 id=&quot;例子&quot;&gt;例子&lt;/h1&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;aes_encrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;aes_decrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 上述加解密函数来自于 https://github.com/liwugang/filecrypt/blob/master/algs/base.c&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;1234567890&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 密钥&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;1111111&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// iv&lt;/span&gt;
-
-    &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;// 加密&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_encrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
-    &lt;span class=&quot;c1&quot;&gt;// 使用和加密一样的密钥和iv进行解密&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_decrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;first:%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;// 再次调用解密，密钥和iv是复制过来的&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;another_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;another_iv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;another_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;another_iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_decrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;another_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;another_iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;second:%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;大家认为上述两次执行解密一样吗？&lt;/p&gt;
-
-&lt;p&gt;来看下执行结果&lt;/p&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;first:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;139868329146176&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;0606506&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;D&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;digital&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;envelope&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;routines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_DecryptFinal_ex&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wrong&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;block&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;evp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;evp_enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;559&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 出错日志&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;second&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟.&lt;/p&gt;
-
-&lt;h1 id=&quot;代码分析&quot;&gt;代码分析&lt;/h1&gt;
-
-&lt;h2 id=&quot;openssl-下载编译&quot;&gt;openssl 下载编译&lt;/h2&gt;
-&lt;p&gt;加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;./config -d &amp;amp;&amp;amp; make&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;然后将编译出来的静态库链接到我们程序中，由于libcrypto.a依赖于pthread和dl库，需要添加上 -pthread -ldl&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;gcc -o  openssl_test openssl_test.c  ../openssl-1.1.1b/libcrypto.a -pthread -ldl -g&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;从&lt;a href=&quot;https://github.com/liwugang/filecrypt/blob/master/algs/base.c#L98&quot;&gt;aes_decrypt_common&lt;/a&gt;源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的：&lt;/p&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EVP_DecryptInit_ex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                       &lt;span class=&quot;n&quot;&gt;ENGINE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;impl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                       &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CipherInit_ex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;impl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 接着看EVP_CipherInit_ex&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EVP_CipherInit_ex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                      &lt;span class=&quot;n&quot;&gt;ENGINE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;impl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                      &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ctx-&amp;gt;cipher是我们传的cipher&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-      
-        &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key_len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ctx-&amp;gt;key_len 是来自ciphter中的key_len&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_CUSTOM_IV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_STREAM_CIPHER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_ECB_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_CFB_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_OFB_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-
-            &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;cm&quot;&gt;/* fall-through */&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_CBC_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 我们是使用CBC&lt;/span&gt;
-
-            &lt;span class=&quot;n&quot;&gt;OPENSSL_assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_iv_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt;
-                           &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;memcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oiv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_iv_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// iv是直接拷贝相应的长度，和字符串是否'\0'无关，从名字看像是iv的字节数，后面在看EVP_CIPHER_CTX_iv_length&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;memcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oiv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_iv_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_CTR_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;cm&quot;&gt;/* Don't reuse IV for CTR mode */&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;memcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_iv_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-        &lt;span class=&quot;nl&quot;&gt;default:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_ALWAYS_CALL_INIT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 此处对密钥key进行处理，通过调试可知实际调用aesni_init_key&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf_len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;final_used&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block_mask&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 接下来看密钥如何处理&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;aesni_init_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                          &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_ECB_MODE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPH_CBC_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 走这里， CBC模式并且enc == 0&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;// 第一个参数为我们提供的密钥，第二个参数为key的bits长度&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aesni_set_decrypt_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX_key_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                                    &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// aesni_set_decrypt_key是汇编实现，函数调用参数从左到右传递方式：rdi, rsi, rdx, rcx, r8d, r9d，key是第一个参数，长度是第二个参数，需要关注rdi和rsi就行&lt;/span&gt;
-
-&lt;span class=&quot;nl&quot;&gt;__aesni_set_encrypt_key:&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cfi_startproc&lt;/span&gt;	
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;movl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;268437504&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r10d&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;movups&lt;/span&gt;	&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rdi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xmm0&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 将key的前16字节放到xmm0中&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;cmpl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;esi&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 判断长度&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;je&lt;/span&gt;	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;L14rounds&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 如果长度是256，则跳转到L14rounds&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;cmpl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;192&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;esi&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;je&lt;/span&gt;	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;L12rounds&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 如果长度是192，则跳转到L12rounds&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;cmpl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;esi&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;jne&lt;/span&gt;	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Lbad_keybits&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 若长度不是128的话，则keybits是错误的，所以可以看到keybits只支持128,192和256&lt;/span&gt;
-
-
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;L12rounds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;movq&lt;/span&gt;	&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rdi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xmm2&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 是将key + 16的8字节放在xmm2中&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;movl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;esi&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;cmpl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;268435456&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r10d&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;je&lt;/span&gt;	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;L12rounds_alt&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;L14rounds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;movups&lt;/span&gt;	&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rdi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xmm2&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 此时是将key + 16的16字节放到xmm2中&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;movl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;esi&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;leaq&lt;/span&gt;	&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rax&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;cmpl&lt;/span&gt;	&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;268435456&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r10d&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;je&lt;/span&gt;	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;L14rounds_alt&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 该函数总结为： length只能为256, 192和128. 若length是256，取key的32(16+16)字节，若length为192,取key的24(16+8)字节，length为128,只取16字节。&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;iv是使用EVP_CIPHER_CTX_iv_length(ctx)字节数，key的使用EVP_CIPHER_CTX_key_length(ctx)字节数，接下来来看这些值怎么确定。&lt;/p&gt;
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EVP_CIPHER_CTX_iv_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EVP_CIPHER_CTX_key_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER_CTX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 通过上面分析得到， iv_len和key_len分别为我们传进去的cipher的中iv_len和key_len，我们是使用EVP_aes_256_cbc()来创建的cipher。而该函数是通过下面宏定义的，而该函数返回的变量也是通过宏定义的&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EVP_CIPHER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_aes_&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keylen&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; \
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes_&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keylen&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;cp&quot;&gt;# define BLOCK_CIPHER_generic(nid,keylen,blocksize,ivlen,nmode,mode,MODE,flags) \
-static const EVP_CIPHER aes_##keylen##_##mode = { \
-        nid##_##keylen##_##nmode,blocksize,keylen/8,ivlen, \
-        flags|EVP_CIPH_##MODE##_MODE,   \
-        aes_init_key,                   \
-        aes_##mode##_cipher,            \
-        NULL,                           \
-        sizeof(EVP_AES_KEY),            \
-        NULL,NULL,NULL,NULL }; \
-
-&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// 逆向找到调用的地方：&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;BLOCK_CIPHER_generic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keylen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CBC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EVP_CIPH_FLAG_DEFAULT_ASN1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 接着往上找&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#define BLOCK_CIPHER_generic_pack(nid,keylen,flags)             \
-        BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)     \
-        BLOCK_CIPHER_generic(nid,keylen,16,0,ecb,ecb,ECB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)      \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,ofb128,ofb,OFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)   \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb128,cfb,CFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)   \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb1,cfb1,CFB,flags)       \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb8,cfb8,CFB,flags)       \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,ctr,ctr,CTR,flags)
-&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 最终找到&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;BLOCK_CIPHER_generic_pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NID_aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// EVP_aes_256_cbc() 为 LOCK_CIPHER_generic_pack(NID_aes, 256, 0) ==&amp;gt; BLOCK_CIPHER_generic(nid,256,16,16,cbc,cbc,CBC,EVP_CIPH_FLAG_DEFAULT_ASN1) ==&amp;gt; aes_256_cbc {nid_256_cbc, 16, 256/8, 16, EVP_CIPH_FLAG_DEFAULT_ASN1|EVP_CIPH_cbc_MODE, aes_init_key, aes_cbc_cipher, NULL, sizeof(EVP_AES_KEY), NULL,NULL,NULL,NULL }&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 从EVP_CIPHER结构体中看到第三个和第四个变量分别为key_len和iv_len，针对EVP_aes_256_cbc() key_len和iv_len分别为32字节和16字节。&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有’\0’，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。&lt;/p&gt;
-
-&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。&lt;/li&gt;
-  &lt;li&gt;超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。&lt;/li&gt;
-  &lt;li&gt;在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="openssl" /><summary type="html">在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是： 调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。 例子 int aes_encrypt_common(uint8_t *input, uint64_t length, const unsigned char *password, const unsigned char *iv, uint8_t *out, uint64_t *out_length); int aes_decrypt_common(uint8_t *input, uint64_t length, const unsigned char *password, const unsigned char *iv, uint8_t *out, uint64_t *out_length); // 上述加解密函数来自于 https://github.com/liwugang/filecrypt/blob/master/algs/base.c int main() { int i; char text[] = &quot;test&quot;; char *cipher = (char *) malloc(1024); char *plain = (char *) malloc(1024); char key[] = &quot;1234567890&quot;; // 密钥 char iv[] = &quot;1111111&quot;; // iv uint64_t out_length = 0; // 加密 int ret = aes_encrypt_common(text, strlen(text), key, iv, cipher, &amp;amp;out_length); // 使用和加密一样的密钥和iv进行解密 ret = aes_decrypt_common(cipher, out_length, key, iv, plain, &amp;amp;out_length); printf(&quot;first:%d\n&quot;, ret); // 再次调用解密，密钥和iv是复制过来的 char *another_key = (char *) calloc(1, strlen(key) + 1); char *another_iv = (char *) calloc(1, strlen(iv) + 1); strcpy(another_key, key); strcpy(another_iv, iv); ret = aes_decrypt_common(cipher, out_length, another_key, another_iv, plain, &amp;amp;out_length); printf(&quot;second:%d\n&quot;, ret); } 大家认为上述两次执行解密一样吗？ 来看下执行结果 first:1 139868329146176:error:0606506D:digital envelope routines:EVP_DecryptFinal_ex:wrong final block length:crypto/evp/evp_enc.c:559: // 出错日志 second:0 可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟. 代码分析 openssl 下载编译 加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本 ./config -d &amp;amp;&amp;amp; make 然后将编译出来的静态库链接到我们程序中，由于libcrypto.a依赖于pthread和dl库，需要添加上 -pthread -ldl gcc -o openssl_test openssl_test.c ../openssl-1.1.1b/libcrypto.a -pthread -ldl -g 从aes_decrypt_common源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的： int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher, ENGINE *impl, const unsigned char *key, const unsigned char *iv) { return EVP_CipherInit_ex(ctx, cipher, impl, key, iv, 0); } // 接着看EVP_CipherInit_ex int EVP_CipherInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher, ENGINE *impl, const unsigned char *key, const unsigned char *iv, int enc) { ... ... ctx-&amp;gt;cipher = cipher; // ctx-&amp;gt;cipher是我们传的cipher ... ... ctx-&amp;gt;key_len = cipher-&amp;gt;key_len; // ctx-&amp;gt;key_len 是来自ciphter中的key_len ... ... if (!(EVP_CIPHER_flags(EVP_CIPHER_CTX_cipher(ctx)) &amp;amp; EVP_CIPH_CUSTOM_IV)) { switch (EVP_CIPHER_CTX_mode(ctx)) { case EVP_CIPH_STREAM_CIPHER: case EVP_CIPH_ECB_MODE: break; case EVP_CIPH_CFB_MODE: case EVP_CIPH_OFB_MODE: ctx-&amp;gt;num = 0; /* fall-through */ case EVP_CIPH_CBC_MODE: // 我们是使用CBC OPENSSL_assert(EVP_CIPHER_CTX_iv_length(ctx) &amp;lt;= (int)sizeof(ctx-&amp;gt;iv)); if (iv) memcpy(ctx-&amp;gt;oiv, iv, EVP_CIPHER_CTX_iv_length(ctx)); // iv是直接拷贝相应的长度，和字符串是否'\0'无关，从名字看像是iv的字节数，后面在看EVP_CIPHER_CTX_iv_length memcpy(ctx-&amp;gt;iv, ctx-&amp;gt;oiv, EVP_CIPHER_CTX_iv_length(ctx)); break; case EVP_CIPH_CTR_MODE: ctx-&amp;gt;num = 0; /* Don't reuse IV for CTR mode */ if (iv) memcpy(ctx-&amp;gt;iv, iv, EVP_CIPHER_CTX_iv_length(ctx)); break; default: return 0; } } if (key || (ctx-&amp;gt;cipher-&amp;gt;flags &amp;amp; EVP_CIPH_ALWAYS_CALL_INIT)) { if (!ctx-&amp;gt;cipher-&amp;gt;init(ctx, key, iv, enc)) // 此处对密钥key进行处理，通过调试可知实际调用aesni_init_key return 0; } ctx-&amp;gt;buf_len = 0; ctx-&amp;gt;final_used = 0; ctx-&amp;gt;block_mask = ctx-&amp;gt;cipher-&amp;gt;block_size - 1; return 1; } // 接下来看密钥如何处理 static int aesni_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc) { ... ... if ((mode == EVP_CIPH_ECB_MODE || mode == EVP_CIPH_CBC_MODE) &amp;amp;&amp;amp; !enc) { // 走这里， CBC模式并且enc == 0 // 第一个参数为我们提供的密钥，第二个参数为key的bits长度 ret = aesni_set_decrypt_key(key, EVP_CIPHER_CTX_key_length(ctx) * 8, &amp;amp;dat-&amp;gt;ks.ks); ... ... } // aesni_set_decrypt_key是汇编实现，函数调用参数从左到右传递方式：rdi, rsi, rdx, rcx, r8d, r9d，key是第一个参数，长度是第二个参数，需要关注rdi和rsi就行 __aesni_set_encrypt_key: .cfi_startproc ... ... movl $268437504,%r10d movups (%rdi),%xmm0 // 将key的前16字节放到xmm0中 ... ... cmpl $256,%esi // 判断长度 je .L14rounds // 如果长度是256，则跳转到L14rounds cmpl $192,%esi je .L12rounds // 如果长度是192，则跳转到L12rounds cmpl $128,%esi jne .Lbad_keybits // 若长度不是128的话，则keybits是错误的，所以可以看到keybits只支持128,192和256 .L12rounds: movq 16(%rdi),%xmm2 // 是将key + 16的8字节放在xmm2中 movl $11,%esi cmpl $268435456,%r10d je .L12rounds_alt ... ... .L14rounds: movups 16(%rdi),%xmm2 // 此时是将key + 16的16字节放到xmm2中 movl $13,%esi leaq 16(%rax),%rax cmpl $268435456,%r10d je .L14rounds_alt ... ... // 该函数总结为： length只能为256, 192和128. 若length是256，取key的32(16+16)字节，若length为192,取key的24(16+8)字节，length为128,只取16字节。 iv是使用EVP_CIPHER_CTX_iv_length(ctx)字节数，key的使用EVP_CIPHER_CTX_key_length(ctx)字节数，接下来来看这些值怎么确定。 int EVP_CIPHER_CTX_iv_length(const EVP_CIPHER_CTX *ctx) { return ctx-&amp;gt;cipher-&amp;gt;iv_len; } int EVP_CIPHER_CTX_key_length(const EVP_CIPHER_CTX *ctx) { return ctx-&amp;gt;key_len; } // 通过上面分析得到， iv_len和key_len分别为我们传进去的cipher的中iv_len和key_len，我们是使用EVP_aes_256_cbc()来创建的cipher。而该函数是通过下面宏定义的，而该函数返回的变量也是通过宏定义的 const EVP_CIPHER *EVP_aes_##keylen##_##mode(void) \ { return &amp;amp;aes_##keylen##_##mode; } # define BLOCK_CIPHER_generic(nid,keylen,blocksize,ivlen,nmode,mode,MODE,flags) \ static const EVP_CIPHER aes_##keylen##_##mode = { \ nid##_##keylen##_##nmode,blocksize,keylen/8,ivlen, \ flags|EVP_CIPH_##MODE##_MODE, \ aes_init_key, \ aes_##mode##_cipher, \ NULL, \ sizeof(EVP_AES_KEY), \ NULL,NULL,NULL,NULL }; \ // 逆向找到调用的地方： BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) // 接着往上找 #define BLOCK_CIPHER_generic_pack(nid,keylen,flags) \ BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,16,0,ecb,ecb,ECB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,1,16,ofb128,ofb,OFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,1,16,cfb128,cfb,CFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1) \ BLOCK_CIPHER_generic(nid,keylen,1,16,cfb1,cfb1,CFB,flags) \ BLOCK_CIPHER_generic(nid,keylen,1,16,cfb8,cfb8,CFB,flags) \ BLOCK_CIPHER_generic(nid,keylen,1,16,ctr,ctr,CTR,flags) // 最终找到 BLOCK_CIPHER_generic_pack(NID_aes, 256, 0) // EVP_aes_256_cbc() 为 LOCK_CIPHER_generic_pack(NID_aes, 256, 0) ==&amp;gt; BLOCK_CIPHER_generic(nid,256,16,16,cbc,cbc,CBC,EVP_CIPH_FLAG_DEFAULT_ASN1) ==&amp;gt; aes_256_cbc {nid_256_cbc, 16, 256/8, 16, EVP_CIPH_FLAG_DEFAULT_ASN1|EVP_CIPH_cbc_MODE, aes_init_key, aes_cbc_cipher, NULL, sizeof(EVP_AES_KEY), NULL,NULL,NULL,NULL } // 从EVP_CIPHER结构体中看到第三个和第四个变量分别为key_len和iv_len，针对EVP_aes_256_cbc() key_len和iv_len分别为32字节和16字节。 所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有’\0’，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。 总结 openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。 超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。 在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="git" /><summary type="html">当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。 git rebase逻辑 当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要： 修改git editor来使用我们提供的； 脚本来处理进行git-rebase-todo文件的处理。 git editor的修改 git提供config命令来查看配置和修改配置，同样editor也可以这样进行设置。 git config core.editor #查看当前使用editor git config --local --replace-all core.editor NEW_EDITOR # 修改当前的仓库的editor为NEW_EDITOR 处理git-rebase-todo文件 pick 62e0071 first commit pick 3bd641a second commit pick 92c03c7 third commit # 变基 7073047..92c03c7 到 7073047（3 个提交） # # 命令: # p, pick &amp;lt;提交&amp;gt; = 使用提交 # r, reword &amp;lt;提交&amp;gt; = 使用提交，但修改提交说明 # e, edit &amp;lt;提交&amp;gt; = 使用提交，进入 shell 以便进行提交修补 # s, squash &amp;lt;提交&amp;gt; = 使用提交，但融合到前一个提交 # f, fixup &amp;lt;提交&amp;gt; = 类似于 &quot;squash&quot;，但丢弃提交说明日志 # x, exec &amp;lt;命令&amp;gt; = 使用 shell 运行命令（此行剩余部分） # b, break = 在此处停止（使用 'git rebase --continue' 继续变基） # d, drop &amp;lt;提交&amp;gt; = 删除提交 # l, label &amp;lt;label&amp;gt; = 为当前 HEAD 打上标记 # t, reset &amp;lt;label&amp;gt; = 重置 HEAD 到该标记 # m, merge [-C &amp;lt;commit&amp;gt; | -c &amp;lt;commit&amp;gt;] &amp;lt;label&amp;gt; [# &amp;lt;oneline&amp;gt;] # . 创建一个合并提交，并使用原始的合并提交说明（如果没有指定 # . 原始提交，使用注释部分的 oneline 作为提交说明）。使用 # . -c &amp;lt;提交&amp;gt; 可以编辑提交说明。 # # 可以对这些行重新排序，将从上至下执行。 # # 如果您在这里删除一行，对应的提交将会丢失。 # # 然而，如果您删除全部内容，变基操作将会终止。 # # 注意空提交已被注释掉 上面是有3个commit，需要将后面2个commit合并到第1个，通过后面的注释可以看到，squash是将commit合并到前一个commit上，所以需要将后2个的pick修改为squash，即修改为下面这样： pick 62e0071 first commit squash 3bd641a second commit squash 92c03c7 third commit Python实现 使用python实现上述逻辑 #!/usr/bin/env python3 #encoding: UTF-8 import os import sys def change_editor(current_file): os.system(&quot;git config --local --replace-all core.editor &quot; + current_file) # 将当前脚本设置为editor os.system(&quot;git rebase -i&quot;) # 执行rebase，触发调用该脚本进行rebase os.system(&quot;git config --local --replace-all core.editor vim&quot;) # 执行完后将editor设置回vim def rebase_commits(todo_file): with open(todo_file, &quot;r+&quot;) as f: contents = f.read() # 读取git-rebase-todo文件内容 contents = contents.split(&quot;\n&quot;) first_commit = True f.truncate() f.seek(0) for content in contents: if content.startswith(&quot;pick&quot;): if first_commit: first_commit = False else: content = content.replace(&quot;pick&quot;, &quot;squash&quot;) # 将除了地一个pick修改为squash f.write(content + &quot;\n&quot;) def main(args): if len(args) == 2: # 如果将该脚本作为editor，git会调用该脚本，并以git-rebase-todo文件作为第2个参数 rebase_commits(args[1]) else: change_editor(os.path.abspath(args[0])) # 设置git editor if __name__ == &quot;__main__&quot;: main(sys.argv)</summary></entry></feed>

@@ -10,10 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Python实现自动化点击和输入功能 - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Coredomain 创建新的 property type - liwugang</title>
 
-<meta name="description" content="背景由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。">
-<link rel="canonical" href="https://liwugang.github.io/2020/01/11/auto_input_and_click.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="背景Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /ve...">
+<link rel="canonical" href="https://liwugang.github.io/2020/02/29/coredomain_create_new_property.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -283,52 +283,313 @@
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Python实现自动化点击和输入功能</h1></header></div><meta itemprop="headline" content="Python实现自动化点击和输入功能"><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Coredomain 创建新的 property type</h1></header></div><meta itemprop="headline" content="Coredomain 创建新的 property type"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 11, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-11T19:48:00+08:00">
-    <meta itemprop="keywords" content="Python"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=SELinux">SELinux</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 29, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-02-29T08:53:00+08:00">
+    <meta itemprop="keywords" content="SELinux,Android"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><h2 id="背景">背景</h2>
 
-<p>由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。</p>
+<p>Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</p>
 
 <!--more-->
 
-<p><img src="/assets/tools/auto_click_input.png" alt="graph" /></p>
+<h2 id="coredomain">Coredomain</h2>
 
-<h2 id="python-实现">Python 实现</h2>
+<h3 id="哪些是-coredomain">哪些是 coredomain?</h3>
 
-<p>需要先安装依赖的库</p>
-<blockquote>
-  <p>pip3 install PyUserInput</p>
-</blockquote>
+<p>Coredomain 是 attribute，属于 domain (针对进程)或者 type(针对对象，如文件等)的集合。coremain 可以理解为包含 system 下可执行文件和 apps 所运行的 domain 或者说包含所有属于 Android 的 domain。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="c1">#!/usr/bin/python3
-</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<h3 id="如何查看">如何查看？</h3>
 
-<span class="kn">from</span> <span class="nn">pykeyboard</span>  <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pymouse</span> <span class="kn">import</span> <span class="o">*</span>
+<h4 id="代码中查看">代码中查看</h4>
 
-<span class="n">m</span> <span class="o">=</span> <span class="n">PyMouse</span><span class="p">()</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">PyKeyboard</span><span class="p">()</span>
+<p>有两种定义方式：</p>
 
-<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># 执行后有时间去切换到输入焦点上
-</span><span class="k">print</span><span class="p">(</span><span class="s">"begin ..."</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span> <span class="c1"># 用100 105 ... 195进行举例140
-</span>    <span class="n">k</span><span class="o">.</span><span class="n">type_string</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="c1"># 输入 i
-</span>    <span class="n">k</span><span class="o">.</span><span class="n">tap_key</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">enter_key</span><span class="p">)</span> <span class="c1"># 输入 回车
-</span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 输入等待 1s
-</span>
-<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">position</span><span class="p">()</span> <span class="c1"># 获取当前鼠标位置
-</span><span class="n">m</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="c1"># 在当前位置点击
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    1. <span class="nb">type </span>XXX ..., coredomain ...<span class="p">;</span>
+    2. typeattribute XXX coredomain<span class="p">;</span>
+</code></pre></div></div>
+
+<p>上面两种方式都是将 XXX 放入到 coredomain 集合中，即 XXX 是属于 coredomain，对 coredomain 配置的权限也会同步给 XXX，同样对 coredomain 的限制也会限制 XXX。</p>
+
+<h4 id="工具查看">工具查看</h4>
+
+<p>Android system/sepolicy 源码下有 sepolicy-analyze 工具，然后需要编译好的 sepolicy 文件，使用下面命令可以查看 coredomain 都包含那些 domain：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sepolicy-analyze 编译好的sepolicy  attribute coredomain
+</code></pre></div></div>
+
+<p class="warning">编译好的policy，手机上可以从这两个地方取：1. /vendor(或者odm)/etc/selinux/precompiled_sepolicy; 2. /sys/fs/selinux/policy</p>
+
+<h2 id="android-p">Android P</h2>
+
+<h3 id="新增限制">新增限制</h3>
+
+<p>升级 Android P 后发现 property 新增了一个 neverallow(neverallow 用于限制配置，明确指定不能干什么)。来看下该 neverallow：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#https://cs.android.com/android/platform/superproject/+/android-9.0.0_r11:system/sepolicy/public/property.te;l=314</span>
+compatible_property_only<span class="o">(</span><span class="sb">`</span>
+  <span class="c"># Neverallow coredomain to set vendor properties</span>
+  neverallow <span class="o">{</span>
+    coredomain
+    <span class="nt">-init</span>
+    <span class="nt">-system_writes_vendor_properties_violators</span>
+  <span class="o">}</span> <span class="o">{</span>
+    property_type
+    <span class="nt">-apexd_prop</span>
+    <span class="nt">-audio_prop</span>
+    <span class="nt">-bluetooth_a2dp_offload_prop</span>
+    <span class="nt">-bluetooth_audio_hal_prop</span>
+    <span class="nt">-bluetooth_prop</span>
+    <span class="nt">-bootloader_boot_reason_prop</span>
+    <span class="nt">-boottime_prop</span>
+    <span class="nt">-bpf_progs_loaded_prop</span>
+    <span class="nt">-config_prop</span>
+    <span class="nt">-cppreopt_prop</span>
+    <span class="nt">-ctl_adbd_prop</span>
+    <span class="nt">-ctl_bootanim_prop</span>
+    <span class="nt">-ctl_bugreport_prop</span>
+    <span class="nt">-ctl_console_prop</span>
+    <span class="nt">-ctl_default_prop</span>
+    <span class="nt">-ctl_dumpstate_prop</span>
+    <span class="nt">-ctl_fuse_prop</span>
+    <span class="nt">-ctl_gsid_prop</span>
+    <span class="nt">-ctl_interface_restart_prop</span>
+    <span class="nt">-ctl_interface_start_prop</span>
+    <span class="nt">-ctl_interface_stop_prop</span>
+    <span class="nt">-ctl_mdnsd_prop</span>
+    <span class="nt">-ctl_restart_prop</span>
+    <span class="nt">-ctl_rildaemon_prop</span>
+    <span class="nt">-ctl_sigstop_prop</span>
+    <span class="nt">-ctl_start_prop</span>
+    <span class="nt">-ctl_stop_prop</span>
+    <span class="nt">-dalvik_prop</span>
+    <span class="nt">-debug_prop</span>
+    <span class="nt">-debuggerd_prop</span>
+    <span class="nt">-default_prop</span>
+    <span class="nt">-device_logging_prop</span>
+    <span class="nt">-dhcp_prop</span>
+    <span class="nt">-dumpstate_options_prop</span>
+    <span class="nt">-dumpstate_prop</span>
+    <span class="nt">-exported2_config_prop</span>
+    <span class="nt">-exported2_default_prop</span>
+    <span class="nt">-exported2_radio_prop</span>
+    <span class="nt">-exported2_system_prop</span>
+    <span class="nt">-exported2_vold_prop</span>
+    <span class="nt">-exported3_default_prop</span>
+    <span class="nt">-exported3_radio_prop</span>
+    <span class="nt">-exported3_system_prop</span>
+    <span class="nt">-exported_bluetooth_prop</span>
+    <span class="nt">-exported_config_prop</span>
+    <span class="nt">-exported_dalvik_prop</span>
+    <span class="nt">-exported_default_prop</span>
+    <span class="nt">-exported_dumpstate_prop</span>
+    <span class="nt">-exported_ffs_prop</span>
+    <span class="nt">-exported_fingerprint_prop</span>
+    <span class="nt">-exported_overlay_prop</span>
+    <span class="nt">-exported_pm_prop</span>
+    <span class="nt">-exported_radio_prop</span>
+    <span class="nt">-exported_secure_prop</span>
+    <span class="nt">-exported_system_prop</span>
+    <span class="nt">-exported_system_radio_prop</span>
+    <span class="nt">-exported_vold_prop</span>
+    <span class="nt">-exported_wifi_prop</span>
+    <span class="nt">-extended_core_property_type</span>
+    <span class="nt">-ffs_prop</span>
+    <span class="nt">-fingerprint_prop</span>
+    <span class="nt">-firstboot_prop</span>
+    <span class="nt">-device_config_activity_manager_native_boot_prop</span>
+    <span class="nt">-device_config_reset_performed_prop</span>
+    <span class="nt">-device_config_boot_count_prop</span>
+    <span class="nt">-device_config_input_native_boot_prop</span>
+    <span class="nt">-device_config_netd_native_prop</span>
+    <span class="nt">-device_config_runtime_native_boot_prop</span>
+    <span class="nt">-device_config_runtime_native_prop</span>
+    <span class="nt">-device_config_media_native_prop</span>
+    <span class="nt">-dynamic_system_prop</span>
+    <span class="nt">-gsid_prop</span>
+    <span class="nt">-heapprofd_enabled_prop</span>
+    <span class="nt">-heapprofd_prop</span>
+    <span class="nt">-hwservicemanager_prop</span>
+    <span class="nt">-last_boot_reason_prop</span>
+    <span class="nt">-system_lmk_prop</span>
+    <span class="nt">-log_prop</span>
+    <span class="nt">-log_tag_prop</span>
+    <span class="nt">-logd_prop</span>
+    <span class="nt">-logpersistd_logging_prop</span>
+    <span class="nt">-lowpan_prop</span>
+    <span class="nt">-lpdumpd_prop</span>
+    <span class="nt">-mmc_prop</span>
+    <span class="nt">-net_dns_prop</span>
+    <span class="nt">-net_radio_prop</span>
+    <span class="nt">-netd_stable_secret_prop</span>
+    <span class="nt">-nfc_prop</span>
+    <span class="nt">-overlay_prop</span>
+    <span class="nt">-pan_result_prop</span>
+    <span class="nt">-persist_debug_prop</span>
+    <span class="nt">-persistent_properties_ready_prop</span>
+    <span class="nt">-pm_prop</span>
+    <span class="nt">-powerctl_prop</span>
+    <span class="nt">-radio_prop</span>
+    <span class="nt">-restorecon_prop</span>
+    <span class="nt">-safemode_prop</span>
+    <span class="nt">-serialno_prop</span>
+    <span class="nt">-shell_prop</span>
+    <span class="nt">-system_boot_reason_prop</span>
+    <span class="nt">-system_prop</span>
+    <span class="nt">-system_radio_prop</span>
+    <span class="nt">-system_trace_prop</span>
+    <span class="nt">-test_boot_reason_prop</span>
+    <span class="nt">-test_harness_prop</span>
+    <span class="nt">-theme_prop</span>
+    <span class="nt">-time_prop</span>
+    <span class="nt">-traced_enabled_prop</span>
+    <span class="nt">-traced_lazy_prop</span>
+    <span class="nt">-vendor_default_prop</span>
+    <span class="nt">-vendor_security_patch_level_prop</span>
+    <span class="nt">-vold_prop</span>
+    <span class="nt">-wifi_log_prop</span>
+    <span class="nt">-wifi_prop</span>
+  <span class="o">}</span>:property_service <span class="nb">set</span><span class="p">;</span>
+<span class="s1">')
 </span></code></pre></div></div>
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-01-11T19:48:00+08:00"><!-- start custom article footer snippet -->
 
-<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/01/01/filecrypt_aes.html">filecrypt工具加解密大文件失败问题分析</a></div><div class="next"><span>NEXT</span><a href="/2020/02/29/coredomain_create_new_property.html">Coredomain 创建新的 property type</a></div></div></div>
+<p>可以看到限制的是除了 init 和 system_writes_vendor_properties_violators 的 coredomain， 这些 domains 不能设置上述白名单之外的 property type， 这些属于AOSP 定义的 types，所以是限制 system domains 不能设置 vendor properties，符合 Prject Treble 设计思想。</p>
+
+<h3 id="如何绕过限制">如何绕过限制？</h3>
+
+<p>由于厂商基本都会：</p>
+<ol>
+  <li>定义新的 property type，用于细粒度控制访问权限，如 platform_app 或者 system_app 设置新的property，三方 app 可以读；</li>
+  <li>coredomain 需要设置 vendor properties。</li>
+</ol>
+
+<p>但现在增加了 neverallow 限制，这些规则在编译阶段就会报错，所以需要想办法绕过限制。</p>
+
+<p>从上面可以看到限制会排除 init 和 system_writes_vendor_properties_violators，init 是 domain，不能满足要求，我们是需要 platform_app 或者 system_app 有权限。看下 system_writes_vendor_properties_violators 的定义：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># All system domains which violate the requirement of not writing vendor</span>
+<span class="c"># properties.</span>
+<span class="c"># TODO(b/78598545): Remove this once there are no violations</span>
+attribute system_writes_vendor_properties_violators<span class="p">;</span>
+
+</code></pre></div></div>
+<p>首先是 attribute，不是具体的 type， 并且从注释上看到，表示 system domains 违反去写 vendor properties 的集合。这个也是 google 用于在升级中故意新增的，用于临时绕过 neverallow 限制。所以，我们可以需要违反 neverallow 的添加上该 attribute。</p>
+
+<p><strong>解决方案为：  为需要违反的 domain 添加 system_writes_vendor_properties_violators。</strong></p>
+
+<p>如要给 platform_app 添加，配置下面规则：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    typeattribute platform_app system_writes_vendor_properties_violators<span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="android-q">Android Q</h2>
+
+<h3 id="新增限制-1">新增限制</h3>
+
+<p>google 在 GTS 中新增了一条测试 case:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>com.google.android.security.gts.SELinuxHostTest#testNoExemptionsForCoreWritingVendorSysprops
+</code></pre></div></div>
+
+<p>SELinuxHostTest 是在 GTS GtsSecurityHostTestCases.jar 中，使用 JD-GUI 反编译找到 testNoExemptionsForCoreWritingVendorSysprops 方法：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testNoExemptionsForCoreWritingVendorSysprops</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">mFirstApiLevel</span> <span class="o">&lt;</span> <span class="mi">29</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 使用 firstApi 排除升级的老机型</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="c1">// 是获取有 attribute 是 system_writes_vendor_properties_violators 的 domain</span>
+    <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">types</span> <span class="o">=</span> <span class="n">sepolicyAnalyzeGetTypesAssociatedWithAttribute</span><span class="o">(</span><span class="s">"system_writes_vendor_properties_violators"</span><span class="o">);</span> 
+    
+    <span class="k">if</span> <span class="o">(!</span><span class="n">types</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+      <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">sortedTypes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;(</span><span class="n">types</span><span class="o">);</span>
+      <span class="nc">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">sortedTypes</span><span class="o">);</span>
+      <span class="n">fail</span><span class="o">(</span><span class="s">"Policy exempts core domains from ban on writing vendor system properties: "</span> <span class="o">+</span> <span class="n">sortedTypes</span><span class="o">);</span> <span class="c1">// 不为空，则测试失败</span>
+    <span class="o">}</span> 
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>从上面看到： 1）针对的是 Q 新机型； 2）若指定有 system_writes_vendor_properties_violators 的则失败，即不能为 domain 指定 system_writes_vendor_properties_violators。</p>
+
+<p>所有针对 Q 新机型，不能采用 P 绕过方式。</p>
+
+<h3 id="如何绕过限制-1">如何绕过限制？</h3>
+
+<h4 id="使用现有的-aosp-property-type">使用现有的 AOSP property type</h4>
+
+<p>Neverallow 不能从 domain 进行绕过，只能选择从 property type，即不能定义新的 property，只能使用现有的。这样有两个弊端：</p>
+
+<ol>
+  <li>不能对权限细粒度控制，只能在现有权限的基础上增加，而不能减少，这样修改的话势必导致权限扩大；</li>
+  <li>type 名字选择都是有意义，但现在只能从权限和名字上找到平衡，可能权限满足，但名字意义差太远。</li>
+</ol>
+
+<p>那有没有更好的方式？</p>
+
+<h4 id="定义新的-property-type">定义新的 property type</h4>
+
+<p>通过对 neverallow 中的每个 type 分析，发现 extended_core_property_type 是 attribute，而不是具体的 type：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="c"># All properties that are not specific to device but are added from</span>
+<span class="c"># outside of AOSP. (e.g. OEM-specific properties)</span>
+<span class="c"># These properties are not accessible from device-specific domains</span>
+attribute extended_core_property_type<span class="p">;</span>
+
+</code></pre></div></div>
+
+<p>从注释可以看到，这个 attribute 是 google 专门给厂商保留的，太好了。 但是 “These properties are not accessible from device-specific domains” 表示 device-specific domains 不能访问，来看下是怎么限制的：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Prevent properties from being read</span>
+  neverallow <span class="o">{</span>
+    domain
+    <span class="nt">-coredomain</span>
+    <span class="nt">-appdomain</span>
+    <span class="nt">-vendor_init</span>
+  <span class="o">}</span> <span class="o">{</span>
+    core_property_type
+    extended_core_property_type <span class="c"># it</span>
+    exported_dalvik_prop
+    exported_ffs_prop
+    exported_system_radio_prop
+    exported2_config_prop
+    exported2_system_prop
+    exported2_vold_prop
+    exported3_default_prop
+    exported3_system_prop
+    <span class="nt">-debug_prop</span>
+    <span class="nt">-logd_prop</span>
+    <span class="nt">-nfc_prop</span>
+    <span class="nt">-powerctl_prop</span>
+    <span class="nt">-radio_prop</span>
+  <span class="o">}</span>:file no_rw_file_perms<span class="p">;</span>
+</code></pre></div></div>
+
+<p>可以看到除了 coredomain, appdomain, vendor_init 外都不能访问，那这种方式定义的 property 只能由 coredomain, appdomain 和 vendor_init 来访问。虽然有限制，但是已经能满足大部分需求，如上面提到的规则： platform_app 或者 system_app 设置，三方 apps 去读。</p>
+
+<p><strong>解决方案：为新定义的 property type 指定 extended_core_property_type。</strong></p>
+
+<p class="warning">这种方式 vendor domain没有权限去读写。</p>
+
+<h2 id="思考">思考</h2>
+
+<p>如果有需求是需要 coredomain 和 vendor domain 同时有读写权限，那怎么办？</p>
+
+<p>目前来看，新建 property type不能满足需求，现有 AOSP 存在的 property type 如果没有限制，也尽量不要使用，防止以后有变动，建议：</p>
+
+<p><strong>1. 业务逻辑上重新设计，尽量避免这种情况出现；</strong></p>
+
+<p><strong>2. 使用 init 或者 vendor_init 代替设置，init 和 vendor_init 权限较高，并且限制较少，如对 init script 中配置自动 setprop 规则。</strong></p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-02-29T08:53:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/01/11/auto_input_and_click.html">Python实现自动化点击和输入功能</a></div></div></div>
 
 </div>
 
@@ -370,7 +631,7 @@
 				repo: 'liwugang.github.io',
 				owner: 'liwugang',
 				admin: ['liwugang'],
-				id: 'auto_input_click'
+				id: 'coredomain_new_property'
 			});
 			gitalk.render('js-gitalk-container');
 		});
