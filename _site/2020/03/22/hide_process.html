@@ -10,10 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Coredomain 创建新的 property type - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Linux 下如何隐藏自己不被发现？ - liwugang</title>
 
-<meta name="description" content="背景Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /ve...">
-<link rel="canonical" href="https://liwugang.github.io/2020/02/29/coredomain_create_new_property.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。隐藏有两种方法：  kernel 层面，不对用户层暴露该进程的信息，进程不被看见；  用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达...">
+<link rel="canonical" href="https://liwugang.github.io/2020/03/22/hide_process.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -283,313 +283,244 @@
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Coredomain 创建新的 property type</h1></header></div><meta itemprop="headline" content="Coredomain 创建新的 property type"><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Linux 下如何隐藏自己不被发现？</h1></header></div><meta itemprop="headline" content="Linux 下如何隐藏自己不被发现？"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=SELinux">SELinux</a>
+                href="/archive.html?tag=Linux">Linux</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 29, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-02-29T08:53:00+08:00">
-    <meta itemprop="keywords" content="SELinux,Android"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Security">Security</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 22, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-03-22T19:12:00+08:00">
+    <meta itemprop="keywords" content="Linux,Security"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><h2 id="背景">背景</h2>
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
+隐藏有两种方法：</p>
+<ol>
+  <li>kernel 层面，不对用户层暴露该进程的信息，进程不被看见；</li>
+  <li>用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达到隐藏自己的目的。</li>
+</ol>
 
-<p>Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</p>
+<p>方法一是需要修改内核，本文主要是讲第二种方法。</p>
 
 <!--more-->
 
-<h2 id="coredomain">Coredomain</h2>
+<h2 id="常用获取进程信息工具">常用获取进程信息工具</h2>
 
-<h3 id="哪些是-coredomain">哪些是 coredomain?</h3>
+<p>在 Linux 环境下，主要是通过 top、ps 等工具来查看当前运行的进程，他们主要是通过读取 /proc/ 文件系统来获取进程信息，读取哪些内容，我们可以通过 strace (该工具用于监控系统调用和信号) 工具查看，我们以 296277 进程为例。</p>
 
-<p>Coredomain 是 attribute，属于 domain (针对进程)或者 type(针对对象，如文件等)的集合。coremain 可以理解为包含 system 下可执行文件和 apps 所运行的 domain 或者说包含所有属于 Android 的 domain。</p>
+<h3 id="top-获取进程信息">top 获取进程信息</h3>
 
-<h3 id="如何查看">如何查看？</h3>
+<h4 id="296277-进程信息">296277 进程信息</h4>
 
-<h4 id="代码中查看">代码中查看</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                                                                              
+ 296277 wangshu+  20   0    2272   1380   1300 S   0.0   0.0   0:00.00 bash 
+</code></pre></div></div>
+<p>top 查看到 296277 进程的信息，我们一般主要关心的是最后一列，进程名。</p>
 
-<p>有两种定义方式：</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    1. <span class="nb">type </span>XXX ..., coredomain ...<span class="p">;</span>
-    2. typeattribute XXX coredomain<span class="p">;</span>
+<h4 id="strace-跟踪结果">strace 跟踪结果</h4>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stat</span><span class="p">(</span><span class="s">"/proc/296277"</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFDIR</span><span class="o">|</span><span class="mo">0555</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="p">...})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">openat</span><span class="p">(</span><span class="n">AT_FDCWD</span><span class="p">,</span> <span class="s">"/proc/296277/stat"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">)</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s">"296277 (bash) S 296271 296271 23"</span><span class="p">...,</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">=</span> <span class="mi">322</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">openat</span><span class="p">(</span><span class="n">AT_FDCWD</span><span class="p">,</span> <span class="s">"/proc/296277/statm"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">)</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s">"568 355 335 2 0 78 0</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">=</span> <span class="mi">21</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>上面两种方式都是将 XXX 放入到 coredomain 集合中，即 XXX 是属于 coredomain，对 coredomain 配置的权限也会同步给 XXX，同样对 coredomain 的限制也会限制 XXX。</p>
+<p>从上面可以看到，主要是读取了 /proc/296277/stat 和 /proc/296277/statm 文件。</p>
 
-<h4 id="工具查看">工具查看</h4>
+<ul>
+  <li>/proc/296277/stat 内容</li>
+</ul>
 
-<p>Android system/sepolicy 源码下有 sepolicy-analyze 工具，然后需要编译好的 sepolicy 文件，使用下面命令可以查看 coredomain 都包含那些 domain：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>296277 <span class="o">(</span>bash<span class="o">)</span> S 296271 296271 230491 34840 296271 4194304 94 155 0 0 0 0 0 0 20 0 1 0 94413592 2326528 345 18446744073709551615 94055941185536 94055941191257 140723269084624 0 0 0 0 4096 0 0 0 0 17 11 0 0 0 0 0 94055941201384 94055941202080 94055956852736 140723269087783 140723269087820 140723269087820 140723269091283 0
+</code></pre></div></div>
+<ul>
+  <li>/proc/296277/statm 内容</li>
+</ul>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sepolicy-analyze 编译好的sepolicy  attribute coredomain
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>568 345 325 2 0 78 0
+</code></pre></div></div>
+<p>可以看到 top 中的进程名是使用 /proc/296277/stat 中的第二项 (bash)。</p>
+
+<h3 id="ps--aux-获取进程信息">ps -aux 获取进程信息</h3>
+
+<h4 id="296277-进程信息-1">296277 进程信息</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wangshu+  296277  0.0  0.0   2272  1380 pts/24   S+   18:59   0:00 /bin/bash
+</code></pre></div></div>
+<p>ps -aux 查看到 296277 进程的信息，最后一列是 bash 的完整路径名。</p>
+
+<h4 id="strace-跟踪结果-1">strace 跟踪结果</h4>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stat</span><span class="p">(</span><span class="s">"/proc/296277"</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFDIR</span><span class="o">|</span><span class="mo">0555</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="p">...})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">openat</span><span class="p">(</span><span class="n">AT_FDCWD</span><span class="p">,</span> <span class="s">"/proc/296277/stat"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">)</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">"296277 (bash) S 296271 296271 23"</span><span class="p">...,</span> <span class="mi">2048</span><span class="p">)</span> <span class="o">=</span> <span class="mi">322</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">openat</span><span class="p">(</span><span class="n">AT_FDCWD</span><span class="p">,</span> <span class="s">"/proc/296277/status"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">)</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">"Name:</span><span class="se">\t</span><span class="s">bash</span><span class="se">\n</span><span class="s">Umask:</span><span class="se">\t</span><span class="s">0022</span><span class="se">\n</span><span class="s">State:</span><span class="se">\t</span><span class="s">S "</span><span class="p">...,</span> <span class="mi">2048</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1095</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">openat</span><span class="p">(</span><span class="n">AT_FDCWD</span><span class="p">,</span> <span class="s">"/proc/296277/cmdline"</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">)</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">"/bin/bash</span><span class="se">\0</span><span class="s">"</span><span class="p">,</span> <span class="mi">131072</span><span class="p">)</span>          <span class="o">=</span> <span class="mi">10</span>
+<span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">""</span><span class="p">,</span> <span class="mi">131035</span><span class="p">)</span>                     <span class="o">=</span> <span class="mi">0</span>
+<span class="n">close</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>                                <span class="o">=</span> <span class="mi">0</span>
+<span class="n">stat</span><span class="p">(</span><span class="s">"/dev/pts24"</span><span class="p">,</span> <span class="mh">0x7ffe4ce31630</span><span class="p">)</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="n">ENOENT</span> <span class="p">(</span><span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="n">or</span> <span class="n">directory</span><span class="p">)</span>
+<span class="n">stat</span><span class="p">(</span><span class="s">"/dev/pts/24"</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFCHR</span><span class="o">|</span><span class="mo">0620</span><span class="p">,</span> <span class="n">st_rdev</span><span class="o">=</span><span class="n">makedev</span><span class="p">(</span><span class="mh">0x88</span><span class="p">,</span> <span class="mh">0x18</span><span class="p">),</span> <span class="p">...})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">stat</span><span class="p">(</span><span class="s">"/etc/localtime"</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFREG</span><span class="o">|</span><span class="mo">0644</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">545</span><span class="p">,</span> <span class="p">...})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">stat</span><span class="p">(</span><span class="s">"/etc/localtime"</span><span class="p">,</span> <span class="p">{</span><span class="n">st_mode</span><span class="o">=</span><span class="n">S_IFREG</span><span class="o">|</span><span class="mo">0644</span><span class="p">,</span> <span class="n">st_size</span><span class="o">=</span><span class="mi">545</span><span class="p">,</span> <span class="p">...})</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">"wangshu+  296277  0.0  0.0   227"</span><span class="p">...,</span> <span class="mi">104</span><span class="p">)</span> <span class="o">=</span> <span class="mi">104</span>
+</code></pre></div></div>
+<p>从上面可以看到，主要是读取了 /proc/296277/stat、/proc/296277/status 和 /proc/296277/cmdline。</p>
+
+<ul>
+  <li>/proc/296277/cmdline 内容</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/bash
 </code></pre></div></div>
 
-<p class="warning">编译好的policy，手机上可以从这两个地方取：1. /vendor(或者odm)/etc/selinux/precompiled_sepolicy; 2. /sys/fs/selinux/policy</p>
+<p>ps -aux 中进程名可以看到是从 /proc/296277/cmdline 读取到的。</p>
 
-<h2 id="android-p">Android P</h2>
+<p class="warning">上面列出来proc信息，可以从<a href="http://man7.org/linux/man-pages/man5/proc.5.html">proc文件内容介绍</a>获取更详细的介绍。</p>
 
-<h3 id="新增限制">新增限制</h3>
+<h3 id="小结">小结</h3>
 
-<p>升级 Android P 后发现 property 新增了一个 neverallow(neverallow 用于限制配置，明确指定不能干什么)。来看下该 neverallow：</p>
+<p>从上面实验中可以看到，进程名主要是通过 /proc/进程号/stat 和 /proc/进程号/cmdline 文件中获取。</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#https://cs.android.com/android/platform/superproject/+/android-9.0.0_r11:system/sepolicy/public/property.te;l=314</span>
-compatible_property_only<span class="o">(</span><span class="sb">`</span>
-  <span class="c"># Neverallow coredomain to set vendor properties</span>
-  neverallow <span class="o">{</span>
-    coredomain
-    <span class="nt">-init</span>
-    <span class="nt">-system_writes_vendor_properties_violators</span>
-  <span class="o">}</span> <span class="o">{</span>
-    property_type
-    <span class="nt">-apexd_prop</span>
-    <span class="nt">-audio_prop</span>
-    <span class="nt">-bluetooth_a2dp_offload_prop</span>
-    <span class="nt">-bluetooth_audio_hal_prop</span>
-    <span class="nt">-bluetooth_prop</span>
-    <span class="nt">-bootloader_boot_reason_prop</span>
-    <span class="nt">-boottime_prop</span>
-    <span class="nt">-bpf_progs_loaded_prop</span>
-    <span class="nt">-config_prop</span>
-    <span class="nt">-cppreopt_prop</span>
-    <span class="nt">-ctl_adbd_prop</span>
-    <span class="nt">-ctl_bootanim_prop</span>
-    <span class="nt">-ctl_bugreport_prop</span>
-    <span class="nt">-ctl_console_prop</span>
-    <span class="nt">-ctl_default_prop</span>
-    <span class="nt">-ctl_dumpstate_prop</span>
-    <span class="nt">-ctl_fuse_prop</span>
-    <span class="nt">-ctl_gsid_prop</span>
-    <span class="nt">-ctl_interface_restart_prop</span>
-    <span class="nt">-ctl_interface_start_prop</span>
-    <span class="nt">-ctl_interface_stop_prop</span>
-    <span class="nt">-ctl_mdnsd_prop</span>
-    <span class="nt">-ctl_restart_prop</span>
-    <span class="nt">-ctl_rildaemon_prop</span>
-    <span class="nt">-ctl_sigstop_prop</span>
-    <span class="nt">-ctl_start_prop</span>
-    <span class="nt">-ctl_stop_prop</span>
-    <span class="nt">-dalvik_prop</span>
-    <span class="nt">-debug_prop</span>
-    <span class="nt">-debuggerd_prop</span>
-    <span class="nt">-default_prop</span>
-    <span class="nt">-device_logging_prop</span>
-    <span class="nt">-dhcp_prop</span>
-    <span class="nt">-dumpstate_options_prop</span>
-    <span class="nt">-dumpstate_prop</span>
-    <span class="nt">-exported2_config_prop</span>
-    <span class="nt">-exported2_default_prop</span>
-    <span class="nt">-exported2_radio_prop</span>
-    <span class="nt">-exported2_system_prop</span>
-    <span class="nt">-exported2_vold_prop</span>
-    <span class="nt">-exported3_default_prop</span>
-    <span class="nt">-exported3_radio_prop</span>
-    <span class="nt">-exported3_system_prop</span>
-    <span class="nt">-exported_bluetooth_prop</span>
-    <span class="nt">-exported_config_prop</span>
-    <span class="nt">-exported_dalvik_prop</span>
-    <span class="nt">-exported_default_prop</span>
-    <span class="nt">-exported_dumpstate_prop</span>
-    <span class="nt">-exported_ffs_prop</span>
-    <span class="nt">-exported_fingerprint_prop</span>
-    <span class="nt">-exported_overlay_prop</span>
-    <span class="nt">-exported_pm_prop</span>
-    <span class="nt">-exported_radio_prop</span>
-    <span class="nt">-exported_secure_prop</span>
-    <span class="nt">-exported_system_prop</span>
-    <span class="nt">-exported_system_radio_prop</span>
-    <span class="nt">-exported_vold_prop</span>
-    <span class="nt">-exported_wifi_prop</span>
-    <span class="nt">-extended_core_property_type</span>
-    <span class="nt">-ffs_prop</span>
-    <span class="nt">-fingerprint_prop</span>
-    <span class="nt">-firstboot_prop</span>
-    <span class="nt">-device_config_activity_manager_native_boot_prop</span>
-    <span class="nt">-device_config_reset_performed_prop</span>
-    <span class="nt">-device_config_boot_count_prop</span>
-    <span class="nt">-device_config_input_native_boot_prop</span>
-    <span class="nt">-device_config_netd_native_prop</span>
-    <span class="nt">-device_config_runtime_native_boot_prop</span>
-    <span class="nt">-device_config_runtime_native_prop</span>
-    <span class="nt">-device_config_media_native_prop</span>
-    <span class="nt">-dynamic_system_prop</span>
-    <span class="nt">-gsid_prop</span>
-    <span class="nt">-heapprofd_enabled_prop</span>
-    <span class="nt">-heapprofd_prop</span>
-    <span class="nt">-hwservicemanager_prop</span>
-    <span class="nt">-last_boot_reason_prop</span>
-    <span class="nt">-system_lmk_prop</span>
-    <span class="nt">-log_prop</span>
-    <span class="nt">-log_tag_prop</span>
-    <span class="nt">-logd_prop</span>
-    <span class="nt">-logpersistd_logging_prop</span>
-    <span class="nt">-lowpan_prop</span>
-    <span class="nt">-lpdumpd_prop</span>
-    <span class="nt">-mmc_prop</span>
-    <span class="nt">-net_dns_prop</span>
-    <span class="nt">-net_radio_prop</span>
-    <span class="nt">-netd_stable_secret_prop</span>
-    <span class="nt">-nfc_prop</span>
-    <span class="nt">-overlay_prop</span>
-    <span class="nt">-pan_result_prop</span>
-    <span class="nt">-persist_debug_prop</span>
-    <span class="nt">-persistent_properties_ready_prop</span>
-    <span class="nt">-pm_prop</span>
-    <span class="nt">-powerctl_prop</span>
-    <span class="nt">-radio_prop</span>
-    <span class="nt">-restorecon_prop</span>
-    <span class="nt">-safemode_prop</span>
-    <span class="nt">-serialno_prop</span>
-    <span class="nt">-shell_prop</span>
-    <span class="nt">-system_boot_reason_prop</span>
-    <span class="nt">-system_prop</span>
-    <span class="nt">-system_radio_prop</span>
-    <span class="nt">-system_trace_prop</span>
-    <span class="nt">-test_boot_reason_prop</span>
-    <span class="nt">-test_harness_prop</span>
-    <span class="nt">-theme_prop</span>
-    <span class="nt">-time_prop</span>
-    <span class="nt">-traced_enabled_prop</span>
-    <span class="nt">-traced_lazy_prop</span>
-    <span class="nt">-vendor_default_prop</span>
-    <span class="nt">-vendor_security_patch_level_prop</span>
-    <span class="nt">-vold_prop</span>
-    <span class="nt">-wifi_log_prop</span>
-    <span class="nt">-wifi_prop</span>
-  <span class="o">}</span>:property_service <span class="nb">set</span><span class="p">;</span>
-<span class="s1">')
-</span></code></pre></div></div>
+<h2 id="隐藏技术实现">隐藏技术实现</h2>
 
-<p>可以看到限制的是除了 init 和 system_writes_vendor_properties_violators 的 coredomain， 这些 domains 不能设置上述白名单之外的 property type， 这些属于AOSP 定义的 types，所以是限制 system domains 不能设置 vendor properties，符合 Prject Treble 设计思想。</p>
+<p>/proc/进程号/stat 和 /proc/进程号/cmdline 这些接口都是内核实现的，通过阅读内核代码得到：</p>
+<ul>
+  <li>/proc/进程号/stat 中的进程名对应的可执行文件的文件名；</li>
+  <li>/proc/进程号/cmdline 内容对应的是启动该进程的使用的路径，对应的是入口函数 main(int argc, char *argv[]) 中的 argv[0]。</li>
+</ul>
 
-<h3 id="如何绕过限制">如何绕过限制？</h3>
-
-<p>由于厂商基本都会：</p>
+<p>为了实现隐藏，我们将伪造为 bash 进程， bash 进程比较常见，并且一般不会被过多关注。所以需要进行的操作有：</p>
 <ol>
-  <li>定义新的 property type，用于细粒度控制访问权限，如 platform_app 或者 system_app 设置新的property，三方 app 可以读；</li>
-  <li>coredomain 需要设置 vendor properties。</li>
+  <li>文件名修改为 bash；</li>
+  <li>运行时将 argv[0] 修改成 /bin/bash；</li>
+  <li>为了防止从 /proc/进程号/maps 中发现没有包含 /bin/bash，我们将 /bin/bash 文件 mmap 进我们的进程中。</li>
 </ol>
 
-<p>但现在增加了 neverallow 限制，这些规则在编译阶段就会报错，所以需要想办法绕过限制。</p>
+<p class="warning">2中 Android 环境中不能直接拿到argv[0] 怎么办？ 在 Unix 环境下，有定义全局变量 __progname_full， 该变量指向了 argv[0]，可以直接使用 __progname_full 进行修改，当然在 Linux 下同样适用。</p>
 
-<p>从上面可以看到限制会排除 init 和 system_writes_vendor_properties_violators，init 是 domain，不能满足要求，我们是需要 platform_app 或者 system_app 有权限。看下 system_writes_vendor_properties_violators 的定义：</p>
+<h3 id="代码示例">代码示例</h3>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="cp">#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/mman.h&gt;
+</span>
+<span class="k">extern</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">__progname_full</span><span class="p">;</span> <span class="c1">// 引入该变量</span>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># All system domains which violate the requirement of not writing vendor</span>
-<span class="c"># properties.</span>
-<span class="c"># TODO(b/78598545): Remove this once there are no violations</span>
-attribute system_writes_vendor_properties_violators<span class="p">;</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"current pid: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+	<span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+	<span class="kt">char</span> <span class="n">cmdline</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+	<span class="n">sprintf</span><span class="p">(</span><span class="n">cmdline</span><span class="p">,</span> <span class="s">"cat /proc/%d/cmdline"</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+	<span class="n">system</span><span class="p">(</span><span class="n">cmdline</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">scanf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"%d change the name: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">getpid</span><span class="p">(),</span> <span class="n">buffer</span><span class="p">);</span>
+
+	<span class="c1">//int size = strlen(__progname_full);      // 使用 __progname_full 进行修改 cmdline</span>
+	<span class="c1">//printf("name len: %d\n", size);</span>
+	<span class="c1">//memset((char *)__progname_full, 0, size);</span>
+	<span class="c1">//strcpy((char *)__progname_full, buffer);</span>
+
+	<span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>   <span class="c1">// 使用 argv[0] 进行修改 cmdline</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"name len: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+	<span class="n">memset</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+	<span class="n">strcpy</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buffer</span><span class="p">);</span>
+
+	<span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>     <span class="c1">// 打开伪造后的可执行文件， mmap 到我们进程中</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"not found the file:%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">struct</span> <span class="n">stat</span> <span class="n">st</span><span class="p">;</span>
+	<span class="n">fstat</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">st</span><span class="p">);</span>
+	<span class="kt">void</span> <span class="o">*</span><span class="n">addr</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">st</span><span class="p">.</span><span class="n">st_size</span><span class="p">,</span> <span class="n">PROT_READ</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// 可读 map</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">addr</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"mmap failed</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="kt">void</span> <span class="o">*</span><span class="n">addr1</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">st</span><span class="p">.</span><span class="n">st_size</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_WRITE</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// 读写 map</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">addr1</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"mmap1 failed</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="kt">void</span> <span class="o">*</span><span class="n">addr2</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">st</span><span class="p">.</span><span class="n">st_size</span><span class="p">,</span> <span class="n">PROT_READ</span> <span class="o">|</span> <span class="n">PROT_EXEC</span><span class="p">,</span> <span class="n">MAP_PRIVATE</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// 读可执行 map</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">addr2</span> <span class="o">==</span> <span class="n">MAP_FAILED</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"mmap2 failed</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="n">system</span><span class="p">(</span><span class="n">cmdline</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">scanf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">);</span>
+	<span class="n">munmap</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">st</span><span class="p">.</span><span class="n">st_size</span><span class="p">);</span>
+	<span class="n">munmap</span><span class="p">(</span><span class="n">addr1</span><span class="p">,</span> <span class="n">st</span><span class="p">.</span><span class="n">st_size</span><span class="p">);</span>
+	<span class="n">munmap</span><span class="p">(</span><span class="n">addr2</span><span class="p">,</span> <span class="n">st</span><span class="p">.</span><span class="n">st_size</span><span class="p">);</span>
+	<span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h4 id="执行结果">执行结果</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>current pid: 301929  <span class="c"># 当前进程</span>
+/home/f/doing/linux/change_name/bash  <span class="c"># 伪造前 cmdline</span>
+/bin/bash <span class="c"># 要伪造的可执行文件</span>
+301929 change the name: /bin/bash
+name len: 36
+/bin/bash <span class="c"># 伪造后的 cmdline</span>
 
 </code></pre></div></div>
-<p>首先是 attribute，不是具体的 type， 并且从注释上看到，表示 system domains 违反去写 vendor properties 的集合。这个也是 google 用于在升级中故意新增的，用于临时绕过 neverallow 限制。所以，我们可以需要违反 neverallow 的添加上该 attribute。</p>
+<h3 id="工具查看结果">工具查看结果</h3>
 
-<p><strong>解决方案为：  为需要违反的 domain 添加 system_writes_vendor_properties_violators。</strong></p>
+<h4 id="ps--aux-查看">ps -aux 查看</h4>
 
-<p>如要给 platform_app 添加，配置下面规则：</p>
+<p><img src="/assets/pictures/hide_process/ps.png" alt="graph" /></p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    typeattribute platform_app system_writes_vendor_properties_violators<span class="p">;</span>
-</code></pre></div></div>
+<h4 id="top-查看">top 查看</h4>
 
-<h2 id="android-q">Android Q</h2>
+<p><img src="/assets/pictures/hide_process/top.png" alt="graph" /></p>
 
-<h3 id="新增限制-1">新增限制</h3>
+<p>可以看到都已经是 bash。</p>
 
-<p>google 在 GTS 中新增了一条测试 case:</p>
+<h2 id="技术对抗">技术对抗</h2>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>com.google.android.security.gts.SELinuxHostTest#testNoExemptionsForCoreWritingVendorSysprops
-</code></pre></div></div>
+<p>上述隐藏方式可以骗过 ps 和 top 工具，但是只是修改了名字，但可执行文件等信息没有改变，所以从其他信息可以推断出是进程名是伪造的，下面阐述几种方式。</p>
 
-<p>SELinuxHostTest 是在 GTS GtsSecurityHostTestCases.jar 中，使用 JD-GUI 反编译找到 testNoExemptionsForCoreWritingVendorSysprops 方法：</p>
+<h3 id="proc进程名exe">/proc/进程名/exe</h3>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testNoExemptionsForCoreWritingVendorSysprops</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">mFirstApiLevel</span> <span class="o">&lt;</span> <span class="mi">29</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 使用 firstApi 排除升级的老机型</span>
-      <span class="k">return</span><span class="o">;</span>
-    <span class="o">}</span>
-    
-    <span class="c1">// 是获取有 attribute 是 system_writes_vendor_properties_violators 的 domain</span>
-    <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">types</span> <span class="o">=</span> <span class="n">sepolicyAnalyzeGetTypesAssociatedWithAttribute</span><span class="o">(</span><span class="s">"system_writes_vendor_properties_violators"</span><span class="o">);</span> 
-    
-    <span class="k">if</span> <span class="o">(!</span><span class="n">types</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
-      <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">sortedTypes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;(</span><span class="n">types</span><span class="o">);</span>
-      <span class="nc">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">sortedTypes</span><span class="o">);</span>
-      <span class="n">fail</span><span class="o">(</span><span class="s">"Policy exempts core domains from ban on writing vendor system properties: "</span> <span class="o">+</span> <span class="n">sortedTypes</span><span class="o">);</span> <span class="c1">// 不为空，则测试失败</span>
-    <span class="o">}</span> 
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
+<p>在 /proc/进程名/exe 中保存的真正执行的可执行文件，所以可以将该文件和伪造后的 /bin/bash 文件对比，若发现不同可以证明进程名是伪造的，但此时还不能确认真正的可执行文件，只能和文件系统中的其他可执行文件对比进行确认。</p>
 
-<p>从上面看到： 1）针对的是 Q 新机型； 2）若指定有 system_writes_vendor_properties_violators 的则失败，即不能为 domain 指定 system_writes_vendor_properties_violators。</p>
+<h3 id="proc进程名maps">/proc/进程名/maps</h3>
 
-<p>所有针对 Q 新机型，不能采用 P 绕过方式。</p>
+<p>Linux 中内存的布局是有一定的规律的，如下图，地址从低到高，分别是ELF可执行文件、Data和Bss区域、HEAP、memory map区域、stack等。我们可以根据这些信息来确认真正的可执行文件。</p>
 
-<h3 id="如何绕过限制-1">如何绕过限制？</h3>
+<p><img src="/assets/pictures/hide_process/linux_memory_map.png" alt="graph" /></p>
 
-<h4 id="使用现有的-aosp-property-type">使用现有的 AOSP property type</h4>
+<p>来看下伪造进程的内存布局：</p>
 
-<p>Neverallow 不能从 domain 进行绕过，只能选择从 property type，即不能定义新的 property，只能使用现有的。这样有两个弊端：</p>
+<p><img src="/assets/pictures/hide_process/proc_maps.png" alt="graph" /></p>
 
-<ol>
-  <li>不能对权限细粒度控制，只能在现有权限的基础上增加，而不能减少，这样修改的话势必导致权限扩大；</li>
-  <li>type 名字选择都是有意义，但现在只能从权限和名字上找到平衡，可能权限满足，但名字意义差太远。</li>
-</ol>
+<p>从上面可以看出来，红色框是ELF可执行文件、Data和Bss区域，其实就是进程的真正可执行文件，接着是 HEAP，后面是我们 mmap 伪造的 bash 文件，所以通过 /proc进程名/maps  可以确认出真正的可执行文件为 /home/f/doing/linux/change_name/bash。</p>
 
-<p>那有没有更好的方式？</p>
+<h3 id="小结-1">小结</h3>
 
-<h4 id="定义新的-property-type">定义新的 property type</h4>
+<p>上面中 /proc/进程名/exe 能简单判断出进程名是否伪造，但不能确认真正的可执行文件，而通过 /proc/进程名/maps 可以非常直观的看到可执行文件的信息。除了这两种方式外，可能还有其他方法，比如 /proc/进程名/status 中 VmExe 字段，该字段是记录 text 段大小，和显示的可执行文件进行对比，确认是否有伪造。</p>
 
-<p>通过对 neverallow 中的每个 type 分析，发现 extended_core_property_type 是 attribute，而不是具体的 type：</p>
+<h2 id="总结">总结</h2>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="c"># All properties that are not specific to device but are added from</span>
-<span class="c"># outside of AOSP. (e.g. OEM-specific properties)</span>
-<span class="c"># These properties are not accessible from device-specific domains</span>
-attribute extended_core_property_type<span class="p">;</span>
+<p>虽然原理上比较简单，但是提醒我们有这么一种方式，可以简单的骗过我们通过ps和top看到的信息。若发现系统中有异常，也可以通过技术对抗中提到的方式，确认是否有恶意程序存在。</p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-03-22T19:12:00+08:00"><!-- start custom article footer snippet -->
 
-</code></pre></div></div>
-
-<p>从注释可以看到，这个 attribute 是 google 专门给厂商保留的，太好了。 但是 “These properties are not accessible from device-specific domains” 表示 device-specific domains 不能访问，来看下是怎么限制的：</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Prevent properties from being read</span>
-  neverallow <span class="o">{</span>
-    domain
-    <span class="nt">-coredomain</span>
-    <span class="nt">-appdomain</span>
-    <span class="nt">-vendor_init</span>
-  <span class="o">}</span> <span class="o">{</span>
-    core_property_type
-    extended_core_property_type <span class="c"># it</span>
-    exported_dalvik_prop
-    exported_ffs_prop
-    exported_system_radio_prop
-    exported2_config_prop
-    exported2_system_prop
-    exported2_vold_prop
-    exported3_default_prop
-    exported3_system_prop
-    <span class="nt">-debug_prop</span>
-    <span class="nt">-logd_prop</span>
-    <span class="nt">-nfc_prop</span>
-    <span class="nt">-powerctl_prop</span>
-    <span class="nt">-radio_prop</span>
-  <span class="o">}</span>:file no_rw_file_perms<span class="p">;</span>
-</code></pre></div></div>
-
-<p>可以看到除了 coredomain, appdomain, vendor_init 外都不能访问，那这种方式定义的 property 只能由 coredomain, appdomain 和 vendor_init 来访问。虽然有限制，但是已经能满足大部分需求，如上面提到的规则： platform_app 或者 system_app 设置，三方 apps 去读。</p>
-
-<p><strong>解决方案：为新定义的 property type 指定 extended_core_property_type。</strong></p>
-
-<p class="warning">这种方式 vendor domain没有权限去读写。</p>
-
-<h2 id="思考">思考</h2>
-
-<p>如果有需求是需要 coredomain 和 vendor domain 同时有读写权限，那怎么办？</p>
-
-<p>目前来看，新建 property type不能满足需求，现有 AOSP 存在的 property type 如果没有限制，也尽量不要使用，防止以后有变动，建议：</p>
-
-<p><strong>1. 业务逻辑上重新设计，尽量避免这种情况出现；</strong></p>
-
-<p><strong>2. 使用 init 或者 vendor_init 代替设置，init 和 vendor_init 权限较高，并且限制较少，如对 init script 中配置自动 setprop 规则。</strong></p>
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-02-29T08:53:00+08:00"><!-- start custom article footer snippet -->
-
-<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/01/11/auto_input_and_click.html">Python实现自动化点击和输入功能</a></div><div class="next"><span>NEXT</span><a href="/2020/03/22/hide_process.html">Linux 下如何隐藏自己不被发现？</a></div></div></div>
+<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/02/29/coredomain_create_new_property.html">Coredomain 创建新的 property type</a></div></div></div>
 
 </div>
 
@@ -631,7 +562,7 @@ attribute extended_core_property_type<span class="p">;</span>
 				repo: 'liwugang.github.io',
 				owner: 'liwugang',
 				admin: ['liwugang'],
-				id: 'coredomain_new_property'
+				id: 'hide_process'
 			});
 			gitalk.render('js-gitalk-container');
 		});
