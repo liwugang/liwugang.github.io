@@ -14,7 +14,7 @@
 
 <meta name="description" content="Patient && Courage
 ">
-<link rel="canonical" href="https://liwugang.github.io/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://liwugang.github.io/page3/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -285,132 +285,33 @@
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/04/12/reverse_with_frida.html"><h2 itemprop="headline" class="item__header">使用frida hook插件化apk</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近拿到一个XX视频apk样本，里面有视频、直播和小说，没有VIP只能试看30秒，刚好最近学习frida，用来练习下，分析过程中发现是一个插件化的apk，本文记录下分析的过程。</div><p><a href="/2020/04/12/reverse_with_frida.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=frida">frida</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=reverse">reverse</a>
-            </li><li>
+          <header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
+LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
+
+原理
+
+LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
+LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-04-12T10:08:00+08:00">
-    <meta itemprop="keywords" content="frida,reverse,Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/03/22/hide_process.html"><h2 itemprop="headline" class="item__header">Linux 下如何隐藏自己不被发现？</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
-隐藏有两种方法：
-
-  kernel 层面，不对用户层暴露该进程的信息，进程不被看见；
-  用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达到隐藏自己的目的。
-
-
-方法一是需要修改内核，本文主要是讲第二种方法。</div><p><a href="/2020/03/22/hide_process.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Linux">Linux</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Security">Security</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 22, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-03-22T19:12:00+08:00">
-    <meta itemprop="keywords" content="Linux,Security"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/02/29/coredomain_create_new_property.html"><h2 itemprop="headline" class="item__header">Coredomain 创建新的 property type</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">背景
-
-Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</div><p><a href="/2020/02/29/coredomain_create_new_property.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=SELinux">SELinux</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 29, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-02-29T08:53:00+08:00">
-    <meta itemprop="keywords" content="SELinux,Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/01/11/auto_input_and_click.html"><h2 itemprop="headline" class="item__header">Python实现自动化点击和输入功能</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">背景
-
-由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。</div><p><a href="/2020/01/11/auto_input_and_click.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 11, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-11T19:48:00+08:00">
-    <meta itemprop="keywords" content="Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/01/01/filecrypt_aes.html"><h2 itemprop="headline" class="item__header">filecrypt工具加解密大文件失败问题分析</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</div><p><a href="/2020/01/01/filecrypt_aes.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=filecrypt">filecrypt</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=AES">AES</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 01, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-01T10:39:00+08:00">
-    <meta itemprop="keywords" content="filecrypt,AES"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2019/12/30/git_commits_en.html"><h2 itemprop="headline" class="item__header">A Tool To Automate Multiple Commits Into One</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that git rebase -i can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to au...</div><p><a href="/2019/12/30/git_commits_en.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=git">git</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 30, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-30T21:55:00+08:00">
-    <meta itemprop="keywords" content="git"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2019/12/29/CTS-neverallow.html"><h2 itemprop="headline" class="item__header">Android CTS中neverallow规则生成过程</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</div><p><a href="/2019/12/29/CTS-neverallow.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=CTS">CTS</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=SELinux">SELinux</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 29, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-29T08:51:00+08:00">
-    <meta itemprop="keywords" content="Android,CTS,SELinux"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2019/07/06/arm_stm_and_ldm.html"><h2 itemprop="headline" class="item__header">ARM中的STM和LDM指令的解析</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">STM指令
-
-STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。
-
-  格式： STM[xx] Rn[!], registers
-
-
-Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。
-
-xx用于确认放置根据下面两个条件区分：
-1.base地址之前和之后;
-2.地址是放置前增加还是后增加。
-
-由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。
-
-
-  
-...</div><p><a href="/2019/07/06/arm_stm_and_ldm.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=arm">arm</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jul 06, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-07-06T14:00:00+08:00">
-    <meta itemprop="keywords" content="arm"></div>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 07, 2016</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
+    <meta itemprop="keywords" content="Android"></div>
       </article></div>
 </div><div class="layout--home"><div class="pagination"><p>17 post articles, 3 pages.</p>
     <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
+      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
             <i class="fas fa-angle-left"></i>
-          </div></li><li>
-              <div class="button button--primary button--circle focus"><span>1</span></div>
+          </a></li><li>
+              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
             </li><li>
                 <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
               </li><li>
-                <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page2">
+              <div class="button button--primary button--circle focus"><span>3</span></div>
+            </li><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-right"></i>
-          </a></li></ul>
+          </div></li></ul>
     </div>
   </div></div>
 <script>/*(function () {

@@ -1,5 +1,341 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-03-22T22:11:12+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Linux 下如何隐藏自己不被发现？</title><link href="https://liwugang.github.io/2020/03/22/hide_process.html" rel="alternate" type="text/html" title="Linux 下如何隐藏自己不被发现？" /><published>2020-03-22T19:12:00+08:00</published><updated>2020-03-22T19:12:00+08:00</updated><id>https://liwugang.github.io/2020/03/22/hide_process</id><content type="html" xml:base="https://liwugang.github.io/2020/03/22/hide_process.html">&lt;p&gt;可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-04-12T10:11:31+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">使用frida hook插件化apk</title><link href="https://liwugang.github.io/2020/04/12/reverse_with_frida.html" rel="alternate" type="text/html" title="使用frida hook插件化apk" /><published>2020-04-12T10:08:00+08:00</published><updated>2020-04-12T10:08:00+08:00</updated><id>https://liwugang.github.io/2020/04/12/reverse_with_frida</id><content type="html" xml:base="https://liwugang.github.io/2020/04/12/reverse_with_frida.html">&lt;p&gt;最近拿到一个XX视频apk样本，里面有视频、直播和小说，没有VIP只能试看30秒，刚好最近学习frida，用来练习下，分析过程中发现是一个插件化的apk，本文记录下分析的过程。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;初步分析&quot;&gt;初步分析&lt;/h2&gt;
+
+&lt;p&gt;首先从AndroidManifest.xml中获取到apk的包名，并且查看下activity情况：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/activity.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;发现只有4个Activity，正常情况下一个apk肯定不止这些，所以初步怀疑这只是外壳，真正逻辑是在其他地方，会动态加载进来。&lt;/p&gt;
+
+&lt;h3 id=&quot;ps-查看&quot;&gt;ps 查看&lt;/h3&gt;
+&lt;p&gt;打开apk
+&lt;img src=&quot;/assets/pictures/frida_hook_shadow/ps.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到有两个进程，从上图也可以看到，2、3和4处的Activity是运行在plugin进程中，为了确认下视频播放所在的进程，使用dumpsys meminfo查看&lt;/p&gt;
+
+&lt;h3 id=&quot;dumpsys-meminfo查看&quot;&gt;dumpsys meminfo查看&lt;/h3&gt;
+&lt;p&gt;打开任意播放界面&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/dumpsys_memory.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;确认视频播放是在plugin进程中，此时真正的逻辑已经加载到进程中，查看下plugin进程的maps&lt;/p&gt;
+
+&lt;h3 id=&quot;cat-proc7906maps&quot;&gt;cat /proc/7906/maps&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/apk.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从上图可以看到，真正逻辑所在的apk是plugin-shadow-apk-debug.apk，是在该apk的私有文件目录中。&lt;/p&gt;
+
+&lt;p&gt;从代码中分析也可知道，此apk是插件化apk，使用的是腾讯开源的插件化框架&lt;a href=&quot;https://github.com/Tencent/Shadow&quot;&gt;Shadow&lt;/a&gt;，感兴趣的可以去了解下。&lt;/p&gt;
+
+&lt;h2 id=&quot;定位关键代码&quot;&gt;定位关键代码&lt;/h2&gt;
+
+&lt;p&gt;既然已经找到真正的apk，那我们就需要定位到关键代码地方。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/screen.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;字符串定位&quot;&gt;字符串定位&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/string.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从字符串中定位到有多个类满足，此时一个一个去分析排查太耗时，接下来通过frida来枚举出所有加载的类。&lt;/p&gt;
+
+&lt;h3 id=&quot;frida枚举所有加载的类&quot;&gt;frida枚举所有加载的类&lt;/h3&gt;
+
+&lt;p&gt;Java.enumerateLoadedClasses(callbacks) 是用来枚举当前所有加载的类，通过和上述几个关键类对比来找到实际调用的类，callbacks需要提供回调函数，对应onMatch和onComplete。具体如下面：&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+	&lt;span class=&quot;c1&quot;&gt;// 上述搜索到的多个类&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key_class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.facebook.plugin.widget.dkplayer.controller.PlayerVideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                     &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.widget.dkplayer.controller.PlayerVideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                     &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.facebook.plugin.widget.dkplayer.controller.VideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                     &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enumerateLoadedClasses&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onMatch&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;handle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;key_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onComplete&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;success&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;第一行为输出结果，即表示当前使用的类为 com.iqiyi.plugin.widget.dkplayer.controller.VideoController；&lt;/p&gt;
+
+&lt;p&gt;第二行为执行完成的日志。&lt;/p&gt;
+
+&lt;h3 id=&quot;videocontroller-类分析&quot;&gt;VideoController 类分析&lt;/h3&gt;
+
+&lt;p&gt;找到字符串位置&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setProgress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	  	&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;tryWatchTv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;position&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 如果是试看&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stopPlayTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nc&quot;&gt;TextView&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;tryWatchTv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;nc&quot;&gt;StringBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stringBuilder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;stringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;剩余试看时间: &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 此处是我们看到的字符串&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;stringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringForTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isVip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 此处是通过isVip变量执行不同逻辑&lt;/span&gt;
+            &lt;span class=&quot;nc&quot;&gt;StringBuilder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stringBuilder2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;stringBuilder2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;position = &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;stringBuilder2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;stringBuilder2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; showVipHintTime = &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;stringBuilder2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showVipHintTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nc&quot;&gt;LogHelper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringBuilder2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showVipHintTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showVipHintTime&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;vipHintView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setVisibility&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;vipHintView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setVisibility&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stopPlayTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;mMediaPlayer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;pause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;可以看到类中通过isVip变量来执行不同逻辑，继续看下isVip是如何设置的&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isVip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isVip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isVip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;tryWatchTv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setVisibility&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isVip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isVip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;vipHintView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setVisibility&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以看到当前类有setVip方法，用于设置该变量，此时可以不用在继续分析调用者，最终都会调用此处，所以我们可以使用frida hook该方法。&lt;/p&gt;
+
+&lt;h2 id=&quot;frida-hook-setvip&quot;&gt;frida hook setVip&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;videoController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;videoController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;hook setVip&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Error: java.lang.ClassNotFoundException: Didn&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;t find class &quot;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&quot; on path: DexPathList[[dex file &quot;InMemoryDexFile[cookie=[0, 3983850208]]&quot;, zip file &quot;/system/framework/org.apache.http.legacy.boot.jar&quot;, zip file &quot;/data/app/com.iqiyi.vider-U7T4aZIQOQyXS5iLBgsNGw==/base.apk&quot;],nativeLibraryDirectories=[/data/app/com.iqiyi.vider-U7T4aZIQOQyXS5iLBgsNGw==/lib/arm, /data/app/com.iqiyi.vider-U7T4aZIQOQyXS5iLBgsNGw==/base.apk!/lib/armeabi-v7a, /system/lib]]&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;stack&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Error: java.lang.ClassNotFoundException: Didn&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;t find class &quot;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&quot; on path: DexPathList[[dex file &quot;InMemoryDexFile[cookie=[0, 3983850208]]&quot;, zip file &quot;/system/framework/org.apache.http.legacy.boot.jar&quot;, zip file &quot;/data/app/com.iqiyi.vider-U7T4aZIQOQyXS5iLBgsNGw==/base.apk&quot;],nativeLibraryDirectories=[/data/app/com.iqiyi.vider-U7T4aZIQOQyXS5iLBgsNGw==/lib/arm, /data/app/com.iqiyi.vider-U7T4aZIQOQyXS5iLBgsNGw==/base.apk!/lib/armeabi-v7a, /system/lib]]&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/lib/env.js:124&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/lib/class-factory.js:400&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/lib/class-factory.js:781&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/lib/class-factory.js:90&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/lib/class-factory.js:44&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at /script1.js:23&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/lib/vm.js:11&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/index.js:368&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;    at frida/node_modules/frida-java-bridge/index.js:318&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;frida/node_modules/frida-java-bridge/lib/env.js&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;lineNumber&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;124&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;columnNumber&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从运行结果来看，出现ClassNotFoundException错误，说明没有找到我们要hook的类。&lt;/p&gt;
+
+&lt;h3 id=&quot;frida枚举classloader&quot;&gt;frida枚举classloader&lt;/h3&gt;
+
+&lt;p&gt;由于是插件化apk，类加载是在插件化框架自定义的，所以classloader不能使用默认的。我们可以使用Java.enumerateClassLoaders(callbacks)来打印出所有的加载器。&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	    &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enumerateClassLoaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onMatch&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onComplete&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/classloader.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;由上面分析可知，真正逻辑代码是在plugin-shadow-apk-debug.apk中，那该apk对应的classloader是com.tencent.shadow.core.loader.classloaders.PluginClassLoader。&lt;/p&gt;
+
+&lt;h3 id=&quot;frida指定classloader&quot;&gt;frida指定classloader&lt;/h3&gt;
+
+&lt;p&gt;来看下Java.ClassFactory中loader的介绍：”read-only property providing a wrapper for the class loader currently being used.”，loader是当前classloader的wrapper，我们修改classloader可以通过修改该字段。Java.classFactory是默认的class factory，所以我们需要修改的是Java.classFactory.loader。&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enumerateClassLoaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onMatch&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;startsWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.tencent.shadow.core.loader.classloaders.PluginClassLoader&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 将当前class factory中的loader指定为我们需要的&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onComplete&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;最终脚本&quot;&gt;最终脚本&lt;/h3&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enumerateClassLoaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onMatch&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;startsWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.tencent.shadow.core.loader.classloaders.PluginClassLoader&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 将当前class factory中的loader指定为我们需要的&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onComplete&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+	&lt;span class=&quot;c1&quot;&gt;// 此处需要使用Java.classFactory.use&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;videoController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;videoController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;hook setVip&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/setvip.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到，我们已经成功hook，并且视频上已经没有显示剩余时间。&lt;/p&gt;
+
+&lt;h2 id=&quot;frida-hook-enum&quot;&gt;frida hook enum&lt;/h2&gt;
+
+&lt;p&gt;直播和小说的vip判断和视频是不一致的，是通过enum中VIP字段值和1进行对比来判断，具体定位过程和上面类似。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/frida_hook_shadow/enum.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;判断代码为：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;if (TextUtils.equals(“1”, PluginEnum.VIP.getValue())) {…}&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;enum测试&quot;&gt;enum测试&lt;/h3&gt;
+
+&lt;p&gt;我们的目的是为了hook VIP，但是对enum的这种用法不是很熟，于是写了个测试程序，来进一步了解&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+   
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;TestEnum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;使用javap打开对应的class文件：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;Compiled&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;TestEnum.java&quot;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;Enum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestEnum&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;valueOf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{};&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从这里可以很明显看到， A、B和C都属于TestEnum中的静态成员变量。来看下调用的smali代码：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;n&quot;&gt;sget&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Lcom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iqiyi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;PluginEnum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;VIP:&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Lcom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iqiyi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;PluginEnum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;invoke&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Lcom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iqiyi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;PluginEnum&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Ljava&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从smali上也能看出来类似的逻辑，VIP是com/iqiyi/plugin/base/PluginEnum的静态成员，然后在调用getValue()方法。所以我们hook com/iqiyi/plugin/base/PluginEnum类的getValue方法，然后判断调用者是否为VIP。&lt;/p&gt;
+
+&lt;h3 id=&quot;最终脚本-1&quot;&gt;最终脚本&lt;/h3&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pluginEnum&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.base.PluginEnum&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;java.lang.String&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;pluginEnum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;VIP&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 此时this 或者 this.getString() 返回的是静态成员名&lt;/span&gt;
+            &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;vip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 调用 setValue 修改VIP值&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;整体脚本&quot;&gt;整体脚本&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enumerateClassLoaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onMatch&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;startsWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.tencent.shadow.core.loader.classloaders.PluginClassLoader&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;onComplete&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;videoController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.widget.dkplayer.controller.VideoController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;videoController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;hook setVip&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setVip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pluginEnum&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;com.iqiyi.plugin.base.PluginEnum&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;java.lang.String&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;pluginEnum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;VIP&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;vip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;通过对该样本的分析，逆向找寻关键代码相对简单，但是在使用frida hook时相对难点，特别是对于frida和插件化不熟的情况下。本文涉及到的有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;frida枚举所有加载的类；&lt;/li&gt;
+  &lt;li&gt;frida枚举classloader；&lt;/li&gt;
+  &lt;li&gt;frida对enum的hook。&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="frida" /><category term="reverse" /><category term="Android" /><summary type="html">最近拿到一个XX视频apk样本，里面有视频、直播和小说，没有VIP只能试看30秒，刚好最近学习frida，用来练习下，分析过程中发现是一个插件化的apk，本文记录下分析的过程。</summary></entry><entry><title type="html">Linux 下如何隐藏自己不被发现？</title><link href="https://liwugang.github.io/2020/03/22/hide_process.html" rel="alternate" type="text/html" title="Linux 下如何隐藏自己不被发现？" /><published>2020-03-22T19:12:00+08:00</published><updated>2020-03-22T19:12:00+08:00</updated><id>https://liwugang.github.io/2020/03/22/hide_process</id><content type="html" xml:base="https://liwugang.github.io/2020/03/22/hide_process.html">&lt;p&gt;可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
 隐藏有两种方法：&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;kernel 层面，不对用户层暴露该进程的信息，进程不被看见；&lt;/li&gt;
@@ -1561,333 +1897,4 @@ eof
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="frida" /><summary type="html">背景 最近在学习frida，就拿OWASP上的crackme进行练习，下载地址，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。 UnCrackable App for Android Level 1 #!/usr/bin/python3 import frida import sys def on_message(message, data): if message['type'] == 'send': print(&quot;[*] {0}&quot;.format(message['payload'])) else: print(message) pid = frida.get_usb_device().spawn([&quot;owasp.mstg.uncrackable1&quot;]) # 打开app process = frida.get_usb_device().attach(pid) content = &quot;&quot; with open(&quot;script_one.js&quot;) as f: content = f.read() if len(content) == 0: print(&quot;not found script&quot;) exit(0) script = process.create_script(content) script.on(&quot;message&quot;, on_message) script.load() frida.get_usb_device().resume(pid) sys.stdin.read() // hook root检测的三个方法，hook计算password的方法 Java.perform(function() { var checkClass = Java.use(&quot;sg.vantagepoint.a.c&quot;); checkClass.a.implementation = function() { var result = this.a(); send(&quot;function a: &quot; + result); return false; }; checkClass.b.implementation = function() { var result = this.b(); send(&quot;function b: &quot; + result); return false; }; checkClass.c.implementation = function() { var result = this.c(); send(&quot;function c: &quot; + result); return false; }; var password = &quot;&quot;; var passwordClass = Java.use(&quot;sg.vantagepoint.a.a&quot;); passwordClass.a.implementation = function() { var result = this.a(arguments[0],arguments[1]); for(var i = 0; i &amp;lt; result.length; i++) { password += String.fromCharCode(result[i]); } send(&quot;password: &quot; + password); return result; }; });</summary></entry><entry><title type="html">简单C++ crackme分析</title><link href="https://liwugang.github.io/2019/05/11/crackme_cpp_one.html" rel="alternate" type="text/html" title="简单C++ crackme分析" /><published>2019-05-11T15:20:00+08:00</published><updated>2019-05-11T15:20:00+08:00</updated><id>https://liwugang.github.io/2019/05/11/crackme_cpp_one</id><content type="html" xml:base="https://liwugang.github.io/2019/05/11/crackme_cpp_one.html">&lt;p&gt;该crackme来自于&lt;a href=&quot;https://www.root-me.org/en/Challenges/Cracking/ELF-C-0-protection&quot;&gt;这里&lt;/a&gt;,也可以从&lt;a href=&quot;https://liwugang.github.io/assets/crackme/cpp_001&quot;&gt;这里&lt;/a&gt;下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。&lt;/p&gt;
-
-&lt;h1 id=&quot;工具选择&quot;&gt;工具选择&lt;/h1&gt;
-
-&lt;p&gt;Linux静态分析工具使用&lt;a href=&quot;https://github.com/radareorg/cutter&quot;&gt;cutter&lt;/a&gt;, ，但由于cutter对C++的函数识别不好，故也使用IDA一起进行分析。&lt;/p&gt;
-
-&lt;h1 id=&quot;静态分析&quot;&gt;静态分析&lt;/h1&gt;
-
-&lt;p&gt;先静态分析，了解程序的大概轮廓，并找到关键部分，在结合动态调试，可以达到事半功倍的效果。&lt;/p&gt;
-
-&lt;h2 id=&quot;搜索关键字符串&quot;&gt;搜索关键字符串&lt;/h2&gt;
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;08048&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DFC&lt;/span&gt;	&lt;span class=&quot;mo&quot;&gt;00000037&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;Bravo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tu&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;peux&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;valider&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;en&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;utilisant&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ce&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mot&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;de&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;08048E34&lt;/span&gt;	&lt;span class=&quot;mo&quot;&gt;00000031&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;Congratz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;You&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;can&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;validate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 可以推断出来这是成功的提示&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;08048E65&lt;/span&gt;	&lt;span class=&quot;mo&quot;&gt;00000014&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;Password&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;incorrect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 这是失败的提示&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;根据字符串来看流程&quot;&gt;根据字符串来看流程&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/crackme_cpp_one/graph.jpg&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;图中蓝色部分为上面成功的提示的地方，所以需要执行的代码路径为1–&amp;gt; 2 –&amp;gt; 3。&lt;/p&gt;
-
-&lt;h2 id=&quot;模块1&quot;&gt;模块1&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;  int main (int argc, char **argv, char **envp);
-|           ; var int var_16h @ ebp-0x16
-|           ; var int var_15h @ ebp-0x15
-|           ; var int var_14h @ ebp-0x14
-|           ; var int var_10h @ ebp-0x10
-|           ; var int var_ch @ ebp-0xc
-|           ; var int var_8h_2 @ ebp-0x8
-|           ; var char *var_4h @ esp+0x4
-|           ; var int var_8h @ esp+0x8
-|           ; DATA XREF from entry0 (0x80488a7)
-|           0x08048a86      lea       ecx, [var_4h] ; 为argc的地址
-|           0x08048a8a      and       esp, 0xfffffff0
-|           0x08048a8d      push      dword [ecx - 4]
-|           0x08048a90      push      ebp
-|           0x08048a91      mov       ebp, esp
-|           0x08048a93      push      ebx
-|           0x08048a94      push      ecx
-|           0x08048a95      sub       esp, 0x20
-|           0x08048a98      mov       ebx, ecx
-|           0x08048a9a      cmp       dword [ebx], 1；对argc即参数的个数和1对比
-|       ,=&amp;lt; 0x08048a9d      jg        0x8048aee；如果大于1, 跳转到0x8048aee,也即我们的第2部分
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;需要我们至少password作为第2个参数。&lt;/p&gt;
-
-&lt;h2 id=&quot;模块2&quot;&gt;模块2&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;text:08048AEE loc_8048AEE:                            ; CODE XREF: main+17↑j
-.text:08048AEE                 lea     eax, [ebp+var_15]
-.text:08048AF1                 mov     [esp], eax
-.text:08048AF4                 call    __ZNSaIcEC1Ev   ; std::allocator&amp;lt;char&amp;gt;::allocator(void)
-.text:08048AF9                 lea     eax, [ebp+var_15]
-.text:08048AFC                 mov     [esp+8], eax ; 参数3
-.text:08048B00                 mov     dword ptr [esp+4], offset unk_8048DC4 ;参数2
-.text:08048B08                 lea     eax, [ebp+var_C]
-.text:08048B0B                 mov     [esp], eax ;参数1
-.text:08048B0E                 call    __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string1，是以unk_8048DC4作为字符串，保存在[ebp+var_C]
-.text:08048B13                 lea     eax, [ebp+var_16]
-.text:08048B16                 mov     [esp], eax
-.text:08048B19                 call    __ZNSaIcEC1Ev   ; std::allocator&amp;lt;char&amp;gt;::allocator(void)
-.text:08048B1E                 lea     eax, [ebp+var_16]
-.text:08048B21                 mov     [esp+8], eax ; 参数3
-.text:08048B25                 mov     dword ptr [esp+4], offset unk_8048DCC ;参数2
-.text:08048B2D                 lea     eax, [ebp+var_10]
-.text:08048B30                 mov     [esp], eax ;参数1
-.text:08048B33                 call    __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string2，是以unk_8048DCC作为字符串，保存在[ebp+var_10]
-.text:08048B38                 lea     eax, [ebp+var_14]
-.text:08048B3B                 lea     edx, [ebp+var_C]
-.text:08048B3E                 mov     [esp+8], edx ;参数3 上面string1
-.text:08048B42                 lea     edx, [ebp+var_10]
-.text:08048B45                 mov     [esp+4], edx ;参数2 上面string2
-.text:08048B49                 mov     [esp], eax ;参数1， 保存在[ebp+var_14]
-.text:08048B4C                 call    _Z5ploufSsSs    ; plouf(std::string,std::string)
-.text:08048B51                 sub     esp, 4
-.text:08048B54                 lea     eax, [ebp+var_10]
-.text:08048B57                 mov     [esp], eax      ; this
-.text:08048B5A                 call    __ZNSsD1Ev      ; std::string::~string() ;string2 回收
-.text:08048B5F                 lea     eax, [ebp+var_16]
-.text:08048B62                 mov     [esp], eax
-.text:08048B65                 call    __ZNSaIcED1Ev   ; std::allocator&amp;lt;char&amp;gt;::~allocator()
-.text:08048B6A                 lea     eax, [ebp+var_C]
-.text:08048B6D                 mov     [esp], eax      ; this
-.text:08048B70                 call    __ZNSsD1Ev      ; std::string::~string() ;string1 回收
-.text:08048B75                 lea     eax, [ebp+var_15]
-.text:08048B78                 mov     [esp], eax
-.text:08048B7B                 call    __ZNSaIcED1Ev   ; std::allocator&amp;lt;char&amp;gt;::~allocator()
-.text:08048B80                 mov     eax, [ebx+4] ; argv
-.text:08048B83                 add     eax, 4 ; argv + 4
-.text:08048B86                 mov     eax, [eax] ; 我们传入的参数
-.text:08048B88                 mov     [esp+4], eax    ; char * ;参数2 我们传入的参数
-.text:08048B8C                 lea     eax, [ebp+var_14]
-.text:08048B8F                 mov     [esp], eax      ; std::string * ; 参数1， 上述plouf的参数1
-.text:08048B92                 call    _ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_ ; std::operator==&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;,std::allocator&amp;lt;char&amp;gt;&amp;gt;(std::basic_string&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;,std::allocator&amp;lt;char&amp;gt;&amp;gt; const&amp;amp;,char const*) ; 进行对比
-.text:08048B97                 test    al, al
-.text:08048B99                 jz      short loc_8048BE5 ;对比结果为0,则跳转到loc_8048BE5
-模块3
-.text:08048B9B                 mov     dword ptr [esp+4], offset aBravoTuPeuxVal ; &quot;Bravo, tu peux valider en utilisant ce &quot;...
-.text:08048BA3                 mov     dword ptr [esp], offset _ZSt4cout@@GLIBCXX_3_4
-.text:08048BAA                 call    __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&amp;lt;&amp;lt;&amp;lt;std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;,char const*)
-.text:08048BAF                 mov     dword ptr [esp+4], offset __ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_ ; std::endl&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;)
-.text:08048BB7                 mov     [esp], eax
-.text:08048BBA                 call    __ZNSolsEPFRSoS_E ; std::ostream::operator&amp;lt;&amp;lt;(std::ostream &amp;amp; (*)(std::ostream &amp;amp;))
-.text:08048BBF                 mov     dword ptr [esp+4], offset aCongratzYouCan ; &quot;Congratz. You can validate with this pa&quot;... ; 成功的字符串
-.text:08048BC7                 mov     dword ptr [esp], offset _ZSt4cout@@GLIBCXX_3_4
-.text:08048BCE                 call    __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&amp;lt;&amp;lt;&amp;lt;std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;,char const*)
-.text:08048BD3                 mov     dword ptr [esp+4], offset __ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_ ; std::endl&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;)
-.text:08048BDB                 mov     [esp], eax
-.text:08048BDE                 call    __ZNSolsEPFRSoS_E ; std::ostream::operator&amp;lt;&amp;lt;(std::ostream &amp;amp; (*)(std::ostream &amp;amp;))
-.text:08048BE3                 jmp     short loc_8048C09
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;总结下：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;以unk_8048DC4处的字符串构造string1；&lt;/li&gt;
-  &lt;li&gt;以unk_8048DCC处的字符串构造string2；&lt;/li&gt;
-  &lt;li&gt;执行plouf(addr, string2, string1)；&lt;/li&gt;
-  &lt;li&gt;将addr和我们传入的密码进行对比，若相同则成功。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;plouf-函数分析&quot;&gt;plouf 函数分析&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;.text:0804898D ; plouf(std::string, std::string)
-.text:0804898D                 public _Z5ploufSsSs
-.text:0804898D _Z5ploufSsSs    proc near               ; CODE XREF: main+C6↓p
-.text:0804898D
-.text:0804898D var_1D          = byte ptr -1Dh
-.text:0804898D var_1C          = dword ptr -1Ch
-.text:0804898D arg_0           = dword ptr  8
-.text:0804898D arg_4           = dword ptr  0Ch
-.text:0804898D arg_8           = dword ptr  10h
-.text:0804898D
-.text:0804898D                 push    ebp
-.text:0804898E                 mov     ebp, esp
-.text:08048990                 push    edi
-.text:08048991                 push    esi
-.text:08048992                 push    ebx
-.text:08048993                 sub     esp, 2Ch
-.text:08048996                 lea     eax, [ebp+var_1D]
-.text:08048999                 mov     [esp], eax
-.text:0804899C                 call    __ZNSaIcEC1Ev   ; std::allocator&amp;lt;char&amp;gt;::allocator(void)
-.text:080489A1                 lea     eax, [ebp+var_1D]
-.text:080489A4                 mov     [esp+8], eax ;参数3
-.text:080489A8                 mov     dword ptr [esp+4], offset unk_8048DB0 ;参数2
-.text:080489B0                 mov     eax, [ebp+arg_0]
-.text:080489B3                 mov     [esp], eax ;我们传入的参数1
-.text:080489B6                 call    __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string1，是以unk_8048DB0作为字符串，保存在传入的参数1
-.text:080489BB                 lea     eax, [ebp+var_1D]
-.text:080489BE                 mov     [esp], eax
-.text:080489C1                 call    __ZNSaIcED1Ev   ; std::allocator&amp;lt;char&amp;gt;::~allocator()
-.text:080489C6                 mov     [ebp+var_1C], 0 ; index
-.text:080489CD                 jmp     short loc_8048A2B
-.text:080489CF ; ---------------------------------------------------------------------------
-.text:080489CF
-.text:080489CF loc_80489CF:                            ; CODE XREF: plouf(std::string,std::string)+BA↓j
-.text:080489CF                 mov     eax, [ebp+var_1C]
-.text:080489D2                 mov     [esp+4], eax ; 作为下标
-.text:080489D6                 mov     eax, [ebp+arg_4] ; 传入的参数2 - string2
-.text:080489D9                 mov     [esp], eax
-.text:080489DC                 call    __ZNSsixEj      ; std::string::operator[](uint)
-.text:080489E1                 movzx   esi, byte ptr [eax] string2[index]
-.text:080489E4                 mov     ebx, [ebp+var_1C]
-.text:080489E7                 mov     eax, [ebp+arg_8] ;参数的参数3 - string1
-.text:080489EA                 mov     [esp], eax      ; this
-.text:080489ED                 call    __ZNKSs6lengthEv ; std::string::length(void)
-.text:080489F2                 mov     edi, eax ; edi保存 string1的长度
-.text:080489F4                 mov     eax, ebx ; index
-.text:080489F6                 mov     edx, 0
-.text:080489FB                 div     edi
-.text:080489FD                 mov     ecx, edx ; = index % string1的长度
-.text:080489FF                 mov     eax, ecx
-.text:08048A01                 mov     [esp+4], eax
-.text:08048A05                 mov     eax, [ebp+arg_8]
-.text:08048A08                 mov     [esp], eax
-.text:08048A0B                 call    __ZNSsixEj      ; std::string::operator[](uint)
-.text:08048A10                 movzx   eax, byte ptr [eax] ; string1[index % string1长度]
-.text:08048A13                 xor     eax, esi  ;string[index % string1长度] xor string2[index]
-.text:08048A15                 movsx   eax, al
-.text:08048A18                 mov     [esp+4], eax
-.text:08048A1C                 mov     eax, [ebp+arg_0] ;传入的参数1
-.text:08048A1F                 mov     [esp], eax
-.text:08048A22                 call    __ZNSspLEc      ; std::string::operator+=(char)
-.text:08048A27                 add     [ebp+var_1C], 1 ; 将结果相加到参数1中
-.text:08048A2B
-.text:08048A2B loc_8048A2B:                            ; CODE XREF: plouf(std::string,std::string)+40↑j
-.text:08048A2B                 mov     eax, [ebp+var_1C]
-.text:08048A2E                 mov     [esp+4], eax
-.text:08048A32                 mov     eax, [ebp+arg_4] ;参数的参数2-string2
-.text:08048A35                 mov     [esp], eax
-.text:08048A38                 call    __ZNSsixEj      ; std::string::operator[](uint)
-.text:08048A3D                 movzx   eax, byte ptr [eax]; string2[index]
-.text:08048A40                 test    al, al
-.text:08048A42                 setnz   al
-.text:08048A45                 test    al, al
-.text:08048A47                 jnz     short loc_80489CF ;如果非0,跳转到loc_80489CF
-.text:08048A49                 jmp     short loc_8048A79
-.text:08048A4B ; ---------------------------------------------------------------------------
-.text:08048A4B                 mov     ebx, eax
-.text:08048A4D                 lea     eax, [ebp+var_1D]
-.text:08048A50                 mov     [esp], eax
-.text:08048A53                 call    __ZNSaIcED1Ev   ; std::allocator&amp;lt;char&amp;gt;::~allocator()
-.text:08048A58                 mov     eax, ebx
-.text:08048A5A                 mov     [esp], eax
-.text:08048A5D                 call    __Unwind_Resume
-.text:08048A62                 mov     ebx, eax
-.text:08048A64                 mov     eax, [ebp+arg_0]
-.text:08048A67                 mov     [esp], eax      ; this
-.text:08048A6A                 call    __ZNSsD1Ev      ; std::string::~string()
-.text:08048A6F                 mov     eax, ebx
-.text:08048A71                 mov     [esp], eax
-.text:08048A74                 call    __Unwind_Resume
-.text:08048A79
-.text:08048A79 loc_8048A79:                            ; CODE XREF: plouf(std::string,std::string)+BC↑j
-.text:08048A79                 mov     eax, [ebp+arg_0]
-.text:08048A7C                 add     esp, 2Ch
-.text:08048A7F                 pop     ebx
-.text:08048A80                 pop     esi
-.text:08048A81                 pop     edi
-.text:08048A82                 pop     ebp
-.text:08048A83                 retn    4
-.text:08048A83 _Z5ploufSsSs    endp
-.text:08048A83
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;用伪代码来描述下上述函数：&lt;/p&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;n&quot;&gt;plouf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 第1个参数地址&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 遍历string2&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 将string2的每个元素和 string1 相关地址进行异或&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;求出password&quot;&gt;求出password&lt;/h2&gt;
-
-&lt;h3 id=&quot;string1内容&quot;&gt;string1内容&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;.rodata:08048DC4 unk_8048DC4     db  18h                 ; DATA XREF: main+7A↑o
-.rodata:08048DC5                 db 0D6h
-.rodata:08048DC6                 db  15h
-.rodata:08048DC7                 db 0CAh
-.rodata:08048DC8                 db 0FAh
-.rodata:08048DC9                 db  77h ; w
-.rodata:08048DCA                 db    0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;string2-内容&quot;&gt;string2 内容&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;.rodata:08048DCC unk_8048DCC     db  50h ; P             ; DATA XREF: main+9F↑o
-.rodata:08048DCD                 db 0B3h
-.rodata:08048DCE                 db  67h ; g
-.rodata:08048DCF                 db 0AFh
-.rodata:08048DD0                 db 0A5h
-.rodata:08048DD1                 db  0Eh
-.rodata:08048DD2                 db  77h ; w
-.rodata:08048DD3                 db 0A3h
-.rodata:08048DD4                 db  4Ah ; J
-.rodata:08048DD5                 db 0A2h
-.rodata:08048DD6                 db  9Bh
-.rodata:08048DD7                 db    1
-.rodata:08048DD8                 db  7Dh ; }
-.rodata:08048DD9                 db  89h
-.rodata:08048DDA                 db  61h ; a
-.rodata:08048DDB                 db 0A5h
-.rodata:08048DDC                 db 0A5h
-.rodata:08048DDD                 db    2
-.rodata:08048DDE                 db  76h ; v
-.rodata:08048DDF                 db 0B2h
-.rodata:08048DE0                 db  70h ; p
-.rodata:08048DE1                 db 0B8h
-.rodata:08048DE2                 db  89h
-.rodata:08048DE3                 db    3
-.rodata:08048DE4                 db  79h ; y
-.rodata:08048DE5                 db 0B8h
-.rodata:08048DE6                 db  71h ; q
-.rodata:08048DE7                 db  95h
-.rodata:08048DE8                 db  9Bh
-.rodata:08048DE9                 db  28h ; (
-.rodata:08048DEA                 db  74h ; t
-.rodata:08048DEB                 db 0BFh
-.rodata:08048DEC                 db  61h ; a
-.rodata:08048DED                 db 0BEh
-.rodata:08048DEE                 db  96h
-.rodata:08048DEF                 db  12h
-.rodata:08048DF0                 db  47h ; G
-.rodata:08048DF1                 db  95h
-.rodata:08048DF2                 db  3Eh ; &amp;gt;
-.rodata:08048DF3                 db 0E1h
-.rodata:08048DF4                 db 0A5h
-.rodata:08048DF5                 db    4
-.rodata:08048DF6                 db  6Ch ; l
-.rodata:08048DF7                 db 0A3h
-.rodata:08048DF8                 db  73h ; s
-.rodata:08048DF9                 db 0ACh
-.rodata:08048DFA                 db  89h
-.rodata:08048DFB                 db    0
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;程序求password&quot;&gt;程序求password&lt;/h3&gt;
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xd6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xca&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xfa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x77&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 为上面string1&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x67&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xAF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x0E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x77&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x4A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x9B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x89&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x61&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x02&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x76&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x70&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x89&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x03&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x79&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x71&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x9B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x74&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xBF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x61&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xBE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x96&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x47&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x3E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xE1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x04&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x6C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x73&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xAC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x89&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 上面string2&lt;/span&gt;
-
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))];&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%c&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;执行结果:Here_you_have_to_understand_a_little_C++_stuffs&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;C++反编译后函数名会比较复杂，识别函数名难度会比较大，所以需要挑选多个工具一起使用；&lt;/li&gt;
-  &lt;li&gt;此题相对简单，只用静态分析就可以，但遇到难度较大的，可以采用静态和动态结合方式。&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="crackme" /><summary type="html">该crackme来自于这里,也可以从这里下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。 工具选择 Linux静态分析工具使用cutter, ，但由于cutter对C++的函数识别不好，故也使用IDA一起进行分析。 静态分析 先静态分析，了解程序的大概轮廓，并找到关键部分，在结合动态调试，可以达到事半功倍的效果。 搜索关键字符串 .rodata:08048DFC 00000037 C Bravo, tu peux valider en utilisant ce mot de passe... .rodata:08048E34 00000031 C Congratz. You can validate with this password... // 可以推断出来这是成功的提示 .rodata:08048E65 00000014 C Password incorrect. // 这是失败的提示 根据字符串来看流程 图中蓝色部分为上面成功的提示的地方，所以需要执行的代码路径为1–&amp;gt; 2 –&amp;gt; 3。 模块1 int main (int argc, char **argv, char **envp); | ; var int var_16h @ ebp-0x16 | ; var int var_15h @ ebp-0x15 | ; var int var_14h @ ebp-0x14 | ; var int var_10h @ ebp-0x10 | ; var int var_ch @ ebp-0xc | ; var int var_8h_2 @ ebp-0x8 | ; var char *var_4h @ esp+0x4 | ; var int var_8h @ esp+0x8 | ; DATA XREF from entry0 (0x80488a7) | 0x08048a86 lea ecx, [var_4h] ; 为argc的地址 | 0x08048a8a and esp, 0xfffffff0 | 0x08048a8d push dword [ecx - 4] | 0x08048a90 push ebp | 0x08048a91 mov ebp, esp | 0x08048a93 push ebx | 0x08048a94 push ecx | 0x08048a95 sub esp, 0x20 | 0x08048a98 mov ebx, ecx | 0x08048a9a cmp dword [ebx], 1；对argc即参数的个数和1对比 | ,=&amp;lt; 0x08048a9d jg 0x8048aee；如果大于1, 跳转到0x8048aee,也即我们的第2部分 需要我们至少password作为第2个参数。 模块2 text:08048AEE loc_8048AEE: ; CODE XREF: main+17↑j .text:08048AEE lea eax, [ebp+var_15] .text:08048AF1 mov [esp], eax .text:08048AF4 call __ZNSaIcEC1Ev ; std::allocator&amp;lt;char&amp;gt;::allocator(void) .text:08048AF9 lea eax, [ebp+var_15] .text:08048AFC mov [esp+8], eax ; 参数3 .text:08048B00 mov dword ptr [esp+4], offset unk_8048DC4 ;参数2 .text:08048B08 lea eax, [ebp+var_C] .text:08048B0B mov [esp], eax ;参数1 .text:08048B0E call __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string1，是以unk_8048DC4作为字符串，保存在[ebp+var_C] .text:08048B13 lea eax, [ebp+var_16] .text:08048B16 mov [esp], eax .text:08048B19 call __ZNSaIcEC1Ev ; std::allocator&amp;lt;char&amp;gt;::allocator(void) .text:08048B1E lea eax, [ebp+var_16] .text:08048B21 mov [esp+8], eax ; 参数3 .text:08048B25 mov dword ptr [esp+4], offset unk_8048DCC ;参数2 .text:08048B2D lea eax, [ebp+var_10] .text:08048B30 mov [esp], eax ;参数1 .text:08048B33 call __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string2，是以unk_8048DCC作为字符串，保存在[ebp+var_10] .text:08048B38 lea eax, [ebp+var_14] .text:08048B3B lea edx, [ebp+var_C] .text:08048B3E mov [esp+8], edx ;参数3 上面string1 .text:08048B42 lea edx, [ebp+var_10] .text:08048B45 mov [esp+4], edx ;参数2 上面string2 .text:08048B49 mov [esp], eax ;参数1， 保存在[ebp+var_14] .text:08048B4C call _Z5ploufSsSs ; plouf(std::string,std::string) .text:08048B51 sub esp, 4 .text:08048B54 lea eax, [ebp+var_10] .text:08048B57 mov [esp], eax ; this .text:08048B5A call __ZNSsD1Ev ; std::string::~string() ;string2 回收 .text:08048B5F lea eax, [ebp+var_16] .text:08048B62 mov [esp], eax .text:08048B65 call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:08048B6A lea eax, [ebp+var_C] .text:08048B6D mov [esp], eax ; this .text:08048B70 call __ZNSsD1Ev ; std::string::~string() ;string1 回收 .text:08048B75 lea eax, [ebp+var_15] .text:08048B78 mov [esp], eax .text:08048B7B call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:08048B80 mov eax, [ebx+4] ; argv .text:08048B83 add eax, 4 ; argv + 4 .text:08048B86 mov eax, [eax] ; 我们传入的参数 .text:08048B88 mov [esp+4], eax ; char * ;参数2 我们传入的参数 .text:08048B8C lea eax, [ebp+var_14] .text:08048B8F mov [esp], eax ; std::string * ; 参数1， 上述plouf的参数1 .text:08048B92 call _ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_ ; std::operator==&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;,std::allocator&amp;lt;char&amp;gt;&amp;gt;(std::basic_string&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;,std::allocator&amp;lt;char&amp;gt;&amp;gt; const&amp;amp;,char const*) ; 进行对比 .text:08048B97 test al, al .text:08048B99 jz short loc_8048BE5 ;对比结果为0,则跳转到loc_8048BE5 模块3 .text:08048B9B mov dword ptr [esp+4], offset aBravoTuPeuxVal ; &quot;Bravo, tu peux valider en utilisant ce &quot;... .text:08048BA3 mov dword ptr [esp], offset _ZSt4cout@@GLIBCXX_3_4 .text:08048BAA call __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&amp;lt;&amp;lt;&amp;lt;std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;,char const*) .text:08048BAF mov dword ptr [esp+4], offset __ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_ ; std::endl&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;) .text:08048BB7 mov [esp], eax .text:08048BBA call __ZNSolsEPFRSoS_E ; std::ostream::operator&amp;lt;&amp;lt;(std::ostream &amp;amp; (*)(std::ostream &amp;amp;)) .text:08048BBF mov dword ptr [esp+4], offset aCongratzYouCan ; &quot;Congratz. You can validate with this pa&quot;... ; 成功的字符串 .text:08048BC7 mov dword ptr [esp], offset _ZSt4cout@@GLIBCXX_3_4 .text:08048BCE call __ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc ; std::operator&amp;lt;&amp;lt;&amp;lt;std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;,char const*) .text:08048BD3 mov dword ptr [esp+4], offset __ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_ ; std::endl&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt;(std::basic_ostream&amp;lt;char,std::char_traits&amp;lt;char&amp;gt;&amp;gt; &amp;amp;) .text:08048BDB mov [esp], eax .text:08048BDE call __ZNSolsEPFRSoS_E ; std::ostream::operator&amp;lt;&amp;lt;(std::ostream &amp;amp; (*)(std::ostream &amp;amp;)) .text:08048BE3 jmp short loc_8048C09 总结下： 以unk_8048DC4处的字符串构造string1； 以unk_8048DCC处的字符串构造string2； 执行plouf(addr, string2, string1)； 将addr和我们传入的密码进行对比，若相同则成功。 plouf 函数分析 .text:0804898D ; plouf(std::string, std::string) .text:0804898D public _Z5ploufSsSs .text:0804898D _Z5ploufSsSs proc near ; CODE XREF: main+C6↓p .text:0804898D .text:0804898D var_1D = byte ptr -1Dh .text:0804898D var_1C = dword ptr -1Ch .text:0804898D arg_0 = dword ptr 8 .text:0804898D arg_4 = dword ptr 0Ch .text:0804898D arg_8 = dword ptr 10h .text:0804898D .text:0804898D push ebp .text:0804898E mov ebp, esp .text:08048990 push edi .text:08048991 push esi .text:08048992 push ebx .text:08048993 sub esp, 2Ch .text:08048996 lea eax, [ebp+var_1D] .text:08048999 mov [esp], eax .text:0804899C call __ZNSaIcEC1Ev ; std::allocator&amp;lt;char&amp;gt;::allocator(void) .text:080489A1 lea eax, [ebp+var_1D] .text:080489A4 mov [esp+8], eax ;参数3 .text:080489A8 mov dword ptr [esp+4], offset unk_8048DB0 ;参数2 .text:080489B0 mov eax, [ebp+arg_0] .text:080489B3 mov [esp], eax ;我们传入的参数1 .text:080489B6 call __ZNSsC1EPKcRKSaIcE ; std::string::string(char const*,std::allocator&amp;lt;char&amp;gt; const&amp;amp;) ;创建string1，是以unk_8048DB0作为字符串，保存在传入的参数1 .text:080489BB lea eax, [ebp+var_1D] .text:080489BE mov [esp], eax .text:080489C1 call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:080489C6 mov [ebp+var_1C], 0 ; index .text:080489CD jmp short loc_8048A2B .text:080489CF ; --------------------------------------------------------------------------- .text:080489CF .text:080489CF loc_80489CF: ; CODE XREF: plouf(std::string,std::string)+BA↓j .text:080489CF mov eax, [ebp+var_1C] .text:080489D2 mov [esp+4], eax ; 作为下标 .text:080489D6 mov eax, [ebp+arg_4] ; 传入的参数2 - string2 .text:080489D9 mov [esp], eax .text:080489DC call __ZNSsixEj ; std::string::operator[](uint) .text:080489E1 movzx esi, byte ptr [eax] string2[index] .text:080489E4 mov ebx, [ebp+var_1C] .text:080489E7 mov eax, [ebp+arg_8] ;参数的参数3 - string1 .text:080489EA mov [esp], eax ; this .text:080489ED call __ZNKSs6lengthEv ; std::string::length(void) .text:080489F2 mov edi, eax ; edi保存 string1的长度 .text:080489F4 mov eax, ebx ; index .text:080489F6 mov edx, 0 .text:080489FB div edi .text:080489FD mov ecx, edx ; = index % string1的长度 .text:080489FF mov eax, ecx .text:08048A01 mov [esp+4], eax .text:08048A05 mov eax, [ebp+arg_8] .text:08048A08 mov [esp], eax .text:08048A0B call __ZNSsixEj ; std::string::operator[](uint) .text:08048A10 movzx eax, byte ptr [eax] ; string1[index % string1长度] .text:08048A13 xor eax, esi ;string[index % string1长度] xor string2[index] .text:08048A15 movsx eax, al .text:08048A18 mov [esp+4], eax .text:08048A1C mov eax, [ebp+arg_0] ;传入的参数1 .text:08048A1F mov [esp], eax .text:08048A22 call __ZNSspLEc ; std::string::operator+=(char) .text:08048A27 add [ebp+var_1C], 1 ; 将结果相加到参数1中 .text:08048A2B .text:08048A2B loc_8048A2B: ; CODE XREF: plouf(std::string,std::string)+40↑j .text:08048A2B mov eax, [ebp+var_1C] .text:08048A2E mov [esp+4], eax .text:08048A32 mov eax, [ebp+arg_4] ;参数的参数2-string2 .text:08048A35 mov [esp], eax .text:08048A38 call __ZNSsixEj ; std::string::operator[](uint) .text:08048A3D movzx eax, byte ptr [eax]; string2[index] .text:08048A40 test al, al .text:08048A42 setnz al .text:08048A45 test al, al .text:08048A47 jnz short loc_80489CF ;如果非0,跳转到loc_80489CF .text:08048A49 jmp short loc_8048A79 .text:08048A4B ; --------------------------------------------------------------------------- .text:08048A4B mov ebx, eax .text:08048A4D lea eax, [ebp+var_1D] .text:08048A50 mov [esp], eax .text:08048A53 call __ZNSaIcED1Ev ; std::allocator&amp;lt;char&amp;gt;::~allocator() .text:08048A58 mov eax, ebx .text:08048A5A mov [esp], eax .text:08048A5D call __Unwind_Resume .text:08048A62 mov ebx, eax .text:08048A64 mov eax, [ebp+arg_0] .text:08048A67 mov [esp], eax ; this .text:08048A6A call __ZNSsD1Ev ; std::string::~string() .text:08048A6F mov eax, ebx .text:08048A71 mov [esp], eax .text:08048A74 call __Unwind_Resume .text:08048A79 .text:08048A79 loc_8048A79: ; CODE XREF: plouf(std::string,std::string)+BC↑j .text:08048A79 mov eax, [ebp+arg_0] .text:08048A7C add esp, 2Ch .text:08048A7F pop ebx .text:08048A80 pop esi .text:08048A81 pop edi .text:08048A82 pop ebp .text:08048A83 retn 4 .text:08048A83 _Z5ploufSsSs endp .text:08048A83 用伪代码来描述下上述函数： plouf(addr, string2, string1) { string result = &amp;amp;addr; // 第1个参数地址 for (int i = 0; i &amp;lt; len(string2); i++) { // 遍历string2 temp = string2[i] ^ string1[i % len(string1)]; // 将string2的每个元素和 string1 相关地址进行异或 result += temp; } } 求出password string1内容 .rodata:08048DC4 unk_8048DC4 db 18h ; DATA XREF: main+7A↑o .rodata:08048DC5 db 0D6h .rodata:08048DC6 db 15h .rodata:08048DC7 db 0CAh .rodata:08048DC8 db 0FAh .rodata:08048DC9 db 77h ; w .rodata:08048DCA db 0 string2 内容 .rodata:08048DCC unk_8048DCC db 50h ; P ; DATA XREF: main+9F↑o .rodata:08048DCD db 0B3h .rodata:08048DCE db 67h ; g .rodata:08048DCF db 0AFh .rodata:08048DD0 db 0A5h .rodata:08048DD1 db 0Eh .rodata:08048DD2 db 77h ; w .rodata:08048DD3 db 0A3h .rodata:08048DD4 db 4Ah ; J .rodata:08048DD5 db 0A2h .rodata:08048DD6 db 9Bh .rodata:08048DD7 db 1 .rodata:08048DD8 db 7Dh ; } .rodata:08048DD9 db 89h .rodata:08048DDA db 61h ; a .rodata:08048DDB db 0A5h .rodata:08048DDC db 0A5h .rodata:08048DDD db 2 .rodata:08048DDE db 76h ; v .rodata:08048DDF db 0B2h .rodata:08048DE0 db 70h ; p .rodata:08048DE1 db 0B8h .rodata:08048DE2 db 89h .rodata:08048DE3 db 3 .rodata:08048DE4 db 79h ; y .rodata:08048DE5 db 0B8h .rodata:08048DE6 db 71h ; q .rodata:08048DE7 db 95h .rodata:08048DE8 db 9Bh .rodata:08048DE9 db 28h ; ( .rodata:08048DEA db 74h ; t .rodata:08048DEB db 0BFh .rodata:08048DEC db 61h ; a .rodata:08048DED db 0BEh .rodata:08048DEE db 96h .rodata:08048DEF db 12h .rodata:08048DF0 db 47h ; G .rodata:08048DF1 db 95h .rodata:08048DF2 db 3Eh ; &amp;gt; .rodata:08048DF3 db 0E1h .rodata:08048DF4 db 0A5h .rodata:08048DF5 db 4 .rodata:08048DF6 db 6Ch ; l .rodata:08048DF7 db 0A3h .rodata:08048DF8 db 73h ; s .rodata:08048DF9 db 0ACh .rodata:08048DFA db 89h .rodata:08048DFB db 0 程序求password #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;string.h&amp;gt; int string1[] = {0x18, 0xd6, 0x15, 0xca, 0xfa, 0x77}; // 为上面string1 int string2[] = {0x50, 0xB3, 0x67, 0xAF, 0xA5, 0x0E, 0x77, 0xA3, 0x4A, 0xA2, 0x9B, 0x01, 0x7D, 0x89, 0x61, 0xA5, 0xA5, 0x02, 0x76, 0xB2, 0x70, 0xB8, 0x89, 0x03, 0x79, 0xB8, 0x71, 0x95, 0x9B, 0x28, 0x74, 0xBF, 0x61, 0xBE, 0x96, 0x12, 0x47, 0x95, 0x3E, 0xE1, 0xA5, 0x04, 0x6C, 0xA3, 0x73, 0xAC, 0x89}; // 上面string2 int main() { int num = sizeof(string2) / sizeof(string2[0]); int i = 0; for (; i &amp;lt; num; i++) { string2[i] ^= string1[i % (sizeof(string1) / sizeof(string1[0]))]; printf(&quot;%c&quot;, string2[i]); } } 执行结果:Here_you_have_to_understand_a_little_C++_stuffs 总结 C++反编译后函数名会比较复杂，识别函数名难度会比较大，所以需要挑选多个工具一起使用； 此题相对简单，只用静态分析就可以，但遇到难度较大的，可以采用静态和动态结合方式。</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="frida" /><summary type="html">背景 最近在学习frida，就拿OWASP上的crackme进行练习，下载地址，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。 UnCrackable App for Android Level 1 #!/usr/bin/python3 import frida import sys def on_message(message, data): if message['type'] == 'send': print(&quot;[*] {0}&quot;.format(message['payload'])) else: print(message) pid = frida.get_usb_device().spawn([&quot;owasp.mstg.uncrackable1&quot;]) # 打开app process = frida.get_usb_device().attach(pid) content = &quot;&quot; with open(&quot;script_one.js&quot;) as f: content = f.read() if len(content) == 0: print(&quot;not found script&quot;) exit(0) script = process.create_script(content) script.on(&quot;message&quot;, on_message) script.load() frida.get_usb_device().resume(pid) sys.stdin.read() // hook root检测的三个方法，hook计算password的方法 Java.perform(function() { var checkClass = Java.use(&quot;sg.vantagepoint.a.c&quot;); checkClass.a.implementation = function() { var result = this.a(); send(&quot;function a: &quot; + result); return false; }; checkClass.b.implementation = function() { var result = this.b(); send(&quot;function b: &quot; + result); return false; }; checkClass.c.implementation = function() { var result = this.c(); send(&quot;function c: &quot; + result); return false; }; var password = &quot;&quot;; var passwordClass = Java.use(&quot;sg.vantagepoint.a.a&quot;); passwordClass.a.implementation = function() { var result = this.a(arguments[0],arguments[1]); for(var i = 0; i &amp;lt; result.length; i++) { password += String.fromCharCode(result[i]); } send(&quot;password: &quot; + password); return result; }; });</summary></entry></feed>
