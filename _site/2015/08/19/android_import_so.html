@@ -10,10 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>openssl AES密钥和iv长度问题分析 - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Android引入动态库so的方法 - liwugang</title>
 
-<meta name="description" content="在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是：调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。例子int aes_encrypt_common(uint8_t ...">
-<link rel="canonical" href="https://liwugang.github.io/2019/04/21/openssl_decrypt_fail.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="为了执行效率，会将一些CPU密集性任务如音视频解码、图像处理等放入到so中，还有也会将程序关键核心部分放入到so中，这样增加了逆向的难度。下面将so引入分成本地和第三方两种类型。本地是指包含有源码的。这是不讲如何编译和Android.mk的编写，主要讲在Android项目中如何引入so。">
+<link rel="canonical" href="https://liwugang.github.io/2015/08/19/android_import_so.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -283,245 +283,94 @@
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>openssl AES密钥和iv长度问题分析</h1></header></div><meta itemprop="headline" content="openssl AES密钥和iv长度问题分析"><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Android引入动态库so的方法</h1></header></div><meta itemprop="headline" content="Android引入动态库so的方法"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=openssl">openssl</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-21T15:13:00+08:00">
-    <meta itemprop="keywords" content="openssl"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 19, 2015</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-19T21:02:13+08:00">
+    <meta itemprop="keywords" content="Android"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>在做<a href="https://github.com/liwugang/filecrypt">filecrypt</a>项目时花费时间最多的是AES256算法的调试上，出现的问题是：
-调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。</p>
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>为了执行效率，会将一些CPU密集性任务如音视频解码、图像处理等放入到so中，还有也会将程序关键核心部分放入到so中，这样增加了逆向的难度。下面将so引入分成本地和第三方两种类型。本地是指包含有源码的。这是不讲如何编译和Android.mk的编写，主要讲在Android项目中如何引入so。</p>
 
-<h1 id="例子">例子</h1>
+<!--more-->
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="kt">int</span> <span class="nf">aes_encrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
-        <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">out_length</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">aes_decrypt_common</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span>
-        <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">out_length</span><span class="p">);</span>
+<h2 id="本地so">本地so</h2>
 
-<span class="c1">// 上述加解密函数来自于 https://github.com/liwugang/filecrypt/blob/master/algs/base.c</span>
+<p>引入本地的so分成三个步骤:</p>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">text</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"test"</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">cipher</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">plain</span>  <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">1024</span><span class="p">);</span>
+<h3 id="ndk项目的编译">ndk项目的编译</h3>
 
-    <span class="kt">char</span> <span class="n">key</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"1234567890"</span><span class="p">;</span> <span class="c1">// 密钥</span>
-    <span class="kt">char</span> <span class="n">iv</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"1111111"</span><span class="p">;</span> <span class="c1">// iv</span>
+<p>这部分网上资料会很多，主要注意事项是函数名格式，如一个类的全名是com.example.firstProgram.ClassName，定义的native函数名为function，则在so中的函数名必须为Java_com_example_firstProgram_ClassName_function，这样通过jni才能找到对应的函数，还有必须要按照C语言的编译和链接规范，，即在C++文件中要使用extern “C”</p>
 
-    <span class="kt">uint64_t</span> <span class="n">out_length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<h3 id="类中引入so">类中引入so</h3>
 
-    <span class="c1">// 加密</span>
-    <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">aes_encrypt_common</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">cipher</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">out_length</span><span class="p">);</span> 
-    <span class="c1">// 使用和加密一样的密钥和iv进行解密</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">aes_decrypt_common</span><span class="p">(</span><span class="n">cipher</span><span class="p">,</span> <span class="n">out_length</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">plain</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">out_length</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">"first:%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+<p>首先要引入对应的so文件，将引入的代码放入到类的static代码块，这样在加载类时会首先将so加载进来。代码：</p>
 
-    <span class="c1">// 再次调用解密，密钥和iv是复制过来的</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">another_key</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="kt">char</span> <span class="o">*</span><span class="n">another_iv</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">iv</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="n">strcpy</span><span class="p">(</span><span class="n">another_key</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
-    <span class="n">strcpy</span><span class="p">(</span><span class="n">another_iv</span><span class="p">,</span> <span class="n">iv</span><span class="p">);</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">aes_decrypt_common</span><span class="p">(</span><span class="n">cipher</span><span class="p">,</span> <span class="n">out_length</span><span class="p">,</span> <span class="n">another_key</span><span class="p">,</span> <span class="n">another_iv</span><span class="p">,</span> <span class="n">plain</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">out_length</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">"second:%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
-<span class="p">}</span>
-
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">static</span><span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"XXX"</span><span class="o">);</span><span class="c1">//XXX为so文件名</span>
+    <span class="o">}</span>
 </code></pre></div></div>
-<p>大家认为上述两次执行解密一样吗？</p>
 
-<p>来看下执行结果</p>
+<h3 id="将编译后的so引入到项目中lib库下">将编译后的so引入到项目中lib库下</h3>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">first:</span><span class="mi">1</span>
-<span class="mi">139868329146176</span><span class="o">:</span><span class="n">error</span><span class="o">:</span><span class="mo">0606506</span><span class="n">D</span><span class="o">:</span><span class="n">digital</span> <span class="n">envelope</span> <span class="n">routines</span><span class="o">:</span><span class="n">EVP_DecryptFinal_ex</span><span class="o">:</span><span class="n">wrong</span> <span class="n">final</span> <span class="n">block</span> <span class="n">length</span><span class="o">:</span><span class="n">crypto</span><span class="o">/</span><span class="n">evp</span><span class="o">/</span><span class="n">evp_enc</span><span class="p">.</span><span class="n">c</span><span class="o">:</span><span class="mi">559</span><span class="o">:</span> <span class="c1">// 出错日志</span>
-<span class="n">second</span><span class="o">:</span><span class="mi">0</span>
+<p>即使将jni目录放入到项目下，但项目打包时并不会将so文件放入到lib目录下，要通过设置才可以。
+找到app目录下的build.gradle，加入下面内容：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sourceSets <span class="o">{</span>
+    main <span class="o">{</span>
+        jniLibs.srcDirs <span class="o">=</span> <span class="o">[</span><span class="s1">'../libs'</span><span class="o">]</span>
+    <span class="o">}</span>
 </code></pre></div></div>
-<p>可以看到两次不一样，第一次1为成功，第二次0为失败，按道理密钥和iv的字符串完全相同，为什么会这样？下面需要深入openssl来探个究竟.</p>
+<p>../libs’是表示so文件的目录，相对于build.gradle当前文件位置的。</p>
 
-<h1 id="代码分析">代码分析</h1>
+<p>经过上面三步，就可以将so包含到Android项目中了。</p>
 
-<h2 id="openssl-下载编译">openssl 下载编译</h2>
-<p>加解密使用的是openssl，而默认情况是没有开调试的，所以需要我们单独编译debug版本的openssl来方便调试。openssl可以自己在官网下载，或者使用我下载的版本：http://artfiles.org/openssl.org/snapshot/openssl-SNAP-20190419.tar.gz， 使用下面进行编译debug版本</p>
+<h2 id="三方so">三方so</h2>
+
+<p>由于第三方so没有源代码，只提供接口，就需要首先自己创建本地so，通过本地C/C++代码来调用第三方so的函数。这里的主要配置是在jni目录下的Android.mk文件中。有两种方式：将三方so放入到系统目录下（如/system/lib/或者/system/lib64）和打包到apk中。</p>
+
+<h3 id="放入到系统目录">放入到系统目录</h3>
+
+<p>这种方式类似于引用系统提供的库，需要在Android.mk中提供</p>
+
 <blockquote>
-  <p>./config -d &amp;&amp; make</p>
+  <p>LOCAL_LDLIBS := -lXXX</p>
 </blockquote>
 
-<p>然后将编译出来的静态库链接到我们程序中，由于libcrypto.a依赖于pthread和dl库，需要添加上 -pthread -ldl</p>
+<p>将so文件放入到/system/lib或者/system/lib64目录下，这种方式适合在root机器或模拟器上进行测试，不用将so打包到apk中。</p>
+
+<h3 id="打包到apk中">打包到apk中</h3>
+
+<p>在jni新建目录如prebuilt，我们这里以libsubstrate.so为例，将libsubstrate.so文件放入到prebuilt目录，并新建Android.mk文件，内容为：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LOCAL_PATH :<span class="o">=</span> <span class="si">$(</span>call my-dir<span class="si">)</span>
+include <span class="si">$(</span>CLEAR_VARS<span class="si">)</span>
+LOCAL_MODULE :<span class="o">=</span> substrate
+LOCAL_SRC_FILES :<span class="o">=</span> libsubstrate.so
+include <span class="si">$(</span>PREBUILT_SHARED_LIBRARY<span class="si">)</span>
+</code></pre></div></div>
+
+<p>然后jni目录中的Android.mk中添加下面内容：</p>
+
 <blockquote>
-  <p>gcc -o  openssl_test openssl_test.c  ../openssl-1.1.1b/libcrypto.a -pthread -ldl -g</p>
+  <p>LOCAL_SHARED_LIBRARIES := substrate #上述模块名</p>
 </blockquote>
 
-<p>从<a href="https://github.com/liwugang/filecrypt/blob/master/algs/base.c#L98">aes_decrypt_common</a>源码中看到，密钥和iv是通过EVP_DecryptInit_ex来传递的，将下来从EVP_DecryptInit_ex来分析密钥和iv如何被使用的：</p>
+<p>并在文件末尾添加：</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">EVP_DecryptInit_ex</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">EVP_CIPHER</span> <span class="o">*</span><span class="n">cipher</span><span class="p">,</span>
-                       <span class="n">ENGINE</span> <span class="o">*</span><span class="n">impl</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
-                       <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="n">EVP_CipherInit_ex</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">cipher</span><span class="p">,</span> <span class="n">impl</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="c1">// 接着看EVP_CipherInit_ex</span>
+<blockquote>
+  <p>include $(LOCAL_PATH)/prebuilt/Android.mk</p>
+</blockquote>
 
-<span class="kt">int</span> <span class="nf">EVP_CipherInit_ex</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">const</span> <span class="n">EVP_CIPHER</span> <span class="o">*</span><span class="n">cipher</span><span class="p">,</span>
-                      <span class="n">ENGINE</span> <span class="o">*</span><span class="n">impl</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
-                      <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">enc</span><span class="p">)</span>
-<span class="p">{</span>
-        <span class="p">...</span> <span class="p">...</span>
-        <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span> <span class="o">=</span> <span class="n">cipher</span><span class="p">;</span> <span class="c1">// ctx-&gt;cipher是我们传的cipher</span>
-        <span class="p">...</span> <span class="p">...</span>
-      
-        <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">key_len</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">-&gt;</span><span class="n">key_len</span><span class="p">;</span> <span class="c1">// ctx-&gt;key_len 是来自ciphter中的key_len</span>
-        <span class="p">...</span> <span class="p">...</span>
+<p>这样apk打包会将该so文件打包进去，但运行还是有问题，什么问题呢？。。。。。
+对了，只是将so文件打包到apk中了，并没有加载进去，和之前一样，在类的static代码块中加入System.loadLibrary(“XXX”），这样在就可以正常运行使用了。</p>
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">EVP_CIPHER_flags</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX_cipher</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">EVP_CIPH_CUSTOM_IV</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">switch</span> <span class="p">(</span><span class="n">EVP_CIPHER_CTX_mode</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span> <span class="p">{</span>
+<h2 id="总结">总结</h2>
 
-        <span class="k">case</span> <span class="n">EVP_CIPH_STREAM_CIPHER</span><span class="p">:</span>
-        <span class="k">case</span> <span class="n">EVP_CIPH_ECB_MODE</span><span class="p">:</span>
-            <span class="k">break</span><span class="p">;</span>
+<p>由于刚加入到Android阵营中，这些东西都是很基础的，很多内容都是来源于网上，内容很分散，刚开始找的话很费时费力，因此将这些东西整理到起来。方便自己和他人的学习。</p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2015-08-19T21:02:13+08:00"><!-- start custom article footer snippet -->
 
-        <span class="k">case</span> <span class="n">EVP_CIPH_CFB_MODE</span><span class="p">:</span>
-        <span class="k">case</span> <span class="n">EVP_CIPH_OFB_MODE</span><span class="p">:</span>
-
-            <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-            <span class="cm">/* fall-through */</span>
-
-        <span class="k">case</span> <span class="n">EVP_CIPH_CBC_MODE</span><span class="p">:</span> <span class="c1">// 我们是使用CBC</span>
-
-            <span class="n">OPENSSL_assert</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="o">&lt;=</span>
-                           <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="k">sizeof</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">iv</span><span class="p">));</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">iv</span><span class="p">)</span>
-                <span class="n">memcpy</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">oiv</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span> <span class="c1">// iv是直接拷贝相应的长度，和字符串是否'\0'无关，从名字看像是iv的字节数，后面在看EVP_CIPHER_CTX_iv_length</span>
-            <span class="n">memcpy</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">iv</span><span class="p">,</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">oiv</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span>
-            <span class="k">break</span><span class="p">;</span>
-
-        <span class="k">case</span> <span class="n">EVP_CIPH_CTR_MODE</span><span class="p">:</span>
-            <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-            <span class="cm">/* Don't reuse IV for CTR mode */</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">iv</span><span class="p">)</span>
-                <span class="n">memcpy</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">iv</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span>
-            <span class="k">break</span><span class="p">;</span>
-
-        <span class="nl">default:</span>
-            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">||</span> <span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">EVP_CIPH_ALWAYS_CALL_INIT</span><span class="p">))</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">init</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">enc</span><span class="p">))</span> <span class="c1">// 此处对密钥key进行处理，通过调试可知实际调用aesni_init_key</span>
-            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">buf_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">final_used</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">block_mask</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">block_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// 接下来看密钥如何处理</span>
-<span class="k">static</span> <span class="kt">int</span> <span class="nf">aesni_init_key</span><span class="p">(</span><span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
-                          <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">enc</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="p">...</span> <span class="p">...</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">mode</span> <span class="o">==</span> <span class="n">EVP_CIPH_ECB_MODE</span> <span class="o">||</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">EVP_CIPH_CBC_MODE</span><span class="p">)</span>
-        <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">enc</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// 走这里， CBC模式并且enc == 0</span>
-        <span class="c1">// 第一个参数为我们提供的密钥，第二个参数为key的bits长度</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">aesni_set_decrypt_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">EVP_CIPHER_CTX_key_length</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span>
-                                    <span class="o">&amp;</span><span class="n">dat</span><span class="o">-&gt;</span><span class="n">ks</span><span class="p">.</span><span class="n">ks</span><span class="p">);</span>
-    <span class="p">...</span> <span class="p">...</span> 
-<span class="p">}</span>
-<span class="c1">// aesni_set_decrypt_key是汇编实现，函数调用参数从左到右传递方式：rdi, rsi, rdx, rcx, r8d, r9d，key是第一个参数，长度是第二个参数，需要关注rdi和rsi就行</span>
-
-<span class="nl">__aesni_set_encrypt_key:</span>
-<span class="p">.</span><span class="n">cfi_startproc</span>	
-    <span class="p">...</span> <span class="p">...</span>
-	<span class="n">movl</span>	<span class="err">$</span><span class="mi">268437504</span><span class="p">,</span><span class="o">%</span><span class="n">r10d</span>
-	<span class="n">movups</span>	<span class="p">(</span><span class="o">%</span><span class="n">rdi</span><span class="p">),</span><span class="o">%</span><span class="n">xmm0</span> <span class="c1">// 将key的前16字节放到xmm0中</span>
-    <span class="p">...</span> <span class="p">...</span>
-	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">256</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span> <span class="c1">// 判断长度</span>
-	<span class="n">je</span>	<span class="p">.</span><span class="n">L14rounds</span> <span class="c1">// 如果长度是256，则跳转到L14rounds</span>
-	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">192</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
-	<span class="n">je</span>	<span class="p">.</span><span class="n">L12rounds</span> <span class="c1">// 如果长度是192，则跳转到L12rounds</span>
-	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">128</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
-	<span class="n">jne</span>	<span class="p">.</span><span class="n">Lbad_keybits</span> <span class="c1">// 若长度不是128的话，则keybits是错误的，所以可以看到keybits只支持128,192和256</span>
-
-
-<span class="p">.</span><span class="n">L12rounds</span><span class="o">:</span>
-	<span class="n">movq</span>	<span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rdi</span><span class="p">),</span><span class="o">%</span><span class="n">xmm2</span> <span class="c1">// 是将key + 16的8字节放在xmm2中</span>
-	<span class="n">movl</span>	<span class="err">$</span><span class="mi">11</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
-	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">268435456</span><span class="p">,</span><span class="o">%</span><span class="n">r10d</span>
-	<span class="n">je</span>	<span class="p">.</span><span class="n">L12rounds_alt</span>
-    <span class="p">...</span> <span class="p">...</span>
-
-<span class="p">.</span><span class="n">L14rounds</span><span class="o">:</span>
-	<span class="n">movups</span>	<span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rdi</span><span class="p">),</span><span class="o">%</span><span class="n">xmm2</span> <span class="c1">// 此时是将key + 16的16字节放到xmm2中</span>
-	<span class="n">movl</span>	<span class="err">$</span><span class="mi">13</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
-	<span class="n">leaq</span>	<span class="mi">16</span><span class="p">(</span><span class="o">%</span><span class="n">rax</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
-	<span class="n">cmpl</span>	<span class="err">$</span><span class="mi">268435456</span><span class="p">,</span><span class="o">%</span><span class="n">r10d</span>
-	<span class="n">je</span>	<span class="p">.</span><span class="n">L14rounds_alt</span>
-    <span class="p">...</span> <span class="p">...</span>
-
-<span class="c1">// 该函数总结为： length只能为256, 192和128. 若length是256，取key的32(16+16)字节，若length为192,取key的24(16+8)字节，length为128,只取16字节。</span>
-</code></pre></div></div>
-<p>iv是使用EVP_CIPHER_CTX_iv_length(ctx)字节数，key的使用EVP_CIPHER_CTX_key_length(ctx)字节数，接下来来看这些值怎么确定。</p>
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">EVP_CIPHER_CTX_iv_length</span><span class="p">(</span><span class="k">const</span> <span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cipher</span><span class="o">-&gt;</span><span class="n">iv_len</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">EVP_CIPHER_CTX_key_length</span><span class="p">(</span><span class="k">const</span> <span class="n">EVP_CIPHER_CTX</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">key_len</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// 通过上面分析得到， iv_len和key_len分别为我们传进去的cipher的中iv_len和key_len，我们是使用EVP_aes_256_cbc()来创建的cipher。而该函数是通过下面宏定义的，而该函数返回的变量也是通过宏定义的</span>
-
-<span class="k">const</span> <span class="n">EVP_CIPHER</span> <span class="o">*</span><span class="n">EVP_aes_</span><span class="err">##</span><span class="n">keylen</span><span class="err">##</span><span class="n">_</span><span class="err">##</span><span class="n">mode</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> \
-<span class="p">{</span> <span class="k">return</span> <span class="o">&amp;</span><span class="n">aes_</span><span class="err">##</span><span class="n">keylen</span><span class="err">##</span><span class="n">_</span><span class="err">##</span><span class="n">mode</span><span class="p">;</span> <span class="p">}</span>
-
-<span class="cp"># define BLOCK_CIPHER_generic(nid,keylen,blocksize,ivlen,nmode,mode,MODE,flags) \
-static const EVP_CIPHER aes_##keylen##_##mode = { \
-        nid##_##keylen##_##nmode,blocksize,keylen/8,ivlen, \
-        flags|EVP_CIPH_##MODE##_MODE,   \
-        aes_init_key,                   \
-        aes_##mode##_cipher,            \
-        NULL,                           \
-        sizeof(EVP_AES_KEY),            \
-        NULL,NULL,NULL,NULL }; \
-
-</span><span class="c1">// 逆向找到调用的地方：</span>
-<span class="n">BLOCK_CIPHER_generic</span><span class="p">(</span><span class="n">nid</span><span class="p">,</span><span class="n">keylen</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="n">cbc</span><span class="p">,</span><span class="n">cbc</span><span class="p">,</span><span class="n">CBC</span><span class="p">,</span><span class="n">flags</span><span class="o">|</span><span class="n">EVP_CIPH_FLAG_DEFAULT_ASN1</span><span class="p">)</span>
-<span class="c1">// 接着往上找</span>
-<span class="cp">#define BLOCK_CIPHER_generic_pack(nid,keylen,flags)             \
-        BLOCK_CIPHER_generic(nid,keylen,16,16,cbc,cbc,CBC,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)     \
-        BLOCK_CIPHER_generic(nid,keylen,16,0,ecb,ecb,ECB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)      \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,ofb128,ofb,OFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)   \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb128,cfb,CFB,flags|EVP_CIPH_FLAG_DEFAULT_ASN1)   \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb1,cfb1,CFB,flags)       \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,cfb8,cfb8,CFB,flags)       \
-        BLOCK_CIPHER_generic(nid,keylen,1,16,ctr,ctr,CTR,flags)
-</span>
-<span class="c1">// 最终找到</span>
-<span class="n">BLOCK_CIPHER_generic_pack</span><span class="p">(</span><span class="n">NID_aes</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="c1">// EVP_aes_256_cbc() 为 LOCK_CIPHER_generic_pack(NID_aes, 256, 0) ==&gt; BLOCK_CIPHER_generic(nid,256,16,16,cbc,cbc,CBC,EVP_CIPH_FLAG_DEFAULT_ASN1) ==&gt; aes_256_cbc {nid_256_cbc, 16, 256/8, 16, EVP_CIPH_FLAG_DEFAULT_ASN1|EVP_CIPH_cbc_MODE, aes_init_key, aes_cbc_cipher, NULL, sizeof(EVP_AES_KEY), NULL,NULL,NULL,NULL }</span>
-
-<span class="c1">// 从EVP_CIPHER结构体中看到第三个和第四个变量分别为key_len和iv_len，针对EVP_aes_256_cbc() key_len和iv_len分别为32字节和16字节。</span>
-
-</code></pre></div></div>
-<p>所以，可以看到上面加密时密钥和iv分别取32字节和16字节，不管字符串是否有’\0’，上面例子中的第一次解密使用和加密同样的密钥和iv，所以是相同的，而第二次解密使用的密钥和iv只是前面strlen(key) + 1和strlen(iv) + 1相同，所以解密失败。</p>
-
-<h1 id="总结">总结</h1>
-
-<ul>
-  <li>openssl针对不同模式加密和解密密钥和iv是固定的，所以加密和解密提供的固定长度的密钥和iv都要一致，而不是部分一致，如上述例子中的。</li>
-  <li>超过密钥和iv的部分将不参与到运算中去， 即256的密钥是32位，若两个密钥长度大于32字节，并且前32位相同都为正确密钥，那么这两个密钥都可以正确解密密文。</li>
-  <li>在遇到该问题后，可能有的人觉得openssl库很复杂，就不敢去调试或继续跟踪问题，但其实只有我们有耐心并且勇于尝试，最后发现可能很容易就找到关键地方并解决问题。</li>
-</ul>
-
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2019-04-21T15:13:00+08:00"><!-- start custom article footer snippet -->
-
-<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2017/09/25/zhaocha.html">找茬游戏辅助工具</a></div><div class="next"><span>NEXT</span><a href="/2019/04/28/git_commits.html">Git自动化合并多个Commit</a></div></div></div>
+<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="next"><span>NEXT</span><a href="/2015/08/21/makefile_ifelse.html">Makefile中的ifeq 多条件使用</a></div></div></div>
 
 </div>
 
@@ -563,7 +412,7 @@ static const EVP_CIPHER aes_##keylen##_##mode = { \
 				repo: 'liwugang.github.io',
 				owner: 'liwugang',
 				admin: ['liwugang'],
-				id: 'openssl_aes'
+				id: 'android_import_so'
 			});
 			gitalk.render('js-gitalk-container');
 		});
