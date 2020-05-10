@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-05-10T13:25:29+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-05-10T13:55:37+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
 </subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">gdb调试断点</title><link href="https://liwugang.github.io/2020/05/10/gdb_break.html" rel="alternate" type="text/html" title="gdb调试断点" /><published>2020-05-10T13:24:00+08:00</published><updated>2020-05-10T13:24:00+08:00</updated><id>https://liwugang.github.io/2020/05/10/gdb_break</id><content type="html" xml:base="https://liwugang.github.io/2020/05/10/gdb_break.html">&lt;p&gt;“源码之前，了无秘密”，阅读源码让我们清楚的了解到程序的逻辑，但对于较大的系统来说，可能会涉及到多线程、系统的状态或者无法定位到关键代码，静态的阅读可能无法掌握所有的信息，此时就需要动态调试，动态调试有助于我们对程序的理解，可以看到每一步执行状态和相应的变化。用好动态调试，可以让我们事半功倍。&lt;/p&gt;
 
 &lt;p&gt;Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在断点处暂停，供我们查看程序的状态。gdb提供三种类型断点，代码断点(breakpoint)、内存断点(watchpoint)和事件断点(catchpoint)。&lt;/p&gt;
@@ -197,7 +197,7 @@ Num     Type           Disp Enb Address            What
 4       breakpoint     del  y   0x000055555555513d &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main at watch.c:6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;从上面断点的信息从左向右来看，每个断点都包含编号、类型、显示、enable状态、段点地址和描述。这三种断点设置后，都会配置一个编号，之后对在断点管理时可以使用该编号。&lt;/p&gt;
+&lt;p&gt;从上面断点的信息从左向右来看，每个断点都包含编号、类型、显示、enable状态、断点地址和描述。这三种断点设置后，都会配置一个编号，之后对在断点管理时可以使用该编号。&lt;/p&gt;
 
 &lt;h3 id=&quot;查看断点&quot;&gt;查看断点&lt;/h3&gt;
 
