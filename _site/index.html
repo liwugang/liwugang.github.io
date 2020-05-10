@@ -285,6 +285,16 @@
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2020/05/10/gdb_break.html"><h2 itemprop="headline" class="item__header">gdb调试断点</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">“源码之前，了无秘密”，阅读源码让我们清楚的了解到程序的逻辑，但对于较大的系统来说，可能会涉及到多线程、系统的状态或者无法定位到关键代码，静态的阅读可能无法掌握所有的信息，此时就需要动态调试，动态调试有助于我们对程序的理解，可以看到每一步执行状态和相应的变化。用好动态调试，可以让我们事半功倍。
+
+Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在断点处暂停，供我们查看程序的状态。gdb提供三种类型断点，代码断点(breakpoint)、内存断点(watchpoint)和事件断点(catchpoint)。</div><p><a href="/2020/05/10/gdb_break.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=debug">debug</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 10, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-05-10T13:24:00+08:00">
+    <meta itemprop="keywords" content="debug"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2020/04/12/reverse_with_frida.html"><h2 itemprop="headline" class="item__header">使用frida hook插件化apk</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">最近拿到一个XX视频apk样本，里面有视频、直播和小说，没有VIP只能试看30秒，刚好最近学习frida，用来练习下，分析过程中发现是一个插件化的apk，本文记录下分析的过程。</div><p><a href="/2020/04/12/reverse_with_frida.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
@@ -372,33 +382,8 @@ Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动�
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 29, 2019</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-29T08:51:00+08:00">
     <meta itemprop="keywords" content="Android,CTS,SELinux"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2019/07/06/arm_stm_and_ldm.html"><h2 itemprop="headline" class="item__header">ARM中的STM和LDM指令的解析</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">STM指令
-
-STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。
-
-  格式： STM[xx] Rn[!], registers
-
-
-Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。
-
-xx用于确认放置根据下面两个条件区分：
-1.base地址之前和之后;
-2.地址是放置前增加还是后增加。
-
-由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。
-
-
-  
-...</div><p><a href="/2019/07/06/arm_stm_and_ldm.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=arm">arm</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jul 06, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-07-06T14:00:00+08:00">
-    <meta itemprop="keywords" content="arm"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>22 post articles, 3 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>23 post articles, 3 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-left"></i>
