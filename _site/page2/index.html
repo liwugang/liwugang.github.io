@@ -285,6 +285,20 @@
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2019/12/29/CTS-neverallow.html"><h2 itemprop="headline" class="item__header">Android CTS中neverallow规则生成过程</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</div><p><a href="/2019/12/29/CTS-neverallow.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=CTS">CTS</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=SELinux">SELinux</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 29, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-29T08:51:00+08:00">
+    <meta itemprop="keywords" content="Android,CTS,SELinux"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2019/07/06/arm_stm_and_ldm.html"><h2 itemprop="headline" class="item__header">ARM中的STM和LDM指令的解析</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">STM指令
 
@@ -423,19 +437,8 @@ int aes_decrypt_common(uint8_t *input, uint64_t length, co...</div><p><a href="/
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Sep 25, 2017</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2017-09-25T21:22:18+08:00">
     <meta itemprop="keywords" content="assist"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/02/24/python_compile_error.html"><h2 itemprop="headline" class="item__header">error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">python通过pip或者源码来安装某些模块时，这些模块包含有c/c++源码，安装过程会调用本地的编译器编译这些代码。在Windows平台下我安装时候的错误消息是“error: Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it from http://aka.ms/vcpython27” 可以看出错误是由于没有找到该vc版本，对应的是vs2008，当然一种解决方法是安装该版本，但我已经安装了vs2015，所以我就需要修改下默认的这种配置。</div><p><a href="/2016/02/24/python_compile_error.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 24, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-02-24T19:10:50+08:00">
-    <meta itemprop="keywords" content="misc,Python"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>23 post articles, 3 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>24 post articles, 3 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/">
             <i class="fas fa-angle-left"></i>

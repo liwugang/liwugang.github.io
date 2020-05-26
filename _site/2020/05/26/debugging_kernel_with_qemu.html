@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>使用QEMU调试Linux内核 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。">
+<link rel="canonical" href="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -262,7 +261,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -280,125 +279,153 @@
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/05/26/debugging_kernel_with_qemu.html"><h2 itemprop="headline" class="item__header">使用QEMU调试Linux内核</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。</div><p><a href="/2020/05/26/debugging_kernel_with_qemu.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>使用QEMU调试Linux内核</h1></header></div><meta itemprop="headline" content="使用QEMU调试Linux内核"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=debug">debug</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 26, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-05-26T23:00:00+08:00">
-    <meta itemprop="keywords" content="debug"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/05/10/gdb_break.html"><h2 itemprop="headline" class="item__header">gdb调试断点</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">“源码之前，了无秘密”，阅读源码让我们清楚的了解到程序的逻辑，但对于较大的系统来说，可能会涉及到多线程、系统的状态或者无法定位到关键代码，静态的阅读可能无法掌握所有的信息，此时就需要动态调试，动态调试有助于我们对程序的理解，可以看到每一步执行状态和相应的变化。用好动态调试，可以让我们事半功倍。
+    <meta itemprop="keywords" content="debug"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在断点处暂停，供我们查看程序的状态。gdb提供三种类型断点，代码断点(breakpoint)、内存断点(watchpoint)和事件断点(catchpoint)。</div><p><a href="/2020/05/10/gdb_break.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=debug">debug</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 10, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-05-10T13:24:00+08:00">
-    <meta itemprop="keywords" content="debug"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/04/12/reverse_with_frida.html"><h2 itemprop="headline" class="item__header">使用frida hook插件化apk</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近拿到一个XX视频apk样本，里面有视频、直播和小说，没有VIP只能试看30秒，刚好最近学习frida，用来练习下，分析过程中发现是一个插件化的apk，本文记录下分析的过程。</div><p><a href="/2020/04/12/reverse_with_frida.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=frida">frida</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=reverse">reverse</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-04-12T10:08:00+08:00">
-    <meta itemprop="keywords" content="frida,reverse,Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/03/22/hide_process.html"><h2 itemprop="headline" class="item__header">Linux 下如何隐藏自己不被发现？</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
-隐藏有两种方法：
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。</p>
 
-  kernel 层面，不对用户层暴露该进程的信息，进程不被看见；
-  用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达到隐藏自己的目的。
+<!--more-->
+<h2 id="环境搭建">环境搭建</h2>
 
+<h3 id="mkroot工具">mkroot工具</h3>
+<p>mkroot工具作者是landley大佬，landley大佬是著名的toybox工具的owner，toybox是集成绝大多数Linux命令为一个可执行文件中，以简单、小巧和快速等特点被集成到Android中。
+mkroot工具的介绍是”Compiles a toybox-based root filesystem and kernel that can boot under qemu.”，可以看到直接使用mkroot工具可以帮我们构建一个由QEMU启动的kernel和ramdisk。</p>
 
-方法一是需要修改内核，本文主要是讲第二种方法。</div><p><a href="/2020/03/22/hide_process.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Linux">Linux</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Security">Security</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 22, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-03-22T19:12:00+08:00">
-    <meta itemprop="keywords" content="Linux,Security"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/02/29/coredomain_create_new_property.html"><h2 itemprop="headline" class="item__header">Coredomain 创建新的 property type</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">背景
+<p>在原来工具基础上，我有两处修改，<a href="https://github.com/liwugang/mkroot">下载地址</a></p>
+<ol>
+  <li>kernel的下载地址替换为国内清华源；</li>
+  <li>将目录打包成ramdisk命令提取到单独文件中。</li>
+</ol>
 
-Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</div><p><a href="/2020/02/29/coredomain_create_new_property.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=SELinux">SELinux</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 29, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-02-29T08:53:00+08:00">
-    <meta itemprop="keywords" content="SELinux,Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/01/11/auto_input_and_click.html"><h2 itemprop="headline" class="item__header">Python实现自动化点击和输入功能</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">背景
+<h3 id="运行">运行</h3>
 
-由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。</div><p><a href="/2020/01/11/auto_input_and_click.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 11, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-11T19:48:00+08:00">
-    <meta itemprop="keywords" content="Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/01/01/filecrypt_aes.html"><h2 itemprop="headline" class="item__header">filecrypt工具加解密大文件失败问题分析</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</div><p><a href="/2020/01/01/filecrypt_aes.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=filecrypt">filecrypt</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=AES">AES</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 01, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-01T10:39:00+08:00">
-    <meta itemprop="keywords" content="filecrypt,AES"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2019/12/30/git_commits_en.html"><h2 itemprop="headline" class="item__header">A Tool To Automate Multiple Commits Into One</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that git rebase -i can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to au...</div><p><a href="/2019/12/30/git_commits_en.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=git">git</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 30, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-30T21:55:00+08:00">
-    <meta itemprop="keywords" content="git"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>24 post articles, 3 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
-            <i class="fas fa-angle-left"></i>
-          </div></li><li>
-              <div class="button button--primary button--circle focus"><span>1</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page2">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
+<p>在下载工具的根目录下执行：</p>
+<blockquote>
+  <p>./mkroot.sh  NO_CLEANUP=true kernel</p>
+</blockquote>
 
-})();*/
-</script>
+<p>默认情况下编译完后会将源码删掉，为了保留源码，需要带上参数 NO_CLEANUP=true。</p>
 
+<p><img src="/assets/pictures/debug/mkroot.png" alt="graph" /></p>
 
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+<p>从图上看到，根目录下的build目录是源码位置，output/host下有生成的ramdisk、kernel、QEMU启动脚本等文件。</p>
+
+<p>由于编译kernel的选项是采用简单配置，可能不满足需求，此时需要到build目录下的linux源码目录下，重启配置选项编译，然后将生成的bzImage拷贝到output/host或者修改qemu-x86_64.sh脚本，将kernel指向刚生成的bzImage。</p>
+
+<h2 id="调试">调试</h2>
+
+<p>使用两个终端，终端一在output/host目录下，执行：</p>
+<blockquote>
+  <p>./qemu-x86_64.sh -s -S</p>
+</blockquote>
+
+<p>-s是”-gdb tcp::1234“的简写，用于监听tcp::1234端口，-S是让在启动后暂停</p>
+
+<p>终端二在kernel源码目录(build/host-tmp/linux-5.1)下，执行：</p>
+<blockquote>
+  <p>gdb vmlinux</p>
+</blockquote>
+
+<p>gdb加载kernel</p>
+<blockquote>
+  <p>target remote:1234</p>
+</blockquote>
+
+<p>连接1234端口</p>
+
+<blockquote>
+  <p>b start_kernel</p>
+</blockquote>
+
+<p>在start_kernel函数下断点</p>
+
+<blockquote>
+  <p>continue</p>
+</blockquote>
+
+<p>继续执行</p>
+
+<p>此时会断点在start_kernel函数中，当然也可以根据需求设置其他函数断点，然后进行调试。</p>
+
+<h2 id="用户态程序执行">用户态程序执行</h2>
+
+<p>要调试kernel的某个函数，默认情况下触发不到怎么办？ 那只有自己写用户态程序进行主动触发。</p>
+
+<h3 id="用户态程序要求">用户态程序要求</h3>
+
+<p>由于ramdisk中不包含有共享库，所以用户态程序依赖共享库。生成简单的helloworld可执行文件，用ldd输出可执行文件依赖的共享库</p>
+
+<p><img src="/assets/pictures/debug/dynamic_so.png" alt="graph" /></p>
+
+<p>可以看到有依赖的共享库，为了能够运行，需要编译时将依赖的都编译进可执行文件中，<strong>gcc或g++编译时增加 -static 参数即可</strong>。</p>
+
+<p><img src="/assets/pictures/debug/static_exe.png" alt="graph" /></p>
+
+<p>加上参数后，可以看到没有依赖的共享库。</p>
+
+<h3 id="打包进ramdisk">打包进ramdisk</h3>
+
+<p><img src="/assets/pictures/debug/ramdisk.png" alt="graph" /></p>
+
+<p>在output/host下，将用户态程序移动到root目录下（可以是root下的任意位置），然后执行cpio.sh将root目录进行打包即可。此时运行qemu-x86_64.sh就会发现可执行文件存在。</p>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-05-26T23:00:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/05/10/gdb_break.html">gdb调试断点</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.5.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.5.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'debug_kernel_with_qemu'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -949,6 +976,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
