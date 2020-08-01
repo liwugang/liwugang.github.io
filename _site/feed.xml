@@ -1,5 +1,157 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-05-27T12:05:42+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">使用QEMU调试Linux内核</title><link href="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html" rel="alternate" type="text/html" title="使用QEMU调试Linux内核" /><published>2020-05-26T23:00:00+08:00</published><updated>2020-05-26T23:00:00+08:00</updated><id>https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu</id><content type="html" xml:base="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html">&lt;p&gt;最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-08-01T13:36:13+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Ghidra对局部变量的标识</title><link href="https://liwugang.github.io/2020/08/01/ghidra.html" rel="alternate" type="text/html" title="Ghidra对局部变量的标识" /><published>2020-08-01T13:36:00+08:00</published><updated>2020-08-01T13:36:00+08:00</updated><id>https://liwugang.github.io/2020/08/01/ghidra</id><content type="html" xml:base="https://liwugang.github.io/2020/08/01/ghidra.html">&lt;p&gt;Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;p&gt;使用csaw18 pwn中的&lt;a href=&quot;https://github.com/guyinatuxedo/ctf/blob/master/csaw18/pwn/boi/boi&quot;&gt;boi&lt;/a&gt;程序作为例子，来分析看ghidra对局部变量是如何标识。&lt;/p&gt;
+
+&lt;h2 id=&quot;ghidra分析结果&quot;&gt;Ghidra分析结果&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;                         &lt;span class=&quot;k&quot;&gt;*******************************************************&lt;/span&gt;
+                         &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;                      FUNCTION                       &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+                         &lt;span class=&quot;k&quot;&gt;*******************************************************&lt;/span&gt;
+                         undefined main&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+    undefined       AL:1         &amp;lt;RETURN&amp;gt;
+    undefined8      Stack[-0x10  local_10                           XREF[2]:   00400659&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
+                                                                               004006ca&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    undefined4      Stack[-0x20  local_20                           XREF[1]:   00400677&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    undefined8      Stack[-0x28  local_28                           XREF[1,2]: 0040066f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
+                                                                               0040067e&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
+                                                                               004006a5&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    undefined8      Stack[-0x30  local_30                           XREF[1]:   00400667&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    undefined8      Stack[-0x38  local_38                           XREF[2]:   0040065f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
+                                                                               0040068f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    undefined4      Stack[-0x3c  local_3c                           XREF[1]:   00400649&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    undefined8      Stack[-0x48  local_48                           XREF[1]:   0040064c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                         main                                       XREF[5]:   Entry Point&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
+                                                                            _start:0040054d&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
+                                                                            _start:0040054d&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 004007b4, 
+                                                                               00400868&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+      00400641               PUSH      RBP        &lt;span class=&quot;c&quot;&gt;# 入栈8字节&lt;/span&gt;
+      00400642               MOV       RBP,RSP
+      00400645               SUB       RSP,0x40
+      00400649               MOV       dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_3c],EDI
+      0040064c               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_48],RSI
+      00400650               MOV       RAX,qword ptr FS:[0x28]
+      00400659               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_10],RAX
+      0040065d               XOR       EAX,EAX
+      0040065f               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_38],0x0
+      00400667               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_30],0x0
+      0040066f               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_28],0x0
+      00400677               MOV       dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_20],0x0
+      0040067e               MOV       dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_28+0x4],0xdeadbeef
+      00400685               MOV       &lt;span class=&quot;nv&quot;&gt;EDI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;s_Are_you_a_big_boiiiii??_00400764,s  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Are you a big boiiiii??&quot;&lt;/span&gt;
+      0040068a               CALL      puts                                       int puts&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; __s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+      0040068f               LEA       &lt;span class=&quot;nv&quot;&gt;RAX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;local_38,[RBP + &lt;span class=&quot;nt&quot;&gt;-0x30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 此处 RAX=&amp;gt;local_38 是什么意思？ &lt;/span&gt;
+      00400693               MOV       EDX,0x18
+      00400698               MOV       RSI,RAX
+      0040069b               MOV       EDI,0x0
+      004006a0               CALL      &lt;span class=&quot;nb&quot;&gt;read                                       &lt;/span&gt;ssize_t &lt;span class=&quot;nb&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int __fd, void 
+      004006a5               MOV       EAX,dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_28+0x4]
+      004006a8               CMP       EAX,0xcaf3baee
+      004006ad               JNZ       LAB_004006bb
+      004006af               MOV       &lt;span class=&quot;nv&quot;&gt;EDI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;s_/bin/bash_0040077c,s_/bin/bash_004  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/bash&quot;&lt;/span&gt;
+      004006b4               CALL      run_cmd                                    undefined run_cmd&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+      004006b9               JMP       LAB_004006c5
+ LAB_004006bb                              XREF[1]:   004006ad&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;j&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+      004006bb               MOV       &lt;span class=&quot;nv&quot;&gt;EDI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;s_/bin/date_00400786,s_/bin/date_004  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/date&quot;&lt;/span&gt;
+      004006c0               CALL      run_cmd                                    undefined run_cmd&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+ LAB_004006c5                              XREF[1]:   004006b9&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;j&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+      004006c5               MOV       EAX,0x0
+      004006ca               MOV       RCX,qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_10]
+      004006ce               XOR       RCX,qword ptr FS:[0x28]
+      004006d7               JZ        LAB_004006de
+      004006d9               CALL      __stack_chk_fail                           undefined __stack_chk_fail&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+                         &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; Flow Override: CALL_RETURN &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CALL_TERMINATOR&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                         LAB_004006de                              XREF[1]:   004006d7&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;j&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+      004006de               LEAVE
+      004006df               RET
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;从最上面可以看到，ghidra函数中的局部变量，直接是根据STACK进行标识，是根据函数开始处RSP的偏移。&lt;/p&gt;
+
+&lt;p&gt;当看到这行&lt;strong&gt;LEA       RAX=&amp;gt;local_38,[RBP + -0x30]&lt;/strong&gt;时，是获取RBP-0x30的地址，在想和local_38有什么关系？&lt;/p&gt;
+
+&lt;p&gt;从最上面&lt;strong&gt;Stack[-0x38  local_38&lt;/strong&gt;看到，local_38 = 起始RSP-0x38&lt;/p&gt;
+
+&lt;p&gt;由&lt;strong&gt;PUSH RBP  MOV RBP,RSP&lt;/strong&gt;可知，RBP=起始RSP - 0x8，那RBP-0x30 = 起始RSP-0x8-0x30=起始RSP-0x38=local_38&lt;/p&gt;
+
+&lt;p&gt;所以，RAX获取到的是local_38的地址。&lt;/p&gt;
+
+&lt;h2 id=&quot;ida的分析结果&quot;&gt;IDA的分析结果&lt;/h2&gt;
+&lt;p&gt;IDA的结果：&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;text:0000000000400641 &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; int __cdecl main&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int argc, const char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;argv, const char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;envp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+.text:0000000000400641                 public main
+.text:0000000000400641 main            proc near               &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; DATA XREF: _start+1D↑o
+.text:0000000000400641
+.text:0000000000400641 var_40          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-40h&lt;/span&gt;
+.text:0000000000400641 var_34          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; dword ptr &lt;span class=&quot;nt&quot;&gt;-34h&lt;/span&gt;
+.text:0000000000400641 buf             &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-30h&lt;/span&gt;
+.text:0000000000400641 var_28          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-28h&lt;/span&gt;
+.text:0000000000400641 var_20          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-20h&lt;/span&gt;
+.text:0000000000400641 var_18          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; dword ptr &lt;span class=&quot;nt&quot;&gt;-18h&lt;/span&gt;
+.text:0000000000400641 var_8           &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-8&lt;/span&gt;
+.text:0000000000400641
+.text:0000000000400641 &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; __unwind &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+.text:0000000000400641                 push    rbp
+.text:0000000000400642                 mov     rbp, rsp
+.text:0000000000400645                 sub     rsp, 40h
+.text:0000000000400649                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_34], edi
+.text:000000000040064C                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_40], rsi
+.text:0000000000400650                 mov     rax, fs:28h
+.text:0000000000400659                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_8], rax
+.text:000000000040065D                 xor     eax, eax
+.text:000000000040065F                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+buf], 0
+.text:0000000000400667                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_28], 0
+.text:000000000040066F                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_20], 0
+.text:0000000000400677                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_18], 0
+.text:000000000040067E                 mov     dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_20+4], 0DEADBEEFh
+.text:0000000000400685                 mov     edi, offset s   &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Are you a big boiiiii??&quot;&lt;/span&gt;
+.text:000000000040068A                 call    _puts
+.text:000000000040068F                 lea     rax, &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+buf]
+.text:0000000000400693                 mov     edx, 18h        &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; nbytes
+.text:0000000000400698                 mov     rsi, rax        &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; buf
+.text:000000000040069B                 mov     edi, 0          &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; fd
+.text:00000000004006A0                 call    _read
+.text:00000000004006A5                 mov     eax, dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_20+4]
+.text:00000000004006A8                 cmp     eax, 0CAF3BAEEh
+.text:00000000004006AD                 jnz     short loc_4006BB
+.text:00000000004006AF                 mov     edi, offset aBinBash &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/bash&quot;&lt;/span&gt;
+.text:00000000004006B4                 call    run_cmd
+.text:00000000004006B9                 jmp     short loc_4006C5
+.text:00000000004006BB &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
+.text:00000000004006BB
+.text:00000000004006BB loc_4006BB:                             &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CODE XREF: main+6C↑j
+.text:00000000004006BB                 mov     edi, offset aBinDate &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/date&quot;&lt;/span&gt;
+.text:00000000004006C0                 call    run_cmd
+.text:00000000004006C5
+.text:00000000004006C5 loc_4006C5:                             &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CODE XREF: main+78↑j
+.text:00000000004006C5                 mov     eax, 0
+.text:00000000004006CA                 mov     rcx, &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_8]
+.text:00000000004006CE                 xor     rcx, fs:28h
+.text:00000000004006D7                 jz      short locret_4006DE
+.text:00000000004006D9                 call    ___stack_chk_fail
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;对于IDA来说，局部变量是针对RBP进行偏移的，RBP是函数调用中的栈帧的基址，并且在函数返回前不会改动，所以比较好理解。&lt;/p&gt;
+
+&lt;h2 id=&quot;ghidra的问题&quot;&gt;Ghidra的问题&lt;/h2&gt;
+
+&lt;p&gt;IDA上0x00400649地址处汇编为&lt;strong&gt;mov [rbp+var_34], edi&lt;/strong&gt;，根据之前的RBP=起始RSP-0x8，转化成&lt;strong&gt;起始RSP-0x8-0x34&lt;/strong&gt;即&lt;strong&gt;起始RSP-0x3C&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;而该地址对应的是local_3c，但是ghidra上却是&lt;strong&gt;RBP + local_3c&lt;/strong&gt;，因为local_3c的地址想对于RBP是0x34，所以ghidra使用&lt;strong&gt;MOV  dword ptr [local_3c],EDI&lt;/strong&gt;会比较合适。&lt;/p&gt;
+
+&lt;p&gt;在github上，看到了为什么ghidra会选择以stack作为偏移。&lt;a href=&quot;https://github.com/NationalSecurityAgency/ghidra/issues/223&quot;&gt;链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;关闭ghidra局部变量引用&quot;&gt;关闭ghidra局部变量引用&lt;/h2&gt;
+
+&lt;p&gt;这种可以关闭，通过开始菜单上的Edit –&amp;gt; Tool Options –&amp;gt; Listing Fields –&amp;gt; Operands Field，将&lt;strong&gt;Markup Stack Variable References&lt;/strong&gt;勾去掉就行。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/ghidra_stack.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;效果如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/ghidra_close.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;关闭后效果会更好，可以直接知道每行汇编代码是针对那个局部变量进行处理，并且针对RBP的偏移也有展示。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="reverse" /><category term="ghidra" /><summary type="html">Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。</summary></entry><entry><title type="html">使用QEMU调试Linux内核</title><link href="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html" rel="alternate" type="text/html" title="使用QEMU调试Linux内核" /><published>2020-05-26T23:00:00+08:00</published><updated>2020-05-26T23:00:00+08:00</updated><id>https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu</id><content type="html" xml:base="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html">&lt;p&gt;最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。&lt;/p&gt;
 
 &lt;!--more--&gt;
 &lt;h2 id=&quot;环境搭建&quot;&gt;环境搭建&lt;/h2&gt;
@@ -2149,71 +2301,4 @@ END_COMPATIBLE_PROPERTY_ONLY这几个关键字前面的注释去掉，以便后�
 
 &lt;blockquote&gt;
   &lt;p&gt;SELinuxNeverallowTestGen.py general_sepolicy.conf SELinuxNeverallowRulesTest.java&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><category term="CTS" /><category term="SELinux" /><summary type="html">CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</summary></entry><entry><title type="html">ARM中的STM和LDM指令的解析</title><link href="https://liwugang.github.io/2019/07/06/arm_stm_and_ldm.html" rel="alternate" type="text/html" title="ARM中的STM和LDM指令的解析" /><published>2019-07-06T14:00:00+08:00</published><updated>2019-07-06T14:00:00+08:00</updated><id>https://liwugang.github.io/2019/07/06/arm_stm_and_ldm</id><content type="html" xml:base="https://liwugang.github.io/2019/07/06/arm_stm_and_ldm.html">&lt;h1 id=&quot;stm指令&quot;&gt;STM指令&lt;/h1&gt;
-
-&lt;p&gt;STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;格式： STM[xx] Rn[!], registers&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。&lt;/p&gt;
-
-&lt;p&gt;xx用于确认放置根据下面两个条件区分：
-1.base地址之前和之后;
-2.地址是放置前增加还是后增加。&lt;/p&gt;
-
-&lt;p&gt;由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;xx&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;name&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;介绍&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;IA(EA)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Increment After(Empty Ascending)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;放置后地址增加，address = Rn&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;DA(ED)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Decrement After(Empty Descending)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;放置后地址减少，address = Rn - len(registers) + 4&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;DB(FD)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Decrement Before(Full Descending)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;放置前地址减少，addrss = Rn - len(registers)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;IB(FA)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Increment Before(Full Ascending)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;放置前地址增加，address = Rn + 4&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;stmdastmed&quot;&gt;STMDA(STMED)&lt;/h2&gt;
-&lt;p&gt;来看下为什么 address = Rn - len(registers) + 4 ?&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;放置后地址减少;&lt;/li&gt;
-  &lt;li&gt;寄存器编号按从低到高放置在存储空间的从低到高的位置;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;所以先倒数第一的寄存器需要放置在base地址中，即mem[Rn] = R[end], 接下来倒数第二为 mem[Rn - 4] = R[end-1], 类似第一个就是mem[Rn - len(registers) + 4] = R[first]了。&lt;/p&gt;
-
-&lt;h2 id=&quot;回写base寄存器&quot;&gt;回写base寄存器&lt;/h2&gt;
-
-&lt;p&gt;若需要回写base寄存器&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4&lt;/li&gt;
-  &lt;li&gt;DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;ldm指令&quot;&gt;LDM指令&lt;/h1&gt;
-
-&lt;p&gt;和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="arm" /><summary type="html">STM指令 STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。 格式： STM[xx] Rn[!], registers Rn为base地址，后面！表示是否将放置后的地址回写到base寄存器中。registers是要放置的寄存器组，xx表示放置的方式。 xx用于确认放置根据下面两个条件区分： 1.base地址之前和之后; 2.地址是放置前增加还是后增加。 由于都是放置在连续空间中，寄存器的放置顺序固定，所以xx就是用于确定放置空间的起始地址，该地址用address表示，根据xx来看下address的计算方法，下面len(registers)表示registers中的个数。 xx name 介绍 IA(EA) Increment After(Empty Ascending) 放置后地址增加，address = Rn DA(ED) Decrement After(Empty Descending) 放置后地址减少，address = Rn - len(registers) + 4 DB(FD) Decrement Before(Full Descending) 放置前地址减少，addrss = Rn - len(registers) IB(FA) Increment Before(Full Ascending) 放置前地址增加，address = Rn + 4 STMDA(STMED) 来看下为什么 address = Rn - len(registers) + 4 ? 放置后地址减少; 寄存器编号按从低到高放置在存储空间的从低到高的位置; 所以先倒数第一的寄存器需要放置在base地址中，即mem[Rn] = R[end], 接下来倒数第二为 mem[Rn - 4] = R[end-1], 类似第一个就是mem[Rn - len(registers) + 4] = R[first]了。 回写base寄存器 若需要回写base寄存器 IA和IB是增加的方向，不管是放置后还是前增加都是Rn = Rn + len(registers) + 4 DA和DB是减少的方向，不管是放置后还是前增加都是Rn = Rn - len(registers) + 4 LDM指令 和STM相反，从连续的存储空间中读取内容到寄存器中。并且确认起始地址的方式也一样的，区别是放入到存储还是从存储中读。</summary></entry></feed>
+&lt;/blockquote&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><category term="CTS" /><category term="SELinux" /><summary type="html">CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</summary></entry></feed>

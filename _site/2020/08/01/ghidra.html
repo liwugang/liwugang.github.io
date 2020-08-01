@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Ghidra对局部变量的标识 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/page3/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+<meta name="description" content="Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。">
+<link rel="canonical" href="https://liwugang.github.io/2020/08/01/ghidra.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
 
@@ -262,7 +261,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -280,172 +279,223 @@
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2017/09/25/zhaocha.html"><h2 itemprop="headline" class="item__header">找茬游戏辅助工具</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">近在整理硬盘时，看到了几年前写的 美女找茬工具，一时兴起看下现在是否能用，试了下，完全用不了了，界面和以前的界面一样啊，图片的偏移应该没有变，按道理应该能用，猜想可能是图片做了处理。就花了点时间看了下，果然发现了问题，现在和大家分享下。</div><p><a href="/2017/09/25/zhaocha.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Ghidra对局部变量的标识</h1></header></div><meta itemprop="headline" content="Ghidra对局部变量的标识"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=assist">assist</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Sep 25, 2017</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2017-09-25T21:22:18+08:00">
-    <meta itemprop="keywords" content="assist"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/02/24/python_compile_error.html"><h2 itemprop="headline" class="item__header">error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">python通过pip或者源码来安装某些模块时，这些模块包含有c/c++源码，安装过程会调用本地的编译器编译这些代码。在Windows平台下我安装时候的错误消息是“error: Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it from http://aka.ms/vcpython27” 可以看出错误是由于没有找到该vc版本，对应的是vs2008，当然一种解决方法是安装该版本，但我已经安装了vs2015，所以我就需要修改下默认的这种配置。</div><p><a href="/2016/02/24/python_compile_error.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
+                href="/archive.html?tag=reverse">reverse</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 24, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-02-24T19:10:50+08:00">
-    <meta itemprop="keywords" content="misc,Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html"><h2 itemprop="headline" class="item__header">3-Longest Substring Without Repeating Characters @LeetCode</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+                href="/archive.html?tag=ghidra">ghidra</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 01, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-08-01T13:36:00+08:00">
+    <meta itemprop="keywords" content="reverse,ghidra"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。
+<!--more--></p>
 
+<p>使用csaw18 pwn中的<a href="https://github.com/guyinatuxedo/ctf/blob/master/csaw18/pwn/boi/boi">boi</a>程序作为例子，来分析看ghidra对局部变量是如何标识。</p>
 
-题目中得到的信息有
-一段字符串找出不重复子串的最大长度，只需要长度信息。
+<h2 id="ghidra分析结果">Ghidra分析结果</h2>
 
-思路
-肯定是需要将字符串遍历一遍，在遍历过程中就需要查找前面字符串是否出现该字符，因此这是该算法的重点。若没找到，长度加一，若找到了，长度会从前面该字符位置+1处开始算起。下面以图来说明：
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                         <span class="k">*******************************************************</span>
+                         <span class="k">*</span>                      FUNCTION                       <span class="k">*</span>
+                         <span class="k">*******************************************************</span>
+                         undefined main<span class="o">()</span>
+    undefined       AL:1         &lt;RETURN&gt;
+    undefined8      Stack[-0x10  local_10                           XREF[2]:   00400659<span class="o">(</span>W<span class="o">)</span>, 
+                                                                               004006ca<span class="o">(</span>R<span class="o">)</span>  
+    undefined4      Stack[-0x20  local_20                           XREF[1]:   00400677<span class="o">(</span>W<span class="o">)</span>  
+    undefined8      Stack[-0x28  local_28                           XREF[1,2]: 0040066f<span class="o">(</span>W<span class="o">)</span>, 
+                                                                               0040067e<span class="o">(</span>W<span class="o">)</span>, 
+                                                                               004006a5<span class="o">(</span>R<span class="o">)</span>  
+    undefined8      Stack[-0x30  local_30                           XREF[1]:   00400667<span class="o">(</span>W<span class="o">)</span>  
+    undefined8      Stack[-0x38  local_38                           XREF[2]:   0040065f<span class="o">(</span>W<span class="o">)</span>, 
+                                                                               0040068f<span class="o">(</span><span class="k">*</span><span class="o">)</span>  
+    undefined4      Stack[-0x3c  local_3c                           XREF[1]:   00400649<span class="o">(</span>W<span class="o">)</span>  
+    undefined8      Stack[-0x48  local_48                           XREF[1]:   0040064c<span class="o">(</span>W<span class="o">)</span>  
+                         main                                       XREF[5]:   Entry Point<span class="o">(</span><span class="k">*</span><span class="o">)</span>, 
+                                                                            _start:0040054d<span class="o">(</span><span class="k">*</span><span class="o">)</span>, 
+                                                                            _start:0040054d<span class="o">(</span><span class="k">*</span><span class="o">)</span>, 004007b4, 
+                                                                               00400868<span class="o">(</span><span class="k">*</span><span class="o">)</span>  
+      00400641               PUSH      RBP        <span class="c"># 入栈8字节</span>
+      00400642               MOV       RBP,RSP
+      00400645               SUB       RSP,0x40
+      00400649               MOV       dword ptr <span class="o">[</span>RBP + local_3c],EDI
+      0040064c               MOV       qword ptr <span class="o">[</span>RBP + local_48],RSI
+      00400650               MOV       RAX,qword ptr FS:[0x28]
+      00400659               MOV       qword ptr <span class="o">[</span>RBP + local_10],RAX
+      0040065d               XOR       EAX,EAX
+      0040065f               MOV       qword ptr <span class="o">[</span>RBP + local_38],0x0
+      00400667               MOV       qword ptr <span class="o">[</span>RBP + local_30],0x0
+      0040066f               MOV       qword ptr <span class="o">[</span>RBP + local_28],0x0
+      00400677               MOV       dword ptr <span class="o">[</span>RBP + local_20],0x0
+      0040067e               MOV       dword ptr <span class="o">[</span>RBP + local_28+0x4],0xdeadbeef
+      00400685               MOV       <span class="nv">EDI</span><span class="o">=&gt;</span>s_Are_you_a_big_boiiiii??_00400764,s  <span class="o">=</span> <span class="s2">"Are you a big boiiiii??"</span>
+      0040068a               CALL      puts                                       int puts<span class="o">(</span>char <span class="k">*</span> __s<span class="o">)</span>
+      0040068f               LEA       <span class="nv">RAX</span><span class="o">=&gt;</span>local_38,[RBP + <span class="nt">-0x30</span><span class="o">]</span>  <span class="c"># 此处 RAX=&gt;local_38 是什么意思？ </span>
+      00400693               MOV       EDX,0x18
+      00400698               MOV       RSI,RAX
+      0040069b               MOV       EDI,0x0
+      004006a0               CALL      <span class="nb">read                                       </span>ssize_t <span class="nb">read</span><span class="o">(</span>int __fd, void 
+      004006a5               MOV       EAX,dword ptr <span class="o">[</span>RBP + local_28+0x4]
+      004006a8               CMP       EAX,0xcaf3baee
+      004006ad               JNZ       LAB_004006bb
+      004006af               MOV       <span class="nv">EDI</span><span class="o">=&gt;</span>s_/bin/bash_0040077c,s_/bin/bash_004  <span class="o">=</span> <span class="s2">"/bin/bash"</span>
+      004006b4               CALL      run_cmd                                    undefined run_cmd<span class="o">()</span>
+      004006b9               JMP       LAB_004006c5
+ LAB_004006bb                              XREF[1]:   004006ad<span class="o">(</span>j<span class="o">)</span>  
+      004006bb               MOV       <span class="nv">EDI</span><span class="o">=&gt;</span>s_/bin/date_00400786,s_/bin/date_004  <span class="o">=</span> <span class="s2">"/bin/date"</span>
+      004006c0               CALL      run_cmd                                    undefined run_cmd<span class="o">()</span>
+ LAB_004006c5                              XREF[1]:   004006b9<span class="o">(</span>j<span class="o">)</span>  
+      004006c5               MOV       EAX,0x0
+      004006ca               MOV       RCX,qword ptr <span class="o">[</span>RBP + local_10]
+      004006ce               XOR       RCX,qword ptr FS:[0x28]
+      004006d7               JZ        LAB_004006de
+      004006d9               CALL      __stack_chk_fail                           undefined __stack_chk_fail<span class="o">()</span>
+                         <span class="nt">--</span> Flow Override: CALL_RETURN <span class="o">(</span>CALL_TERMINATOR<span class="o">)</span>
+                         LAB_004006de                              XREF[1]:   004006d7<span class="o">(</span>j<span class="o">)</span>  
+      004006de               LEAVE
+      004006df               RET
+</code></pre></div></div>
+<p>从最上面可以看到，ghidra函数中的局部变量，直接是根据STACK进行标识，是根据函数开始处RSP的偏移。</p>
 
+<p>当看到这行<strong>LEA       RAX=&gt;local_38,[RBP + -0x30]</strong>时，是获取RBP-0x30的地址，在想和local_38有什么关系？</p>
 
+<p>从最上面<strong>Stack[-0x38  local_38</strong>看到，local_38 = 起始RSP-0x38</p>
 
-假如我们以begin为子串的开始，current表示当前处理的位置。1）当前位置的字符没有出现在[begin,current)的区间内，说明将该值加入到区间内满足没有重复条件，长度加一；
-2）若当前值已经在该区间内，加入后肯定会出现重复，则应该将begin移动到没有该值的最左边位置，图中 new begin位置满足该条件。
+<p>由<strong>PUSH RBP  MOV RBP,RSP</strong>可知，RBP=起始RSP - 0x8，那RBP-0x30 = 起始RSP-0x8-0x30=起始RSP-0x38=local_38</p>
 
-在移动begin之前首先需要判断[begin, current)是否是现有的最大长...</div><p><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 15, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-15T23:10:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/13/2_add_two_numbers.html"><h2 itemprop="headline" class="item__header">2-Add Two Numbers @LeetCode</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+<p>所以，RAX获取到的是local_38的地址。</p>
 
+<h2 id="ida的分析结果">IDA的分析结果</h2>
+<p>IDA的结果：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>text:0000000000400641 <span class="p">;</span> int __cdecl main<span class="o">(</span>int argc, const char <span class="k">**</span>argv, const char <span class="k">**</span>envp<span class="o">)</span>
+.text:0000000000400641                 public main
+.text:0000000000400641 main            proc near               <span class="p">;</span> DATA XREF: _start+1D↑o
+.text:0000000000400641
+.text:0000000000400641 var_40          <span class="o">=</span> qword ptr <span class="nt">-40h</span>
+.text:0000000000400641 var_34          <span class="o">=</span> dword ptr <span class="nt">-34h</span>
+.text:0000000000400641 buf             <span class="o">=</span> qword ptr <span class="nt">-30h</span>
+.text:0000000000400641 var_28          <span class="o">=</span> qword ptr <span class="nt">-28h</span>
+.text:0000000000400641 var_20          <span class="o">=</span> qword ptr <span class="nt">-20h</span>
+.text:0000000000400641 var_18          <span class="o">=</span> dword ptr <span class="nt">-18h</span>
+.text:0000000000400641 var_8           <span class="o">=</span> qword ptr <span class="nt">-8</span>
+.text:0000000000400641
+.text:0000000000400641 <span class="p">;</span> __unwind <span class="o">{</span>
+.text:0000000000400641                 push    rbp
+.text:0000000000400642                 mov     rbp, rsp
+.text:0000000000400645                 sub     rsp, 40h
+.text:0000000000400649                 mov     <span class="o">[</span>rbp+var_34], edi
+.text:000000000040064C                 mov     <span class="o">[</span>rbp+var_40], rsi
+.text:0000000000400650                 mov     rax, fs:28h
+.text:0000000000400659                 mov     <span class="o">[</span>rbp+var_8], rax
+.text:000000000040065D                 xor     eax, eax
+.text:000000000040065F                 mov     <span class="o">[</span>rbp+buf], 0
+.text:0000000000400667                 mov     <span class="o">[</span>rbp+var_28], 0
+.text:000000000040066F                 mov     <span class="o">[</span>rbp+var_20], 0
+.text:0000000000400677                 mov     <span class="o">[</span>rbp+var_18], 0
+.text:000000000040067E                 mov     dword ptr <span class="o">[</span>rbp+var_20+4], 0DEADBEEFh
+.text:0000000000400685                 mov     edi, offset s   <span class="p">;</span> <span class="s2">"Are you a big boiiiii??"</span>
+.text:000000000040068A                 call    _puts
+.text:000000000040068F                 lea     rax, <span class="o">[</span>rbp+buf]
+.text:0000000000400693                 mov     edx, 18h        <span class="p">;</span> nbytes
+.text:0000000000400698                 mov     rsi, rax        <span class="p">;</span> buf
+.text:000000000040069B                 mov     edi, 0          <span class="p">;</span> fd
+.text:00000000004006A0                 call    _read
+.text:00000000004006A5                 mov     eax, dword ptr <span class="o">[</span>rbp+var_20+4]
+.text:00000000004006A8                 cmp     eax, 0CAF3BAEEh
+.text:00000000004006AD                 jnz     short loc_4006BB
+.text:00000000004006AF                 mov     edi, offset aBinBash <span class="p">;</span> <span class="s2">"/bin/bash"</span>
+.text:00000000004006B4                 call    run_cmd
+.text:00000000004006B9                 jmp     short loc_4006C5
+.text:00000000004006BB <span class="p">;</span> <span class="nt">---------------------------------------------------------------------------</span>
+.text:00000000004006BB
+.text:00000000004006BB loc_4006BB:                             <span class="p">;</span> CODE XREF: main+6C↑j
+.text:00000000004006BB                 mov     edi, offset aBinDate <span class="p">;</span> <span class="s2">"/bin/date"</span>
+.text:00000000004006C0                 call    run_cmd
+.text:00000000004006C5
+.text:00000000004006C5 loc_4006C5:                             <span class="p">;</span> CODE XREF: main+78↑j
+.text:00000000004006C5                 mov     eax, 0
+.text:00000000004006CA                 mov     rcx, <span class="o">[</span>rbp+var_8]
+.text:00000000004006CE                 xor     rcx, fs:28h
+.text:00000000004006D7                 jz      short locret_4006DE
+.text:00000000004006D9                 call    ___stack_chk_fail
+</code></pre></div></div>
 
+<p>对于IDA来说，局部变量是针对RBP进行偏移的，RBP是函数调用中的栈帧的基址，并且在函数返回前不会改动，所以比较好理解。</p>
 
-思路
+<h2 id="ghidra的问题">Ghidra的问题</h2>
 
-题目中得到的信息有
+<p>IDA上0x00400649地址处汇编为<strong>mov [rbp+var_34], edi</strong>，根据之前的RBP=起始RSP-0x8，转化成<strong>起始RSP-0x8-0x34</strong>即<strong>起始RSP-0x3C</strong></p>
 
+<p>而该地址对应的是local_3c，但是ghidra上却是<strong>RBP + local_3c</strong>，因为local_3c的地址想对于RBP是0x34，所以ghidra使用<strong>MOV  dword ptr [local_3c],EDI</strong>会比较合适。</p>
 
-  这是两个非负数，每位分别保存在链表的一个结点上；
-  逆序保存，从低位到高位依次。
+<p>在github上，看到了为什么ghidra会选择以stack作为偏移。<a href="https://github.com/NationalSecurityAgency/ghidra/issues/223">链接</a></p>
 
+<h2 id="关闭ghidra局部变量引用">关闭ghidra局部变量引用</h2>
 
-一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。
+<p>这种可以关闭，通过开始菜单上的Edit –&gt; Tool Options –&gt; Listing Fields –&gt; Operands Field，将<strong>Markup Stack Variable References</strong>勾去掉就行。</p>
 
-C算法
+<p><img src="/assets/pictures/reverse/ghidra_stack.png" alt="graph" /></p>
 
-/**
- * Definition for singly-linked list. 
- * struct ListNode {
- *     int val;
- *     struct ListNode *next;
- * };
- */
-struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
-    struct ListNode *ret, *p, ...</div><p><a href="/2016/01/13/2_add_two_numbers.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/13/1_two_sum.html"><h2 itemprop="headline" class="item__header">1-Two Sum @LeetCode</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+<p>效果如下：</p>
 
+<p><img src="/assets/pictures/reverse/ghidra_close.png" alt="graph" /></p>
 
+<p>关闭后效果会更好，可以直接知道每行汇编代码是针对那个局部变量进行处理，并且针对RBP的偏移也有展示。</p>
 
-思路
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-08-01T13:36:00+08:00"><!-- start custom article footer snippet -->
 
-题目中得到的信息有
+<!-- end custom article footer snippet --><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/05/26/debugging_kernel_with_qemu.html">使用QEMU调试Linux内核</a></div></div></div>
 
+</div>
 
-  都是整数，并且可正可负，也可一个值包含多个；
-  只有一个正确的结果。
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
 
-
-方法一
-最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。
-
-方法二
-由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。
-
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, in...</div><p><a href="/2016/01/13/1_two_sum.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
-LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
-
-原理
-
-LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
-LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 07, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2015/11/29/python_protection.html"><h2 itemprop="headline" class="item__header">类似py2exe软件真的能保护python源码吗</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">背景
-
-最近写了个工具用于对项目中C/C++文件的字符串常量进行自动化加密处理，用python写的，工具效果不错，所以打算在公司内部推广。为了防止代码泄露就考虑不采用直接给源码方式，而python二进制脚本pyc和pyo，虽然提供的不是源码，但可以通过uncompyle2直接得到源码。通过网上资料发现有Windows下的py2exe、Mac下的py2app和跨平台的PyInstaller工具都可以将python脚本打包成可执行文件，第一反应应该满足需要，但有些不放心，故亲自尝试和分析了这些工具。</div><p><a href="/2015/11/29/python_protection.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 29, 2015</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-11-29T15:52:24+08:00">
-    <meta itemprop="keywords" content="Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2015/08/21/makefile_ifelse.html"><h2 itemprop="headline" class="item__header">Makefile中的ifeq 多条件使用</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">网上关于makefile中ifeq的介绍已经很多了，为什么我还要在写这篇文章，因为他们只说了if else两种条件的情况，并没有讲多于两种条件情况的使用。</div><p><a href="/2015/08/21/makefile_ifelse.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Makefile">Makefile</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 21, 2015</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-21T20:14:23+08:00">
-    <meta itemprop="keywords" content="Makefile"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>25 post articles, 4 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page4">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
-
-})();*/
-</script>
-
-
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.5.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.5.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'ghidra_stack_variable'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -996,6 +1046,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
