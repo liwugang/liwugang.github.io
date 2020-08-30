@@ -20,7 +20,7 @@
 
 <meta name="theme-color" content="#ffffff">
 <!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css" ><!-- start custom head snippets -->
-<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!--<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
 <!-- end custom head snippets --><script>(function() {
   window.isArray = function(val) {
     return Object.prototype.toString.call(val) === '[object Array]';
@@ -285,6 +285,22 @@
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2019/04/21/openssl_decrypt_fail.html"><h2 itemprop="headline" class="item__header">openssl AES密钥和iv长度问题分析</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是：
+调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。
+
+例子
+
+
+int aes_encrypt_common(uint8_t *input, uint64_t length, const unsigned char *password,
+        const unsigned char *iv, uint8_t *out, uint64_t *out_length);
+int aes_decrypt_common(uint8_t *input, uint64_t length, co...</div><p><a href="/2019/04/21/openssl_decrypt_fail.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=openssl">openssl</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-21T15:13:00+08:00">
+    <meta itemprop="keywords" content="openssl"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2017/09/25/zhaocha.html"><h2 itemprop="headline" class="item__header">找茬游戏辅助工具</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">近在整理硬盘时，看到了几年前写的 美女找茬工具，一时兴起看下现在是否能用，试了下，完全用不了了，界面和以前的界面一样啊，图片的偏移应该没有变，按道理应该能用，猜想可能是图片做了处理。就花了点时间看了下，果然发现了问题，现在和大家分享下。</div><p><a href="/2017/09/25/zhaocha.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
@@ -413,16 +429,8 @@ LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more<
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 29, 2015</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-11-29T15:52:24+08:00">
     <meta itemprop="keywords" content="Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2015/08/21/makefile_ifelse.html"><h2 itemprop="headline" class="item__header">Makefile中的ifeq 多条件使用</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">网上关于makefile中ifeq的介绍已经很多了，为什么我还要在写这篇文章，因为他们只说了if else两种条件的情况，并没有讲多于两种条件情况的使用。</div><p><a href="/2015/08/21/makefile_ifelse.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Makefile">Makefile</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 21, 2015</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-21T20:14:23+08:00">
-    <meta itemprop="keywords" content="Makefile"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>25 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>26 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
             <i class="fas fa-angle-left"></i>

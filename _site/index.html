@@ -20,7 +20,7 @@
 
 <meta name="theme-color" content="#ffffff">
 <!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css" ><!-- start custom head snippets -->
-<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!--<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
 <!-- end custom head snippets --><script>(function() {
   window.isArray = function(val) {
     return Object.prototype.toString.call(val) === '[object Array]';
@@ -285,6 +285,14 @@
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2020/08/30/header_mismatch.html"><h2 itemprop="headline" class="item__header">记一次头文件不一致导致的异常</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近下载了SELinux代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。</div><p><a href="/2020/08/30/header_mismatch.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=debug">debug</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 30, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-08-30T21:00:00+08:00">
+    <meta itemprop="keywords" content="debug"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2020/08/01/ghidra.html"><h2 itemprop="headline" class="item__header">Ghidra对局部变量的标识</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。</div><p><a href="/2020/08/01/ghidra.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
@@ -368,19 +376,8 @@ Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动�
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 11, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-11T19:48:00+08:00">
     <meta itemprop="keywords" content="Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2020/01/01/filecrypt_aes.html"><h2 itemprop="headline" class="item__header">filecrypt工具加解密大文件失败问题分析</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</div><p><a href="/2020/01/01/filecrypt_aes.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=filecrypt">filecrypt</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=AES">AES</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 01, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-01T10:39:00+08:00">
-    <meta itemprop="keywords" content="filecrypt,AES"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>25 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>26 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-left"></i>
