@@ -1,5 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-08-30T21:05:29+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">记一次头文件不一致导致的异常</title><link href="https://liwugang.github.io/2020/08/30/header_mismatch.html" rel="alternate" type="text/html" title="记一次头文件不一致导致的异常" /><published>2020-08-30T21:00:00+08:00</published><updated>2020-08-30T21:00:00+08:00</updated><id>https://liwugang.github.io/2020/08/30/header_mismatch</id><content type="html" xml:base="https://liwugang.github.io/2020/08/30/header_mismatch.html">&lt;p&gt;最近下载了&lt;a href=&quot;https://github.com/SELinuxProject/selinux&quot;&gt;SELinux&lt;/a&gt;代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-09-05T17:52:48+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">markdown 如何插入多个空格？</title><link href="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html" rel="alternate" type="text/html" title="markdown 如何插入多个空格？" /><published>2020-09-05T17:10:00+08:00</published><updated>2020-09-05T17:10:00+08:00</updated><id>https://liwugang.github.io/2020/09/05/markdown_insert_blank</id><content type="html" xml:base="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html">&lt;p&gt;使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;ideographic-space&quot;&gt;Ideographic Space&lt;/h2&gt;
+
+&lt;p&gt;之前有了解到 markdown 是将语言转化成 HTML，然后由浏览器引擎渲染成我们看到的效果。从语法中并没有看到可以直接输入多个空格，以为要实现该功能需要使用 HTML 的语法完成。但是偶然发现一篇 markdown 文档，使用了多个空格。使用 hexedit 查看文件的二进制发现空格是使用 &lt;strong&gt;E38080&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;E38080&lt;/strong&gt; 是 UTF-8 编码，对应的 Unicode 编码是&lt;strong&gt;00003000&lt;/strong&gt;，是 Ideographic Space，是全角空格，CJK 空格。平时输入的是 ASCII 空格，值是 0x20。&lt;/p&gt;
+
+&lt;h2 id=&quot;linux-上如何输入-unicode&quot;&gt;Linux 上如何输入 Unicode？&lt;/h2&gt;
+
+&lt;p&gt;现在知道空格的值，但是怎么输入上去呢？ 从&lt;a href=&quot;https://fsymbols.com/keyboard/linux/unicode/&quot;&gt;这里&lt;/a&gt;了解到，Linux 上输入需要：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;同时按下：CTRL + SHIFT + U，不释放；&lt;/li&gt;
+  &lt;li&gt;然后输入 Unicode 码，如3000；&lt;/li&gt;
+  &lt;li&gt;释放 CTRL + SHIFT + U，即输入了对应的字符。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对于 Windows 和 Mac 输入 Unicode，网上教程很多，有需要的可以搜索下。&lt;/p&gt;
+
+&lt;h2 id=&quot;效果&quot;&gt;效果&lt;/h2&gt;
+
+&lt;p&gt;markdown　　　　　　　　　　　　is good!&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="tools" /><summary type="html">使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？</summary></entry><entry><title type="html">记一次头文件不一致导致的异常</title><link href="https://liwugang.github.io/2020/08/30/header_mismatch.html" rel="alternate" type="text/html" title="记一次头文件不一致导致的异常" /><published>2020-08-30T21:00:00+08:00</published><updated>2020-08-30T21:00:00+08:00</updated><id>https://liwugang.github.io/2020/08/30/header_mismatch</id><content type="html" xml:base="https://liwugang.github.io/2020/08/30/header_mismatch.html">&lt;p&gt;最近下载了&lt;a href=&quot;https://github.com/SELinuxProject/selinux&quot;&gt;SELinux&lt;/a&gt;代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1935,150 +1959,4 @@ Breakpoint 1, aes_encrypt_common &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&
 
 &lt;h2 id=&quot;修复&quot;&gt;修复&lt;/h2&gt;
 
-&lt;p&gt;修复patch &lt;a href=&quot;https://github.com/liwugang/filecrypt/commit/12a9dd49326cfe1761a0299127a45a13ae89950c&quot;&gt;https://github.com/liwugang/filecrypt/commit/12a9dd49326cfe1761a0299127a45a13ae89950c&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="filecrypt" /><category term="AES" /><summary type="html">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</summary></entry><entry><title type="html">A Tool To Automate Multiple Commits Into One</title><link href="https://liwugang.github.io/2019/12/30/git_commits_en.html" rel="alternate" type="text/html" title="A Tool To Automate Multiple Commits Into One" /><published>2019-12-30T21:55:00+08:00</published><updated>2019-12-30T21:55:00+08:00</updated><id>https://liwugang.github.io/2019/12/30/git_commits_en</id><content type="html" xml:base="https://liwugang.github.io/2019/12/30/git_commits_en.html">&lt;p&gt;If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that &lt;strong&gt;git rebase -i&lt;/strong&gt; can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to automate multiple commits into one.&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;the-logic-of-git-rebase&quot;&gt;The logic of “git rebase”&lt;/h2&gt;
-
-&lt;p&gt;When using “git rebase -i”, git generates the git-rebase-todo file in the current .git/rebase-merge directory, and then invokes the git editor to let users edit the git-rebase-todo file for processing. So the tool needs to meet:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Modify the git editor to the tool which we provided;&lt;/li&gt;
-  &lt;li&gt;The tool processes the git-rebase-todo file.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;modify-the-default-git-editor&quot;&gt;Modify the default git editor&lt;/h2&gt;
-
-&lt;p&gt;Git provides the config command to view the configuration and modify the configuration, and the editor can also be set in this way.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-    git config core.editor  &lt;span class=&quot;c&quot;&gt;#View the currently used editor&lt;/span&gt;
-    git config &lt;span class=&quot;nt&quot;&gt;--local&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--replace-all&lt;/span&gt; core.editor NEW_EDITOR &lt;span class=&quot;c&quot;&gt;# Set the editor to NEW_EDITOR&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;process-the-git-rebase-todo-file&quot;&gt;Process the git-rebase-todo file&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/tools/git_log.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now we have three commits and use “git rebase -i”, git uses the git editor to open the git-rebase-todo file, as follows:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-pick 310b091 First commit
-pick 757b5e5 The second commit
-pick c5ca4a9 The third commit
-
-&lt;span class=&quot;c&quot;&gt;# Rebase a7e56eb..c5ca4a9 onto a7e56eb (3 commands)&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# Commands:&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# p, pick &amp;lt;commit&amp;gt; = use commit&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# r, reword &amp;lt;commit&amp;gt; = use commit, but edit the commit message&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# e, edit &amp;lt;commit&amp;gt; = use commit, but stop for amending&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# s, squash &amp;lt;commit&amp;gt; = use commit, but meld into previous commit&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# f, fixup &amp;lt;commit&amp;gt; = like &quot;squash&quot;, but discard this commit's log message&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# x, exec &amp;lt;command&amp;gt; = run command (the rest of the line) using shell&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# b, break = stop here (continue rebase later with 'git rebase --continue')&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# d, drop &amp;lt;commit&amp;gt; = remove commit&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# l, label &amp;lt;label&amp;gt; = label current HEAD with a name&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# t, reset &amp;lt;label&amp;gt; = reset HEAD to a label&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# m, merge [-C &amp;lt;commit&amp;gt; | -c &amp;lt;commit&amp;gt;] &amp;lt;label&amp;gt; [# &amp;lt;oneline&amp;gt;]&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# .       create a merge commit using the original merge commit's&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# .       message (or the oneline, if no original merge commit was&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# .       specified). Use -c &amp;lt;commit&amp;gt; to reword the commit message.&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# These lines can be re-ordered; they are executed from top to bottom.&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# If you remove a line here THAT COMMIT WILL BE LOST.&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# However, if you remove everything, the rebase will be aborted.&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# Note that empty commits are commented out&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;There are three commit in the above. We need to merge the next two commit into the first one. As you can see from the comments, squash merges the commit into the previous commit. Therefore, you need to change the last two pick to squash, which is as follows:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pick 310b091 First commit
-squash 757b5e5 The second commit
-squash c5ca4a9 The third commit
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;the-tool&quot;&gt;The tool&lt;/h2&gt;
-
-&lt;p&gt;The tool is a python script.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env python3
-#encoding: UTF-8
-&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change_editor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;git config --local --replace-all  core.editor &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Set current_file as git editor
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;git rebase -i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# execute the &quot;git rebase -i&quot; and will invoke the python file later with git-rebase-todo file as argument
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;git config --local --replace-all core.editor vim&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# after work reset the git editor to default
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;rebase_commits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;todo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;todo_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;r+&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;contents&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# read git-rebase-todo's content
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;contents&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;contents&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;first_commit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;truncate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seek&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;contents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startswith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pick&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;first_commit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;first_commit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pick&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;squash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# replace the pick to squash except for the first pick
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;content&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;rebase_commits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# process the git-rebase-todo
-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;change_editor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abspath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# set git editor to this tool
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
-
-&lt;p&gt;After to execute the tool, it merges above three commits into one and retains the messages of them.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;On branch master
-Your branch is ahead of &lt;span class=&quot;s1&quot;&gt;'origin/master'&lt;/span&gt; by 1 commit.
-  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git push&quot;&lt;/span&gt; to publish your &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;commits&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-nothing to commit, working tree clean
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Just one commit.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-commit e1ac798cfe0162f38c908d47720fcadc2d3b0ddd &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;HEAD -&amp;gt; master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Author: liwugang &amp;lt;liwugang@163.com&amp;gt;
-Date:   Mon Dec 30 22:04:56 2019 +0800
-
-    First commit
-    
-    The first commit message
-    
-    Signed-off-by: liwugang &amp;lt;liwugang@163.com&amp;gt;
-    
-    The second commit
-    
-    The second commit message
-    
-    Signed-off-by: liwugang &amp;lt;liwugang@163.com&amp;gt;
-    
-    The third commit
-    
-    The third commit message
-    
-    Signed-off-by: liwugang &amp;lt;liwugang@163.com&amp;gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The three commit messages are preserved.&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="git" /><summary type="html">If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that git rebase -i can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to automate multiple commits into one.</summary></entry></feed>
+&lt;p&gt;修复patch &lt;a href=&quot;https://github.com/liwugang/filecrypt/commit/12a9dd49326cfe1761a0299127a45a13ae89950c&quot;&gt;https://github.com/liwugang/filecrypt/commit/12a9dd49326cfe1761a0299127a45a13ae89950c&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="filecrypt" /><category term="AES" /><summary type="html">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</summary></entry></feed>
