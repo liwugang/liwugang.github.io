@@ -13,6 +13,8 @@
   {%- assign _sorted_list = _sorted_list | reverse -%}
 {%- endif -%}
 
+{%- assign _sorted_list = _sorted_list | sort: 'stickiness' -%}
+
 {%- if include.type == 'item' -%}
 <div class="article-list items items--divided">
 {%- elsif include.type == 'brief' -%}
@@ -24,6 +26,8 @@
   <div class="article-list grid grid--p-3">
   {%- endif -%}
 {%- endif -%}
+
+{%- assign _first = true -%}
 
   {%- for _article in _sorted_list -%}
 
@@ -55,7 +59,11 @@
           </div>
         {%- endif -%}
         <div class="item__content">
-          <header><a href="{{ _article_url }}"><h2 itemprop="headline" class="item__header">{{ _article.title }}</h2></a></header>
+          {%- if _article.sticky == true -%}
+            <header><a href="{{ _article_url }}"><h2 itemprop="headline" class="item__header"><font color="#EE0000">[置顶]</font>{{ _article.title }}</h2></a></header>
+          {%- else -%}
+            <header><a href="{{ _article_url }}"><h2 itemprop="headline" class="item__header">{{ _article.title }}</h2></a></header>
+          {%- endif -%}
           <div class="item__description">
             {%- if _article.excerpt and include.show_excerpt -%}
               <div class="article__content" itemprop="description articleBody">
@@ -90,7 +98,14 @@
           {%- assign _tags = _tags | append: _tag_encode | append: ',' -%}
         {%- endif -%}
       {%- endfor -%}
-      {%- if include.group_by == 'year' -%}
+      {%- if _first == true and _article.sticky == true -%}
+        {%- unless forloop.first -%}</ul></section>{%- endunless -%}
+        {%- include snippets/get-locale-string.html key='TOP' -%}
+        {%- assign _top = __return -%}
+        <section><h2 style="color:#f00" class="article-list__group-header">置顶</h2><ul class="items"></ul>
+        {%- assign _first = false -%}
+      {%- endif -%}
+      {%- if include.group_by == 'year' and _article.sticky != true -%}
         {%- assign _currentdate = _article.date | date: '%Y' -%}
         {%- if _currentdate != _date -%}
           {%- unless forloop.first -%}</ul></section>{%- endunless -%}
@@ -102,7 +117,11 @@
       <li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="{{ _tags }}">
         <div class="item__content">
           {%- if include.show_info -%}
-            <span class="item__meta">{{ _article.date | date: __return }}</span>
+            {%- if _article.sticky == true -%}
+              <span class="item__meta">{{ _article.date | date: __return }},{{_article.date | date: '%Y' }}</span>
+            {%- else -%}
+              <span class="item__meta">{{ _article.date | date: __return }}</span>
+            {%- endif -%}
           {%- endif -%}
           <a itemprop="headline" class="item__header" href="{{ _article_url }}">{{ _article.title }}</a></div>
       </li>

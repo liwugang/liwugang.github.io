@@ -93,11 +93,26 @@ mermaid: # false (default), true
 ## Chart
 chart: # false (default), true
 
+## => sticky
+##############################
+stickyposts:
+  #enabled: false   # Enable StickyPosts; default: true
+  debug: false       # Show additional info; default: false
+  sort: "date"      # Optional sort field; default: "date", use "none" to avoid sorting
+  reverse: false     # Ascending order, default: false
+  retain: false      # Also show sticky posts in their original positions; default: false
+  reverse_sticky: false    # Reverse the order of the sticky posts, e.g. oldest first; default: false
 
 ## => Paginate
 ##############################
-paginate: 8
-paginate_path: /page:num # don't change this unless for special need
+#paginate: 8
+#paginate_path: /page:num # don't change this unless for special need
+pagination:
+  enabled: true
+  debug: true
+  per_page: 10
+  paginate_path: /legacy/page:num
+  sort_field: "stickiness"
 
 
 ## => Sources
@@ -217,6 +232,6 @@ defaults:
 ##############################
 plugins:
   - jekyll-feed
-  - jekyll-paginate
+  - jekyll-paginate-v2
   - jekyll-sitemap
   - jemoji
