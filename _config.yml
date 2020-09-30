@@ -235,3 +235,5 @@ plugins:
   - jekyll-paginate-v2
   - jekyll-sitemap
   - jemoji
+  - jekyll-stickyposts
+  - kramdown-parser-gfm

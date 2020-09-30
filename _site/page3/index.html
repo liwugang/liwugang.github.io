@@ -1,11 +1,20 @@
 <!DOCTYPE html><html lang="en">
-  <head><meta charset="utf-8">
+  <head><!-- Global site tag (gtag.js) - Baidu Analytics -->
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d2fe4c4c213d17757e0b1a94713ead0";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>liwugang - page 3 - liwugang</title>
 
 <meta name="description" content="Patient && Courage
 ">
-<link rel="canonical" href="http://localhost:4000/page3/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<link rel="canonical" href="https://liwugang.github.io/page3/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -887,54 +896,7 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 3</h1></header><meta itemprop="headline" content="liwugang - page 3"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/04/28/git_commits.html"><h2 itemprop="headline" class="item__header">Git自动化合并多个Commit</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。
-
-git rebase逻辑
-
-当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要：
-
-  修改git editor来使用我们提供的；
-  脚本来处理进行git-rebase-todo文件的处理。
-
-
-git editor的修改
-
-...</div><p><a href="/2019/04/28/git_commits.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=git">git</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 28, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-28T23:10:00+08:00">
-    <meta itemprop="keywords" content="git"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/04/21/openssl_decrypt_fail.html"><h2 itemprop="headline" class="item__header">openssl AES密钥和iv长度问题分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是：
-调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。
-
-例子
-
-
-int aes_encrypt_common(uint8_t *input, uint64_t length, const unsigned char *password,
-        const unsigned char *iv, uint8_t *out, uint64_t *out_length);
-int aes_decrypt_common(uint8_t *input, uint64_t length, co...</div><p><a href="/2019/04/21/openssl_decrypt_fail.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=openssl">openssl</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-21T15:13:00+08:00">
-    <meta itemprop="keywords" content="openssl"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2017/09/25/zhaocha.html"><h2 itemprop="headline" class="item__header">找茬游戏辅助工具</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">近在整理硬盘时，看到了几年前写的 美女找茬工具，一时兴起看下现在是否能用，试了下，完全用不了了，界面和以前的界面一样啊，图片的偏移应该没有变，按道理应该能用，猜想可能是图片做了处理。就花了点时间看了下，果然发现了问题，现在和大家分享下。</div><p><a href="/2017/09/25/zhaocha.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=assist">assist</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Sep 25, 2017</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2017-09-25T21:22:18+08:00">
-    <meta itemprop="keywords" content="assist"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/02/24/python_compile_error.html"><h2 itemprop="headline" class="item__header">error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">python通过pip或者源码来安装某些模块时，这些模块包含有c/c++源码，安装过程会调用本地的编译器编译这些代码。在Windows平台下我安装时候的错误消息是“error: Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it from http://aka.ms/vcpython27” 可以看出错误是由于没有找到该vc版本，对应的是vs2008，当然一种解决方法是安装该版本，但我已经安装了vs2015，所以我就需要修改下默认的这种配置。</div><p><a href="/2016/02/24/python_compile_error.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 24, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-02-24T19:10:50+08:00">
-    <meta itemprop="keywords" content="misc,Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html"><h2 itemprop="headline" class="item__header">3-Longest Substring Without Repeating Characters @LeetCode</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 3</h1></header><meta itemprop="headline" content="liwugang - page 3"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html"><h2 itemprop="headline" class="item__header">3-Longest Substring Without Repeating Characters @LeetCode</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">题目
 
 
 
@@ -1026,8 +988,28 @@ LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more<
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 07, 2016</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
     <meta itemprop="keywords" content="Android"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/11/29/python_protection.html"><h2 itemprop="headline" class="item__header">类似py2exe软件真的能保护python源码吗</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
+
+最近写了个工具用于对项目中C/C++文件的字符串常量进行自动化加密处理，用python写的，工具效果不错，所以打算在公司内部推广。为了防止代码泄露就考虑不采用直接给源码方式，而python二进制脚本pyc和pyo，虽然提供的不是源码，但可以通过uncompyle2直接得到源码。通过网上资料发现有Windows下的py2exe、Mac下的py2app和跨平台的PyInstaller工具都可以将python脚本打包成可执行文件，第一反应应该满足需要，但有些不放心，故亲自尝试和分析了这些工具。</div><p><a href="/2015/11/29/python_protection.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Python">Python</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 29, 2015</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-11-29T15:52:24+08:00">
+    <meta itemprop="keywords" content="Python"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/08/21/makefile_ifelse.html"><h2 itemprop="headline" class="item__header">Makefile中的ifeq 多条件使用</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">网上关于makefile中ifeq的介绍已经很多了，为什么我还要在写这篇文章，因为他们只说了if else两种条件的情况，并没有讲多于两种条件情况的使用。</div><p><a href="/2015/08/21/makefile_ifelse.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Makefile">Makefile</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 21, 2015</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-21T20:14:23+08:00">
+    <meta itemprop="keywords" content="Makefile"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/08/19/android_import_so.html"><h2 itemprop="headline" class="item__header">Android引入动态库so的方法</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">为了执行效率，会将一些CPU密集性任务如音视频解码、图像处理等放入到so中，还有也会将程序关键核心部分放入到so中，这样增加了逆向的难度。下面将so引入分成本地和第三方两种类型。本地是指包含有源码的。这是不讲如何编译和Android.mk的编写，主要讲在Android项目中如何引入so。</div><p><a href="/2015/08/19/android_import_so.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 19, 2015</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-19T21:02:13+08:00">
+    <meta itemprop="keywords" content="Android"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>27 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>27 post articles, 3 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2/">
             <i class="fas fa-angle-left"></i>
@@ -1037,11 +1019,9 @@ LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more<
                 <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
               </li><li>
               <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page4/">
+            </li><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-right"></i>
-          </a></li></ul>
+          </div></li></ul>
     </div>
   </div></div>
 <script>/*(function () {
