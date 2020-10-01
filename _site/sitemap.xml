@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://liwugang.github.io/2015/08/19/android_import_so.html</loc>
+<lastmod>2015-08-19T21:02:13+08:00</lastmod>
+</url>
+<url>
 <loc>https://liwugang.github.io/2020/09/05/markdown_insert_blank.html</loc>
 <lastmod>2020-09-05T17:10:00+08:00</lastmod>
 </url>
@@ -103,10 +107,6 @@
 <url>
 <loc>https://liwugang.github.io/2015/08/21/makefile_ifelse.html</loc>
 <lastmod>2015-08-21T20:14:23+08:00</lastmod>
-</url>
-<url>
-<loc>https://liwugang.github.io/2015/08/19/android_import_so.html</loc>
-<lastmod>2015-08-19T21:02:13+08:00</lastmod>
 </url>
 <url>
 <loc>https://liwugang.github.io/about.html</loc>
