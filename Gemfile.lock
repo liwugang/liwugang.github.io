@@ -4,7 +4,7 @@ PATH
     jekyll-text-theme (2.2.5)
       jekyll (>= 3.6, < 5.0)
       jekyll-feed (~> 0.1)
-      jekyll-paginate (~> 1.1)
+      jekyll-paginate-v2 (~> 3.0.0)
       jekyll-sitemap (~> 1.0)
       jemoji (~> 0.8)
 
@@ -49,7 +49,6 @@ GEM
       safe_yaml (~> 1.0)
     jekyll-feed (0.15.0)
       jekyll (>= 3.7, < 5.0)
-    jekyll-paginate (1.1.0)
     jekyll-paginate-v2 (3.0.0)
       jekyll (>= 3.0, < 5.0)
     jekyll-sass-converter (1.5.2)
