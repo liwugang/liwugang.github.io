@@ -6,7 +6,6 @@ date:   2015-08-19 21:02:13 +0800
  
 tags: Android
 key: android_import_so
-sticky: true
 ---
 
 为了执行效率，会将一些CPU密集性任务如音视频解码、图像处理等放入到so中，还有也会将程序关键核心部分放入到so中，这样增加了逆向的难度。下面将so引入分成本地和第三方两种类型。本地是指包含有源码的。这是不讲如何编译和Android.mk的编写，主要讲在Android项目中如何引入so。
