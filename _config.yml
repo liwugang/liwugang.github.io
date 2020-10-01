@@ -111,8 +111,8 @@ pagination:
   enabled: true
   debug: true
   per_page: 10
-  paginate_path: /legacy/page:num
-  sort_field: "date"
+  permalink: /page:num/
+  sort_field: "stickiness"
 
 
 ## => Sources
