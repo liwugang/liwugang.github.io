@@ -237,3 +237,4 @@ plugins:
   - jemoji
   - jekyll-stickyposts
   - kramdown-parser-gfm
+  - jekyll-pdf-embed
