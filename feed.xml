@@ -1,5 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-10-01T21:08:34+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">markdown 如何插入多个空格？</title><link href="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html" rel="alternate" type="text/html" title="markdown 如何插入多个空格？" /><published>2020-09-05T17:10:00+08:00</published><updated>2020-09-05T17:10:00+08:00</updated><id>https://liwugang.github.io/2020/09/05/markdown_insert_blank</id><content type="html" xml:base="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html">&lt;p&gt;使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-10-02T13:54:18+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">博客修改记录</title><link href="https://liwugang.github.io/2020/10/02/blog_sticky.html" rel="alternate" type="text/html" title="博客修改记录" /><published>2020-10-02T12:12:00+08:00</published><updated>2020-10-02T12:12:00+08:00</updated><id>https://liwugang.github.io/2020/10/02/blog_sticky</id><content type="html" xml:base="https://liwugang.github.io/2020/10/02/blog_sticky.html">&lt;h2 id=&quot;目的&quot;&gt;目的&lt;/h2&gt;
+
+&lt;p&gt;该博客采用&lt;a href=&quot;https://github.com/kitian616/jekyll-TeXt-theme&quot;&gt;jekyll-TeXt-theme&lt;/a&gt;主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。&lt;/p&gt;
+
+&lt;h2 id=&quot;修改记录&quot;&gt;修改记录&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;2020-10-01&lt;/strong&gt; 新增置顶功能&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2020-10-02&lt;/strong&gt; 新增pdf和ppt显示功能&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;文章置顶功能&quot;&gt;文章置顶功能&lt;/h2&gt;
+
+&lt;h3 id=&quot;文章显示原理&quot;&gt;文章显示原理&lt;/h3&gt;
+
+&lt;p&gt;主页文章是使用插件jekyll-paginate进行分页，Archive文章不会进行分页，然后都调用_include/article-list.html将文件按照主题规则输出。&lt;/p&gt;
+
+&lt;h3 id=&quot;置顶功能插件&quot;&gt;置顶功能插件&lt;/h3&gt;
+
+&lt;p&gt;置顶功能现有插件&lt;a href=&quot;https://github.com/ibrado/jekyll-stickyposts&quot;&gt;jekyll-stickyposts&lt;/a&gt;，单独使用该插件对Archive文章有效果，是由于所有文章都在一页展示。而对于主页会分页文章来使用，只会将置顶的文章置顶在当前页上，而不是第一页上，没有达到理想要求。这就需要在jekyll-paginate分页前进行置顶排序，而jekyll-paginate目前无法实现。该插件原理是将置顶文件排在前面，置顶文章之间和其他文章按照配置的规则进行排序，然后新增字段stickiness，该字段记录所有文章的序号。&lt;/p&gt;
+
+&lt;p&gt;了解到插件&lt;a href=&quot;https://github.com/sverrirs/jekyll-paginate-v2&quot;&gt;jekyll-paginate-v2&lt;/a&gt;满足要求，我们就需要使用该插件。该插件有个配置项sort_field，可以很方面设置根据哪个字段排序，结合jekyll-stickyposts插件，就可以将排序字段设置为有文章序号的stickiness字段。&lt;/p&gt;
+
+&lt;h3 id=&quot;修改显示&quot;&gt;修改显示&lt;/h3&gt;
+
+&lt;p&gt;现在可以将文章显示在最上面，但还需要增加置顶标识，增加了&lt;strong&gt;&lt;font color=&quot;red&quot;&gt;[置顶]&lt;/font&gt;&lt;/strong&gt;标识在文章标题上。&lt;/p&gt;
+
+&lt;h3 id=&quot;github-pages插件策略&quot;&gt;GitHub Pages插件策略&lt;/h3&gt;
+
+&lt;p&gt;在本地执行没有问题，但是放在Github Pages上显示不正常，困扰了一天。然后搜索了解到GitHub Pages会限制三方插件执行，可以查看&lt;a href=&quot;https://jekyllrb.com/docs/plugins/installation/&quot;&gt;这里&lt;/a&gt;。上面使用的两个插件都是三方的，所以都不能使用。但从下面的提示可以看到，可以将本地生成的静态网页上传到Github Pages上。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/misc/blog/github_pages_plugins.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;解决方法是：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;新建一个source分支，该分支为现有代码；&lt;/li&gt;
+  &lt;li&gt;由于GitHub Pages显示master分支，所以将本地生成的静态网页上传到master分支。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;效果&quot;&gt;效果&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;主页效果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/misc/blog/top_home.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Archive效果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/misc/blog/top_archive.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;pdf和ppt显示功能&quot;&gt;pdf和ppt显示功能&lt;/h2&gt;
+
+&lt;p&gt;使用插件&lt;a href=&quot;https://github.com/MihajloNesic/jekyll-pdf-embed&quot;&gt;jekyll-pdf-embed&lt;/a&gt;.&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="misc" /><summary type="html">目的 该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。 修改记录 2020-10-01 新增置顶功能 2020-10-02 新增pdf和ppt显示功能</summary></entry><entry><title type="html">markdown 如何插入多个空格？</title><link href="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html" rel="alternate" type="text/html" title="markdown 如何插入多个空格？" /><published>2020-09-05T17:10:00+08:00</published><updated>2020-09-05T17:10:00+08:00</updated><id>https://liwugang.github.io/2020/09/05/markdown_insert_blank</id><content type="html" xml:base="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html">&lt;p&gt;使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1562,401 +1614,4 @@ attribute extended_core_property_type&lt;span class=&quot;p&quot;&gt;;&lt;/span&
 &lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 获取当前鼠标位置
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;click&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 在当前位置点击
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Python" /><summary type="html">背景 由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。</summary></entry><entry><title type="html">filecrypt工具加解密大文件失败问题分析</title><link href="https://liwugang.github.io/2020/01/01/filecrypt_aes.html" rel="alternate" type="text/html" title="filecrypt工具加解密大文件失败问题分析" /><published>2020-01-01T10:39:00+08:00</published><updated>2020-01-01T10:39:00+08:00</updated><id>https://liwugang.github.io/2020/01/01/filecrypt_aes</id><content type="html" xml:base="https://liwugang.github.io/2020/01/01/filecrypt_aes.html">&lt;p&gt;最近在使用&lt;a href=&quot;https://github.com/liwugang/filecrypt&quot;&gt;filecrypt&lt;/a&gt;加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;分析&quot;&gt;分析&lt;/h2&gt;
-
-&lt;p&gt;由于知道是大文件才出现问题，我们使用truncate命令先创建一个5G的文件&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;truncate -s 5G big_file&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;接着使用filecrypt执行AES加密操作&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;./filecrypt  -e -p test -a aes big_file&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;-e 为进行加密， -p 指定加密密码， -a aes 指定aes加密算法， big_file 即为所要加密的文件。 filecrypt可以在&lt;a href=&quot;https://github.com/liwugang/filecrypt/releases&quot;&gt;此处下载&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;执行后的错误信息为&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;/home/d/sources/tools/filecrypt/big_file encrypt failed!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;所以接下来的从错误信息”encrypt failed!”入手进行分析。&lt;/p&gt;
-
-&lt;h3 id=&quot;代码分析&quot;&gt;代码分析&lt;/h3&gt;
-
-&lt;p&gt;找到”encrypt failed!” 出现的函数&lt;a href=&quot;https://github.com/liwugang/filecrypt/blob/master/filecrypt.c#L151&quot;&gt;crypt_file&lt;/a&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;crypt_file&quot;&gt;crypt_file&lt;/h4&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;crypt_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;algorithm_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;crypt_operations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;file_crypt_info&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_crypt_ops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_algorithm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 3. 调用get_crypt_ops来获取ops&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;the algorithm: %d is not supported!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_algorithm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;goto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CLEANUP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source_addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest_addr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_file_offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2. ops-&amp;gt;encrypt函数函数为false&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;memcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dest_addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;memcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dest_addr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%-30sencrypt done!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;delete_origin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%-30sencrypt failed!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1. 错误日志地方&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;delete_new&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_right_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%-30sthe password is not right!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;delete_new&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source_addr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_file_offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest_addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%-30sdecrypt done!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;delete_origin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%-30sdecrypt failed!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;delete_new&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;从日志位置 1 处逆推，可知 2 处ops-&amp;gt;encrypt返回为false，但此处是通过函数指针方式调用，需要通过 3 处get_crypt_ops找到实际的调用函数。&lt;/p&gt;
-
-&lt;h4 id=&quot;get_crypt_ops&quot;&gt;get_crypt_ops&lt;/h4&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;crypt_operations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_crypt_ops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;algs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;algs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;algs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ALGORITHM_MAX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;algs_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;algs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;algs_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;algs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 根据 algs 索引从 algs_array 取 crypt_operations&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_operations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;algs_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ALGORITHM_MAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init_algs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;algs_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ALGORITHM_XOR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xor_crypt_operations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 异或算法&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;algs_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ALGORITHM_AES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes_crypt_operations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// aes 加解密算法&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;由于我们使用的aes算法，此处肯定是aes_crypt_operations&lt;/p&gt;
-
-&lt;h4 id=&quot;aes_crypt_operations&quot;&gt;aes_crypt_operations&lt;/h4&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;crypt_operations&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_crypt_operations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_crypt_file_length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_get_crypt_file_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_right_password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_is_right_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encrypt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decrypt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aes_decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;即可以看到实际调用的算法是aes_encrypt.&lt;/p&gt;
-
-&lt;h4 id=&quot;aes_encrypt&quot;&gt;aes_encrypt&lt;/h4&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;aes_encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_crypt_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;uint64_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have_encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes_encrypt_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DEFAULT_IV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;output_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;have_encrypted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1. aes_encrypt_common 调用失败&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;have_encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_file_length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crypt_file_offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2. have_encrypted 实际加密长度和需要加密长度不符合&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;get_password_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key_length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HASH256_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;从上面的分析可知，aes_encrypt 返回 false，但是从上面代码来看，有两处都会返回false，所以不能确定那种情况，此时简单方法就是动态调试。&lt;/p&gt;
-
-&lt;h3 id=&quot;动态调试&quot;&gt;动态调试&lt;/h3&gt;
-
-&lt;p class=&quot;warning&quot;&gt;要确保编译filecrypt指定了 -g 参数，这样在调试时才能准确断点。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;gdb –args ./filecrypt -e -p test -a aes big_file&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wangshuidan@localhost:/home/d/sources/tools/filecrypt&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gdb &lt;span class=&quot;nt&quot;&gt;--args&lt;/span&gt; ./filecrypt &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; aes big_file 
-GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian 8.3.1-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 8.3.1
-Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2019 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-Type &lt;span class=&quot;s2&quot;&gt;&quot;show copying&quot;&lt;/span&gt; and &lt;span class=&quot;s2&quot;&gt;&quot;show warranty&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;details.
-This GDB was configured as &lt;span class=&quot;s2&quot;&gt;&quot;x86_64-linux-gnu&quot;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Type &lt;span class=&quot;s2&quot;&gt;&quot;show configuration&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;configuration details.
-For bug reporting instructions, please see:
-&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
-Find the GDB manual and other documentation resources online at:
-    &amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
-
-For &lt;span class=&quot;nb&quot;&gt;help&lt;/span&gt;, &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Type &lt;span class=&quot;s2&quot;&gt;&quot;apropos word&quot;&lt;/span&gt; to search &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;commands related to &lt;span class=&quot;s2&quot;&gt;&quot;word&quot;&lt;/span&gt;...
-Reading symbols from ./filecrypt...
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; b aes_encrypt
-Breakpoint 1 at 0x403cf8: file algs/aes.c, line 17.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; r
-Starting program: /home/d/sources/tools/filecrypt/filecrypt &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; aes big_file
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Thread debugging using libthread_db enabled]
-Using host libthread_db library &lt;span class=&quot;s2&quot;&gt;&quot;/lib/x86_64-linux-gnu/libthread_db.so.1&quot;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-
-Breakpoint 1, aes_encrypt &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;crypt_info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7fffffffda88, &lt;span class=&quot;nv&quot;&gt;user_password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x409260 &lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;input_data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7ffeb7aca000, &lt;span class=&quot;nv&quot;&gt;output_data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7ffd77ac9161&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at algs/aes.c:17
-17          uint64_t have_encrypted &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-18          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;aes_encrypt_common&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;input_data, crypt_info-&amp;gt;file_length, user_password, DEFAULT_IV,
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-19                          output_data, &amp;amp;have_encrypted&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-18          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;aes_encrypt_common&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;input_data, crypt_info-&amp;gt;file_length, user_password, DEFAULT_IV,
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-22          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;have_encrypted &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; crypt_info-&amp;gt;crypt_file_length - crypt_info-&amp;gt;crypt_file_offset&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 第 2 中情况&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-23              &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;FALSE&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_encrypted 
-&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1073741840 &lt;span class=&quot;c&quot;&gt;# have_encrypted 值&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p crypt_info-&amp;gt;crypt_file_length  - crypt_info-&amp;gt;crypt_file_offset
-&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5368709136 &lt;span class=&quot;c&quot;&gt;# crypt_info-&amp;gt;crypt_file_length  - crypt_info-&amp;gt;crypt_file_offset 值&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;从上面调试信息可以看到，aes_encrypt_common 是返回true的，不然不能执行到后面。所以错误是由于实际加密长度和需要加密长度不符合导致。
-要加密5368709136（5G多，即和文件大小吻合）长度，但实际上只加密了1073741840长度。&lt;/p&gt;
-
-&lt;h4 id=&quot;调试-aes_encrypt_common&quot;&gt;调试 aes_encrypt_common&lt;/h4&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Breakpoint 1, aes_encrypt_common &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7ffeb7aca000 &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5368709120, &lt;span class=&quot;nv&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x55555555d260 &lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x555555559627 &lt;span class=&quot;s2&quot;&gt;&quot;0123456789012345&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7ffd77ac9161 &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;, 
-    &lt;span class=&quot;nv&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7fffffffda98&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at algs/base.c:54
-54          int result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; FALSE&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-56          uint64_t offset &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-57          int have_done &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-58          int value &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-59          int input_length &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-61          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!(&lt;/span&gt;ctx &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; EVP_CIPHER_CTX_new&lt;span class=&quot;o&quot;&gt;()))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-65          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; EVP_EncryptInit_ex&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ctx, EVP_aes_256_cbc&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;, NULL, password, iv&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-70          &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-71              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; INT32_MAX&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-72                  input_length &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; INT32_MAX&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p length
-&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5368709120  &lt;span class=&quot;c&quot;&gt;# length 长度， INT32_MAX 为2147483647&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-76              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; EVP_EncryptUpdate&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ctx, out + have_done, &amp;amp;value, input + offset, input_length&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-80              length -&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-81              offset +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-82              have_done +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; value&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done
-&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p value
-&lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2147483632 &lt;span class=&quot;c&quot;&gt;# 第一次加密2147483647字节明文，返回的是2147483632字节的密文&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-70          &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-71              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; INT32_MAX&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-72                  input_length &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; INT32_MAX&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p length
-&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5368709120  &lt;span class=&quot;c&quot;&gt;# length 长度， INT32_MAX 为2147483647&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-76              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; EVP_EncryptUpdate&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ctx, out + have_done, &amp;amp;value, input + offset, input_length&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-80              length -&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-81              offset +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-82              have_done +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; value&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done
-&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2147483632
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p value
-&lt;span class=&quot;nv&quot;&gt;$5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-2147483648&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 第二次加密2147483647字节明文，返回的是负数？&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done 
-&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-16&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# have_done为负数，问题出现在这里&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;两次同样输入都是2147483647字节明文，为什么两次输出不一样，一次是2147483632，而后一次是-2147483648？而后一次为负数导致have_done的值异常。&lt;/p&gt;
-
-&lt;h2 id=&quot;aes-加解密&quot;&gt;AES 加解密&lt;/h2&gt;
-
-&lt;h3 id=&quot;aes-加密&quot;&gt;AES 加密&lt;/h3&gt;
-
-&lt;h4 id=&quot;加密所用到的三个函数&quot;&gt;加密所用到的三个函数&lt;/h4&gt;
-
-&lt;p class=&quot;warning&quot;&gt;int EVP_EncryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type, ENGINE *impl, unsigned char *key, unsigned char *iv);&lt;/p&gt;
-
-&lt;p&gt;该函数是进行AES加密函数的初始化，type为加密类型，key为加密密钥，iv为初始向量。&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl, unsigned char *in, int inl);&lt;/p&gt;
-
-&lt;p&gt;该函数是进行实际的加密，in为要加密的明文，长度用inl指定，out为加密后的密文，outl返回密文长度。&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;int EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl);&lt;/p&gt;
-
-&lt;p&gt;如果padding开启时，该函数用于加密最后的data数据。&lt;/p&gt;
-
-&lt;h4 id=&quot;密文长度确定&quot;&gt;密文长度确定&lt;/h4&gt;
-
-&lt;p&gt;整体长度确定&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;len(密文) = len(明文) + BLOCK_SIZE - len(明文) % BLOCK_SIZE&lt;/p&gt;
-
-&lt;p&gt;EVP_EncryptUpdate函数的密文长度确定&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;len(密文) = len(处理的明文) = len(明文) / BLOCK_SIZE * BLOCK_SIZE&lt;/p&gt;
-
-&lt;p&gt;此处len(明文)是本次输入长度 + 上次未处理的长度&lt;/p&gt;
-
-&lt;p&gt;EVP_EncryptUpdate 处理的明文数据是BLOCK_SIZE的整数倍，且为小于等于明文长度的最大数BLOCK_SIZE的倍数。 若BLOCK_SIZE = 16，明文为20，则处理的明文和返回的密文为16，剩下的会在EVP_EncryptFinal_ex函数处理。&lt;/p&gt;
-
-&lt;p&gt;EVP_EncryptFinal_ex函数的密文长度确定&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;len(密文) = BLOCK_SIZE&lt;/p&gt;
-
-&lt;h3 id=&quot;aes-解密&quot;&gt;AES 解密&lt;/h3&gt;
-
-&lt;h4 id=&quot;解密所用到的三个函数&quot;&gt;解密所用到的三个函数&lt;/h4&gt;
-
-&lt;p class=&quot;warning&quot;&gt;int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type, ENGINE *impl, unsigned char *key, unsigned char *iv);&lt;/p&gt;
-
-&lt;p&gt;该函数是进行AES解密函数的初始化，type为加密类型，key为加密密钥，iv为初始向量。&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;int EVP_DecryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl, unsigned char *in, int inl);&lt;/p&gt;
-
-&lt;p&gt;该函数是进行实际的解密，in为要解密的密文，长度用inl指定，out为解密后的明文，outl返回明文长度。&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;int EVP_DecryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *outm, int *outl);&lt;/p&gt;
-
-&lt;p&gt;如果padding开启时，该函数用于解密最后的data数据。&lt;/p&gt;
-
-&lt;h4 id=&quot;明文长度确定&quot;&gt;明文长度确定&lt;/h4&gt;
-
-&lt;p&gt;EVP_DecryptUpdate函数的明长度确定&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;len(明文) = len(处理的密文) = (len(密文) - 1) / BLOCK_SIZE * BLOCK_SIZE&lt;/p&gt;
-
-&lt;p&gt;此处len(密文)是本次输入长度 + 上次未处理的长度&lt;/p&gt;
-
-&lt;p&gt;EVP_DecryptUpdate处理的密文数据是BLOCK_SIZE的整数倍，且为小于密文长度的最大数BLOCK_SIZE的倍数。 若BLOCK_SIZE = 16，密文为16，则不会处理，返回明文为0。&lt;/p&gt;
-
-&lt;p&gt;EVP_DecryptFinal_ex函数的密文长度确定&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;len(明文) = 实际加密前长度 - 已解密的文件长度&lt;/p&gt;
-
-&lt;h2 id=&quot;继续分析&quot;&gt;继续分析&lt;/h2&gt;
-
-&lt;p&gt;之前的问题： 两次同样输入都是2147483647字节明文，为什么两次输出不一样，一次是2147483632，而后一次是-2147483648？&lt;/p&gt;
-
-&lt;p&gt;第一次处理的明文为： 2147483647 / 16 * 16 = 2147483632，解释了第一次密文长度为2147483632。&lt;/p&gt;
-
-&lt;p&gt;第二次要处理的明文长度其实为： 第一次剩余15(2147483647 - 2147483632) + 第二次2147483647 = 2147483662，返回的密文长度为2147483648，32位输出刚好对应是上面结果-2147483648。所以找到问题的原因为调用EVP_EncryptUpdate函数输入最大值不能为INT32_MAX，而应该是INT32_MAX / BLOCK_SIZE * BLOCK_SIZE。&lt;/p&gt;
-
-&lt;h3 id=&quot;修改继续调试&quot;&gt;修改继续调试&lt;/h3&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-Breakpoint 1, aes_encrypt_common &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7ffeb7aca000 &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5368709120, &lt;span class=&quot;nv&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x55555555d260 &lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x555555559627 &lt;span class=&quot;s2&quot;&gt;&quot;0123456789012345&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7ffd77ac9161 &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;, 
-    &lt;span class=&quot;nv&quot;&gt;out_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x7fffffffda98&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at algs/base.c:54
-54          int result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; FALSE&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-56          uint64_t offset &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-57          int have_done &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# int 类型&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-58          int value &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-59          int input_length &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-61          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!(&lt;/span&gt;ctx &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; EVP_CIPHER_CTX_new&lt;span class=&quot;o&quot;&gt;()))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-65          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; EVP_EncryptInit_ex&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ctx, EVP_aes_256_cbc&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;, NULL, password, iv&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-70          &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-71              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; AES_MAX_SIZE&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-72                  input_length &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; AES_MAX_SIZE&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-76              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; EVP_EncryptUpdate&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ctx, out + have_done, &amp;amp;value, input + offset, input_length&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-80              length -&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done
-&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-81              offset +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-82              have_done +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; value&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-70          &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done
-&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2147483632
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p value
-&lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2147483632  &lt;span class=&quot;c&quot;&gt;# 第一次执行完没有问题&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-71              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; AES_MAX_SIZE&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-72                  input_length &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; AES_MAX_SIZE&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-76              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; EVP_EncryptUpdate&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ctx, out + have_done, &amp;amp;value, input + offset, input_length&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-80              length -&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-81              offset +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; input_length&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-82              have_done +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; value&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done 
-&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2147483632
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; n
-70          &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;length&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p have_done  &lt;span class=&quot;c&quot;&gt;# 第二次完have_done为负数？ &lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-32&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; p value
-&lt;span class=&quot;nv&quot;&gt;$6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2147483632 &lt;span class=&quot;c&quot;&gt;# value 没有问题，之前遇到的问题修复&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;从上面可以看到，第二次执行后，EVP_EncryptUpdate 返回的密文value没有问题，不是负数，但是have_done为负数了，这是怎么情况？&lt;/p&gt;
-
-&lt;h3 id=&quot;integer-overflow&quot;&gt;Integer Overflow&lt;/h3&gt;
-
-&lt;p&gt;从上面看到 have_done 被定义为int类型，第一次执行结果为2147483632， 第二次执行结果也为2147483632，两次相加已经超过INT32_MAX，出现了整数溢出漏洞，所以为负数，修改也比较简单，使用uint64_t类型代替。&lt;/p&gt;
-
-&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;至此整个分析过程就结束，也找到问题所在，修复后验证没有问题。针对本地分析过程的总结：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;大于INT32_MAX的文件现在很常见，所以在处理时要使用64位整数进行文件长度的处理；&lt;/li&gt;
-  &lt;li&gt;由于加解密算法中提供的明文和密文长度都是int类型，在处理时要考虑加密算法中明文和密文长度如何确定，防止整数溢出。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;修复&quot;&gt;修复&lt;/h2&gt;
-
-&lt;p&gt;修复patch &lt;a href=&quot;https://github.com/liwugang/filecrypt/commit/12a9dd49326cfe1761a0299127a45a13ae89950c&quot;&gt;https://github.com/liwugang/filecrypt/commit/12a9dd49326cfe1761a0299127a45a13ae89950c&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="filecrypt" /><category term="AES" /><summary type="html">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</summary></entry></feed>
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Python" /><summary type="html">背景 由于工作上需要提交大量代码，而进代码平台上需要一个个输入change，效率太低，所以就想写个工具能够自动化进行输入，提高效率。首先想到的是chrome插件，在调研中发现服务端是使用了vue框架，难度比较大，所以就退而求其次，模拟用户输入和点击来实现。使用Python进行实现。</summary></entry></feed>
