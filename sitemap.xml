@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://liwugang.github.io/2020/10/03/selinux_all.html</loc>
+<lastmod>2020-10-03T11:55:00+08:00</lastmod>
+</url>
+<url>
 <loc>https://liwugang.github.io/2020/10/02/blog_sticky.html</loc>
 <lastmod>2020-10-02T12:12:00+08:00</lastmod>
 </url>
