@@ -1,5 +1,377 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-10-03T11:58:15+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">深入理解 SELinux</title><link href="https://liwugang.github.io/2020/10/03/selinux_all.html" rel="alternate" type="text/html" title="深入理解 SELinux" /><published>2020-10-03T11:55:00+08:00</published><updated>2020-10-03T11:55:00+08:00</updated><id>https://liwugang.github.io/2020/10/03/selinux_all</id><content type="html" xml:base="https://liwugang.github.io/2020/10/03/selinux_all.html">&lt;p&gt;本文为 SELinux 专辑，记录相关文章。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2020-10-25T14:13:53+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Linux Security Module 框架介绍</title><link href="https://liwugang.github.io/2020/10/18/introduce_lsm.html" rel="alternate" type="text/html" title="Linux Security Module 框架介绍" /><published>2020-10-18T19:12:00+08:00</published><updated>2020-10-18T19:12:00+08:00</updated><id>https://liwugang.github.io/2020/10/18/introduce_lsm</id><content type="html" xml:base="https://liwugang.github.io/2020/10/18/introduce_lsm.html">&lt;p&gt;LSM 在被合入到 Linux 之前，当时的访问控制机制还不足以提供强大的安全性，存在的一些增强的访问控制机制，由于缺少安全社区的共识而没有被合入到 Linux 中。Linux 是通用操作系统，需要满足不同需求，访问控制机制同样需要满足不同的访问控制机制。在这样的背景下，LSM 因运而生，满足轻量级、通用性和可集成不同的访问控制机制等特点，被合入到 Linux 中。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;架构&quot;&gt;架构&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/linux/lsm_architecure.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从上面看到，LSM hook 会插入到访问 kernel 对象前面，DAC 检查之后，然后 LSM 调用系统中启用的访问控制模块，检查是否可以访问。若有多个访问控制模块，会根据初始化的优先顺序执行，都允许访问才能进一步访问 kernel 对象。&lt;/p&gt;
+
+&lt;h2 id=&quot;数据结构&quot;&gt;数据结构&lt;/h2&gt;
+
+&lt;p&gt;LSM 类似于 VFS，定义了通用的接口，每个访问控制模块可以根据需求，实现这些接口，并添加到 LSM 中去。&lt;/p&gt;
+
+&lt;h3 id=&quot;通用接口&quot;&gt;通用接口&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/torvalds/linux/blob/master/include/linux/lsm_hook_defs.h&quot;&gt;接口文件 lsm_hook_defs.h&lt;/a&gt;，这里不直接使用函数声明，是为了复用，LSM_HOOK 在不同的结构定义中代表不同。后面会看到。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_permission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_alloc_security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_ioctl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_mprotect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vm_area_struct&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reqprot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_fcntl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LSM_HOOK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;lsm-中接口管理&quot;&gt;LSM 中接口管理&lt;/h3&gt;
+
+&lt;p&gt;LSM 中使用 security_hook_heads 将各访问控制模块的接口管理起来。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;security_hook_heads&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;cp&quot;&gt;#define LSM_HOOK(RET, DEFAULT, NAME, ...) struct hlist_head NAME; // 此处定义 LSM_HOOK 为只取接口名字
+&lt;/span&gt;	&lt;span class=&quot;cp&quot;&gt;#include &quot;lsm_hook_defs.h&quot; // 包含接口文件
+&lt;/span&gt;	&lt;span class=&quot;cp&quot;&gt;#undef LSM_HOOK
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__randomize_layout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在 security_hook_heads 中 LSM_HOOK 定义为只取接口名字，这样该数据结构是所有接口哈希链表(hlist_head)集合，即实际上为：&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;security_hook_heads&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_permission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_alloc_security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_ioctl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_mprotect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_fcntl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__randomize_layout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;访问控制模块的接口&quot;&gt;访问控制模块的接口&lt;/h3&gt;
+
+&lt;p&gt;每个访问控制模块需要定义 security_hook_list 数组，security_hook_list 记录单个接口的信息，然后模块初始化函数中会调用 security_add_hooks 将 security_hook_list 数组链接到上面的 security_hook_heads 上。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;security_hook_list&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_node&lt;/span&gt;		&lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 会将该 hlist_node 链接到 security_hook_heads.接口 上&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt;		&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 指向 security_hook_heads.接口&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;union&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;security_list_options&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;hook&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 接口函数实现&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;				&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 该模块名字&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__randomize_layout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;security_hook_list 的赋值是通过 LSM_HOOK_INIT 宏，调用为 LSM_HOOK_INIT(接口, 接口实现)，会赋值 head 和 hook 成员变量，lsm 实际上是没有使用，list 会在 security_add_hooks 函数中链接起来。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#define LSM_HOOK_INIT(HEAD, HOOK) \
+	{ .head = &amp;amp;security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上面接口函数实现为什么是 union 类型？ 看下 security_list_options 的定义：&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;union&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;security_list_options&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;cp&quot;&gt;#define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
+&lt;/span&gt;	&lt;span class=&quot;cp&quot;&gt;#include &quot;lsm_hook_defs.h&quot;
+&lt;/span&gt;	&lt;span class=&quot;cp&quot;&gt;#undef LSM_HOOK
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;可以看到，是将定义在 lsm_hook_defs.h 的各接口声明组合成 union结构，这样就可以用同一个类型来表示所有的接口函数。&lt;/p&gt;
+
+&lt;h3 id=&quot;访问控制模块接口添加到-lsm&quot;&gt;访问控制模块接口添加到 LSM&lt;/h3&gt;
+
+&lt;p&gt;security_add_hooks 函数负责将访问控制模块接口添加到 LSM，hooks 为该模块定义的接口数组，count 为数组大小，lsm 为模块名字。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;security_add_hooks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;security_hook_list&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hooks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+				&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;hooks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;hlist_add_tail_rcu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hooks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hooks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;从上面知道，head 为 security_hook_heads.接口，即只是将每个接口的 security_hook_list.list 添加到 security_hook_heads.接口 的末尾。&lt;/p&gt;
+
+&lt;h3 id=&quot;lsm-调用链&quot;&gt;LSM 调用链&lt;/h3&gt;
+
+&lt;p&gt;LSM 接口只有两种返回类型：void 和 int。即调用时会用下面这种方式。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;cp&quot;&gt;#define call_void_hook(FUNC, ...)				\
+	do {							\
+		struct security_hook_list *P;			\
+								\
+		hlist_for_each_entry(P, &amp;amp;security_hook_heads.FUNC, list) \
+			P-&amp;gt;hook.FUNC(__VA_ARGS__);		\
+	} while (0)
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define call_int_hook(FUNC, IRC, ...) ({			\
+	int RC = IRC;						\
+	do {							\
+		struct security_hook_list *P;			\
+								\
+		hlist_for_each_entry(P, &amp;amp;security_hook_heads.FUNC, list) { \
+			RC = P-&amp;gt;hook.FUNC(__VA_ARGS__);		\
+			if (RC != 0)				\
+				break;				\
+		}						\
+	} while (0);						\
+	RC;							\
+})
+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;通过 security_hook_heads 获取到接口的 hlist_head，然后遍历该链表，获取每个模块的 security_hook_list 变量，最后调用实际的接口函数。&lt;/p&gt;
+
+&lt;h3 id=&quot;访问控制模块结构&quot;&gt;访问控制模块结构&lt;/h3&gt;
+
+&lt;p&gt;每个访问控制模块用 lsm_info 结构表示。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_info&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// 访问控制模块名字&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_order&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// 该模块在 LSM 顺序，两种参数，LSM_ORDER_FIRST(目前capabilities使用) 和 LSM_ORDER_MUTABLE(默认)。&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;// 支持两种配置，LSM_FLAG_LEGACY_MAJOR 和 LSM_FLAG_EXCLUSIVE(指定该值的多个模块只允许开启一个)。&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;		&lt;span class=&quot;c1&quot;&gt;// 根据相应的规则，由 LSM 设置。&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// 各模块的初始化函数&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_blob_sizes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blobs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 模块需要的私有数据大小&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;lsm_info 的定义会通过 DEFINE_LSM 和 DEFINE_EARLY_LSM 来定义。这样会将 lsm_info 放置在对应的 section 上。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#define DEFINE_LSM(lsm)							\
+	static struct lsm_info __lsm_##lsm				\
+		__used __section(.lsm_info.init)			\
+		__aligned(sizeof(unsigned long))
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define DEFINE_EARLY_LSM(lsm)						\
+	static struct lsm_info __early_lsm_##lsm			\
+		__used __section(.early_lsm_info.init)			\
+		__aligned(sizeof(unsigned long))
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;代码逻辑&quot;&gt;代码逻辑&lt;/h2&gt;
+
+&lt;p&gt;上面的数据结构，已经说明了 LSM 的架构，相对逻辑简单，本部分具体看下代码逻辑。&lt;/p&gt;
+
+&lt;h3 id=&quot;lsm-初始化&quot;&gt;LSM 初始化&lt;/h3&gt;
+
+&lt;p&gt;start_kernel 是系统启动执行完架构相关代码后，通用代码的入口，LSM 的初始化也是在这里调用。LSM 会有两种类型，early_lsm 和 lsm。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;early_lsm 用于早期启动的模块，当配置 CONFIG_SECURITY_LOCKDOWN_LSM_EARLY 时lockdown 模块被配置为 early_lsm，调用的函数为 early_security_init。&lt;/li&gt;
+  &lt;li&gt;lsm 是除 lockdown 外默认配置的方式，调用的函数为 security_init。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;early_security_init&quot;&gt;early_security_init&lt;/h4&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;early_security_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;security_hook_heads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;security_hook_heads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hlist_head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1&lt;/span&gt;
+	     &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;INIT_HLIST_HEAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__start_early_lsm_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__end_early_lsm_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm_enabled_true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;prepare_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 3&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;initialize_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 4&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Prepare LSM for initialization. */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;prepare_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 3&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_allowed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 判断该模块是否允许&lt;/span&gt;
+
+	&lt;span class=&quot;cm&quot;&gt;/* Record enablement (to handle any following exclusive LSMs). */&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;set_enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;cm&quot;&gt;/* If enabled, do pre-initialization work. */&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LSM_FLAG_EXCLUSIVE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exclusive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;exclusive&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;exclusive chosen: %s&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;lsm_set_blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blobs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Initialize a given LSM, if it is enabled. */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 4&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;initializing %s&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 调用初始化的函数 init&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;WARN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;%s failed to initialize: %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;初始化 security_hook_heads；&lt;/li&gt;
+  &lt;li&gt;__start_early_lsm_info 和 __end_early_lsm_info 之间是通过 DEFINE_EARLY_LSM 定义的 lsm_info，遍历这些 lsm_info；&lt;/li&gt;
+  &lt;li&gt;prepare_lsm 查看是否允许该模块和统计模块所需要的数据大小，并将本模块的数据偏移回填到  lsm_info 中的 blobs 字段，允许的模块需要满足下面条件：
+    &lt;ul&gt;
+      &lt;li&gt;lsm_info 中 enabled 为 TRUE；&lt;/li&gt;
+      &lt;li&gt;若lsm_info 中的 flags 字段包含 LSM_FLAG_EXCLUSIVE 字段，则必须系统还没有相同字段的模块，或者没有该字段。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;若模块允许加载，则调用该模块的初始化函数 init。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;security_init&quot;&gt;security_init&lt;/h4&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;security_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;pr_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Security Framework initializing&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;cm&quot;&gt;/*
+	 * Append the names of the early LSM modules now that kmalloc() is
+	 * available
+	 */&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__start_early_lsm_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__end_early_lsm_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;lsm_append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;cm&quot;&gt;/* Load LSMs in specified order. */&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;ordered_lsm_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 2&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ordered_lsm_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;ordered_lsms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kcalloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LSM_COUNT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ordered_lsms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;GFP_KERNEL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chosen_lsm_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chosen_major_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;pr_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;security= is ignored because it is superseded by lsm=&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;chosen_major_lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;ordered_lsm_parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chosen_lsm_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;cmdline&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 启动时根据用户选择来加载模块&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;ordered_lsm_parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builtin_lsm_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;builtin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 若用户没有选择，则根据默认的模块顺序选择开启的模块&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ordered_lsms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;prepare_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 3&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;cred blob size     = %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_cred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;file blob size     = %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;inode blob size    = %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ipc blob size      = %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_ipc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;msg_msg blob size  = %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_msg_msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;init_debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;task blob size     = %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;cm&quot;&gt;/*
+	 * Create any kmem_caches needed for blobs
+	 */&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;lsm_file_cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kmem_cache_create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;lsm_file_cache&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+						   &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+						   &lt;span class=&quot;n&quot;&gt;SLAB_PANIC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;lsm_inode_cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kmem_cache_create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;lsm_inode_cache&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+						    &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+						    &lt;span class=&quot;n&quot;&gt;SLAB_PANIC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;lsm_early_cred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cred&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;lsm_early_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ordered_lsms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;initialize_lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lsm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 4&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;kfree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ordered_lsms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;将之前的 early_lsm 名字添加到全局变量 lsm_names；&lt;/li&gt;
+  &lt;li&gt;ordered_lsm_init 函数首先会调用 ordered_lsm_parse 来获取模块，然后调用 prepare_lsm 和 initialize_lsm，这两个函数和 early_security_init 中类似。
+    &lt;ul&gt;
+      &lt;li&gt;系统默认的模块加载顺序：lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;lsm-数据大小确定&quot;&gt;LSM 数据大小确定&lt;/h3&gt;
+
+&lt;p&gt;LSM 数据大小保存在 blob_sizes 中，该值是由加载的模块需要累加获取得到的。每个模块需要的大小初始化在 lsm_info 中的 blobs 字段。计算方法是在 lsm_set_blob_sizes 函数中。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lsm_set_blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lsm_blob_sizes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_cred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_cred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;cm&quot;&gt;/*
+	 * The inode blob gets an rcu_head in addition to
+	 * what the modules might need.
+	 */&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rcu_head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_inode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_ipc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_ipc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_msg_msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_msg_msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;needed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blob_sizes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__init&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lsm_set_blob_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;need&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;need&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lbs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;need&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;need&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;lsm_set_blob_sizes 在 prepare_lsm 中被调用，可以看到 blob_sizes 的每个字段会加上模块的 blobs 对应字段，并且会将 offset 重新赋值给模块的 blobs 对应字段，那执行之后，模块的 blobs 中保存的不是需要的数据大小，而是数据偏移。&lt;/p&gt;
+
+&lt;h2 id=&quot;其他&quot;&gt;其他&lt;/h2&gt;
+
+&lt;h3 id=&quot;查看系统的访问控制模块&quot;&gt;查看系统的访问控制模块&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;若系统配置 CONFIG_SECURITYFS=y，则直接可以查看 /sys/kernel/security/lsm 文件，该文件会打印当前系统加载的模块。&lt;/li&gt;
+  &lt;li&gt;若没有配置 CONFIG_SECURITYFS，则需要查看系统的 config，查看对应的模块是否编译进内核。如 Android 系统中，没有配置 CONFIG_SECURITYFS，则可以从 /proc/config.gz 获取系统配置。&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Linux" /><category term="Security" /><summary type="html">LSM 在被合入到 Linux 之前，当时的访问控制机制还不足以提供强大的安全性，存在的一些增强的访问控制机制，由于缺少安全社区的共识而没有被合入到 Linux 中。Linux 是通用操作系统，需要满足不同需求，访问控制机制同样需要满足不同的访问控制机制。在这样的背景下，LSM 因运而生，满足轻量级、通用性和可集成不同的访问控制机制等特点，被合入到 Linux 中。</summary></entry><entry><title type="html">深入理解 SELinux</title><link href="https://liwugang.github.io/2020/10/03/selinux_all.html" rel="alternate" type="text/html" title="深入理解 SELinux" /><published>2020-10-03T11:55:00+08:00</published><updated>2020-10-03T11:55:00+08:00</updated><id>https://liwugang.github.io/2020/10/03/selinux_all</id><content type="html" xml:base="https://liwugang.github.io/2020/10/03/selinux_all.html">&lt;p&gt;本文为 SELinux 专辑，记录相关文章。&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1336,297 +1708,4 @@ name len: 36
 
 &lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
 
-&lt;p&gt;虽然原理上比较简单，但是提醒我们有这么一种方式，可以简单的骗过我们通过ps和top看到的信息。若发现系统中有异常，也可以通过技术对抗中提到的方式，确认是否有恶意程序存在。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Linux" /><category term="Security" /><summary type="html">可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。 隐藏有两种方法： kernel 层面，不对用户层暴露该进程的信息，进程不被看见； 用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达到隐藏自己的目的。 方法一是需要修改内核，本文主要是讲第二种方法。</summary></entry><entry><title type="html">Coredomain 创建新的 property type</title><link href="https://liwugang.github.io/2020/02/29/coredomain_create_new_property.html" rel="alternate" type="text/html" title="Coredomain 创建新的 property type" /><published>2020-02-29T08:53:00+08:00</published><updated>2020-02-29T08:53:00+08:00</updated><id>https://liwugang.github.io/2020/02/29/coredomain_create_new_property</id><content type="html" xml:base="https://liwugang.github.io/2020/02/29/coredomain_create_new_property.html">&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
-
-&lt;p&gt;Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;coredomain&quot;&gt;Coredomain&lt;/h2&gt;
-
-&lt;h3 id=&quot;哪些是-coredomain&quot;&gt;哪些是 coredomain?&lt;/h3&gt;
-
-&lt;p&gt;Coredomain 是 attribute，属于 domain (针对进程)或者 type(针对对象，如文件等)的集合。coremain 可以理解为包含 system 下可执行文件和 apps 所运行的 domain 或者说包含所有属于 Android 的 domain。&lt;/p&gt;
-
-&lt;h3 id=&quot;如何查看&quot;&gt;如何查看？&lt;/h3&gt;
-
-&lt;h4 id=&quot;代码中查看&quot;&gt;代码中查看&lt;/h4&gt;
-
-&lt;p&gt;有两种定义方式：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    1. &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;XXX ..., coredomain ...&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    2. typeattribute XXX coredomain&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;上面两种方式都是将 XXX 放入到 coredomain 集合中，即 XXX 是属于 coredomain，对 coredomain 配置的权限也会同步给 XXX，同样对 coredomain 的限制也会限制 XXX。&lt;/p&gt;
-
-&lt;h4 id=&quot;工具查看&quot;&gt;工具查看&lt;/h4&gt;
-
-&lt;p&gt;Android system/sepolicy 源码下有 sepolicy-analyze 工具，然后需要编译好的 sepolicy 文件，使用下面命令可以查看 coredomain 都包含那些 domain：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    sepolicy-analyze 编译好的sepolicy  attribute coredomain
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p class=&quot;warning&quot;&gt;编译好的policy，手机上可以从这两个地方取：1. /vendor(或者odm)/etc/selinux/precompiled_sepolicy; 2. /sys/fs/selinux/policy&lt;/p&gt;
-
-&lt;h2 id=&quot;android-p&quot;&gt;Android P&lt;/h2&gt;
-
-&lt;h3 id=&quot;新增限制&quot;&gt;新增限制&lt;/h3&gt;
-
-&lt;p&gt;升级 Android P 后发现 property 新增了一个 neverallow(neverallow 用于限制配置，明确指定不能干什么)。来看下该 neverallow：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#https://cs.android.com/android/platform/superproject/+/android-9.0.0_r11:system/sepolicy/public/property.te;l=314&lt;/span&gt;
-compatible_property_only&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-  &lt;span class=&quot;c&quot;&gt;# Neverallow coredomain to set vendor properties&lt;/span&gt;
-  neverallow &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    coredomain
-    &lt;span class=&quot;nt&quot;&gt;-init&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-system_writes_vendor_properties_violators&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    property_type
-    &lt;span class=&quot;nt&quot;&gt;-apexd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-audio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-bluetooth_a2dp_offload_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-bluetooth_audio_hal_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-bluetooth_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-bootloader_boot_reason_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-boottime_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-bpf_progs_loaded_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-config_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-cppreopt_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_adbd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_bootanim_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_bugreport_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_console_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_default_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_dumpstate_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_fuse_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_gsid_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_interface_restart_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_interface_start_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_interface_stop_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_mdnsd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_restart_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_rildaemon_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_sigstop_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_start_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ctl_stop_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-dalvik_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-debug_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-debuggerd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-default_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_logging_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-dhcp_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-dumpstate_options_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-dumpstate_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported2_config_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported2_default_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported2_radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported2_system_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported2_vold_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported3_default_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported3_radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported3_system_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_bluetooth_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_config_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_dalvik_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_default_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_dumpstate_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_ffs_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_fingerprint_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_overlay_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_pm_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_secure_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_system_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_system_radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_vold_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-exported_wifi_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-extended_core_property_type&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-ffs_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-fingerprint_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-firstboot_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_activity_manager_native_boot_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_reset_performed_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_boot_count_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_input_native_boot_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_netd_native_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_runtime_native_boot_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_runtime_native_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-device_config_media_native_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-dynamic_system_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-gsid_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-heapprofd_enabled_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-heapprofd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-hwservicemanager_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-last_boot_reason_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-system_lmk_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-log_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-log_tag_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-logd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-logpersistd_logging_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-lowpan_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-lpdumpd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-mmc_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-net_dns_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-net_radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-netd_stable_secret_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-nfc_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-overlay_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-pan_result_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-persist_debug_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-persistent_properties_ready_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-pm_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-powerctl_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-restorecon_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-safemode_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-serialno_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-shell_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-system_boot_reason_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-system_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-system_radio_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-system_trace_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-test_boot_reason_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-test_harness_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-theme_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-time_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-traced_enabled_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-traced_lazy_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-vendor_default_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-vendor_security_patch_level_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-vold_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-wifi_log_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-wifi_prop&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;:property_service &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;s1&quot;&gt;')
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;可以看到限制的是除了 init 和 system_writes_vendor_properties_violators 的 coredomain， 这些 domains 不能设置上述白名单之外的 property type， 这些属于AOSP 定义的 types，所以是限制 system domains 不能设置 vendor properties，符合 Prject Treble 设计思想。&lt;/p&gt;
-
-&lt;h3 id=&quot;如何绕过限制&quot;&gt;如何绕过限制？&lt;/h3&gt;
-
-&lt;p&gt;由于厂商基本都会：&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;定义新的 property type，用于细粒度控制访问权限，如 platform_app 或者 system_app 设置新的property，三方 app 可以读；&lt;/li&gt;
-  &lt;li&gt;coredomain 需要设置 vendor properties。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;但现在增加了 neverallow 限制，这些规则在编译阶段就会报错，所以需要想办法绕过限制。&lt;/p&gt;
-
-&lt;p&gt;从上面可以看到限制会排除 init 和 system_writes_vendor_properties_violators，init 是 domain，不能满足要求，我们是需要 platform_app 或者 system_app 有权限。看下 system_writes_vendor_properties_violators 的定义：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# All system domains which violate the requirement of not writing vendor&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# properties.&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# TODO(b/78598545): Remove this once there are no violations&lt;/span&gt;
-attribute system_writes_vendor_properties_violators&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;首先是 attribute，不是具体的 type， 并且从注释上看到，表示 system domains 违反去写 vendor properties 的集合。这个也是 google 用于在升级中故意新增的，用于临时绕过 neverallow 限制。所以，我们可以需要违反 neverallow 的添加上该 attribute。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;解决方案为：  为需要违反的 domain 添加 system_writes_vendor_properties_violators。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;如要给 platform_app 添加，配置下面规则：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    typeattribute platform_app system_writes_vendor_properties_violators&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;android-q&quot;&gt;Android Q&lt;/h2&gt;
-
-&lt;h3 id=&quot;新增限制-1&quot;&gt;新增限制&lt;/h3&gt;
-
-&lt;p&gt;google 在 GTS 中新增了一条测试 case:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;com.google.android.security.gts.SELinuxHostTest#testNoExemptionsForCoreWritingVendorSysprops
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;SELinuxHostTest 是在 GTS GtsSecurityHostTestCases.jar 中，使用 JD-GUI 反编译找到 testNoExemptionsForCoreWritingVendorSysprops 方法：&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;testNoExemptionsForCoreWritingVendorSysprops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;mFirstApiLevel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 使用 firstApi 排除升级的老机型&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    
-    &lt;span class=&quot;c1&quot;&gt;// 是获取有 attribute 是 system_writes_vendor_properties_violators 的 domain&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;Set&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;types&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sepolicyAnalyzeGetTypesAssociatedWithAttribute&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;system_writes_vendor_properties_violators&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; 
-    
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isEmpty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sortedTypes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;nc&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortedTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;fail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Policy exempts core domains from ban on writing vendor system properties: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sortedTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 不为空，则测试失败&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; 
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;从上面看到： 1）针对的是 Q 新机型； 2）若指定有 system_writes_vendor_properties_violators 的则失败，即不能为 domain 指定 system_writes_vendor_properties_violators。&lt;/p&gt;
-
-&lt;p&gt;所有针对 Q 新机型，不能采用 P 绕过方式。&lt;/p&gt;
-
-&lt;h3 id=&quot;如何绕过限制-1&quot;&gt;如何绕过限制？&lt;/h3&gt;
-
-&lt;h4 id=&quot;使用现有的-aosp-property-type&quot;&gt;使用现有的 AOSP property type&lt;/h4&gt;
-
-&lt;p&gt;Neverallow 不能从 domain 进行绕过，只能选择从 property type，即不能定义新的 property，只能使用现有的。这样有两个弊端：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;不能对权限细粒度控制，只能在现有权限的基础上增加，而不能减少，这样修改的话势必导致权限扩大；&lt;/li&gt;
-  &lt;li&gt;type 名字选择都是有意义，但现在只能从权限和名字上找到平衡，可能权限满足，但名字意义差太远。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;那有没有更好的方式？&lt;/p&gt;
-
-&lt;h4 id=&quot;定义新的-property-type&quot;&gt;定义新的 property type&lt;/h4&gt;
-
-&lt;p&gt;通过对 neverallow 中的每个 type 分析，发现 extended_core_property_type 是 attribute，而不是具体的 type：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;c&quot;&gt;# All properties that are not specific to device but are added from&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# outside of AOSP. (e.g. OEM-specific properties)&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# These properties are not accessible from device-specific domains&lt;/span&gt;
-attribute extended_core_property_type&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;从注释可以看到，这个 attribute 是 google 专门给厂商保留的，太好了。 但是 “These properties are not accessible from device-specific domains” 表示 device-specific domains 不能访问，来看下是怎么限制的：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Prevent properties from being read&lt;/span&gt;
-  neverallow &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    domain
-    &lt;span class=&quot;nt&quot;&gt;-coredomain&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-appdomain&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-vendor_init&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    core_property_type
-    extended_core_property_type &lt;span class=&quot;c&quot;&gt;# it&lt;/span&gt;
-    exported_dalvik_prop
-    exported_ffs_prop
-    exported_system_radio_prop
-    exported2_config_prop
-    exported2_system_prop
-    exported2_vold_prop
-    exported3_default_prop
-    exported3_system_prop
-    &lt;span class=&quot;nt&quot;&gt;-debug_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-logd_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-nfc_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-powerctl_prop&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;-radio_prop&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;:file no_rw_file_perms&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;可以看到除了 coredomain, appdomain, vendor_init 外都不能访问，那这种方式定义的 property 只能由 coredomain, appdomain 和 vendor_init 来访问。虽然有限制，但是已经能满足大部分需求，如上面提到的规则： platform_app 或者 system_app 设置，三方 apps 去读。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;解决方案：为新定义的 property type 指定 extended_core_property_type。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p class=&quot;warning&quot;&gt;这种方式 vendor domain没有权限去读写。&lt;/p&gt;
-
-&lt;h2 id=&quot;思考&quot;&gt;思考&lt;/h2&gt;
-
-&lt;p&gt;如果有需求是需要 coredomain 和 vendor domain 同时有读写权限，那怎么办？&lt;/p&gt;
-
-&lt;p&gt;目前来看，新建 property type不能满足需求，现有 AOSP 存在的 property type 如果没有限制，也尽量不要使用，防止以后有变动，建议：&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1. 业务逻辑上重新设计，尽量避免这种情况出现；&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2. 使用 init 或者 vendor_init 代替设置，init 和 vendor_init 权限较高，并且限制较少，如对 init script 中配置自动 setprop 规则。&lt;/strong&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="SELinux" /><category term="Android" /><summary type="html">背景 Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</summary></entry></feed>
+&lt;p&gt;虽然原理上比较简单，但是提醒我们有这么一种方式，可以简单的骗过我们通过ps和top看到的信息。若发现系统中有异常，也可以通过技术对抗中提到的方式，确认是否有恶意程序存在。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Linux" /><category term="Security" /><summary type="html">可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。 隐藏有两种方法： kernel 层面，不对用户层暴露该进程的信息，进程不被看见； 用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达到隐藏自己的目的。 方法一是需要修改内核，本文主要是讲第二种方法。</summary></entry></feed>
