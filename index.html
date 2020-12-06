@@ -902,14 +902,20 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 03, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-03T11:55:00+08:00">
     <meta itemprop="keywords" content="SELinux"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/18/introduce_lsm.html"><h2 itemprop="headline" class="item__header">Linux Security Module 框架介绍</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">LSM 在被合入到 Linux 之前，当时的访问控制机制还不足以提供强大的安全性，存在的一些增强的访问控制机制，由于缺少安全社区的共识而没有被合入到 Linux 中。Linux 是通用操作系统，需要满足不同需求，访问控制机制同样需要满足不同的访问控制机制。在这样的背景下，LSM 因运而生，满足轻量级、通用性和可集成不同的访问控制机制等特点，被合入到 Linux 中。</div><p><a href="/2020/10/18/introduce_lsm.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/12/06/reverse_charles.html"><h2 itemprop="headline" class="item__header">破解最新抓包工具 Charles</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">Charles 是常用的抓包工具，使用 Java 语言写的，支持跨平台。目前最新版本是 4.6.1，本文记录下对该版本的破解。</div><p><a href="/2020/12/06/reverse_charles.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=reverse">reverse</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 06, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-12-06T17:25:00+08:00">
+    <meta itemprop="keywords" content="reverse"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/25/introduce_lsm.html"><h2 itemprop="headline" class="item__header">Linux Security Module 框架介绍</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">LSM 在被合入到 Linux 之前，当时的访问控制机制还不足以提供强大的安全性，存在的一些增强的访问控制机制，由于缺少安全社区的共识而没有被合入到 Linux 中。Linux 是通用操作系统，需要满足不同需求，访问控制机制同样需要满足不同的访问控制机制。在这样的背景下，LSM 因运而生，满足轻量级、通用性和可集成不同的访问控制机制等特点，被合入到 Linux 中。</div><p><a href="/2020/10/25/introduce_lsm.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Linux">Linux</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Security">Security</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 18, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-18T19:12:00+08:00">
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 25, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-25T14:17:00+08:00">
     <meta itemprop="keywords" content="Linux,Security"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/02/blog_sticky.html"><h2 itemprop="headline" class="item__header">博客修改记录</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">目的
 
@@ -972,24 +978,8 @@ Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-04-12T10:08:00+08:00">
     <meta itemprop="keywords" content="frida,reverse,Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/03/22/hide_process.html"><h2 itemprop="headline" class="item__header">Linux 下如何隐藏自己不被发现？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
-隐藏有两种方法：
-
-  kernel 层面，不对用户层暴露该进程的信息，进程不被看见；
-  用户层可以看到该进程信息，但不是以真实的身份出现，而是伪造成别的程序出现，达到隐藏自己的目的。
-
-
-方法一是需要修改内核，本文主要是讲第二种方法。</div><p><a href="/2020/03/22/hide_process.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Linux">Linux</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Security">Security</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 22, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-03-22T19:12:00+08:00">
-    <meta itemprop="keywords" content="Linux,Security"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>31 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>32 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-left"></i>
