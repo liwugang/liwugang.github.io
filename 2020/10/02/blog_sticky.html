@@ -12,7 +12,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>博客修改记录 - liwugang</title>
 
-<meta name="description" content="目的该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。修改记录2020-10-01 新增置顶功能2020-10-02 新增pdf和ppt显示功能">
+<meta name="description" content="目的该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。修改记录2020-10-01 新增置顶功能2020-10-02 新增pdf和ppt显示功能2021-01-09 增加打赏功能">
 <link rel="canonical" href="https://liwugang.github.io/2020/10/02/blog_sticky.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
@@ -912,6 +912,8 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 
 <p><strong>2020-10-02</strong> 新增pdf和ppt显示功能</p>
 
+<p><strong>2021-01-09</strong> 增加打赏功能</p>
+
 <!--more-->
 
 <h2 id="文章置顶功能">文章置顶功能</h2>
@@ -955,6 +957,15 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 <h2 id="pdf和ppt显示功能">pdf和ppt显示功能</h2>
 
 <p>使用插件<a href="https://github.com/MihajloNesic/jekyll-pdf-embed">jekyll-pdf-embed</a>.</p>
+
+<h2 id="打赏功能">打赏功能</h2>
+
+<p>使用的代码来自于 <a href="https://github.com/leopardpan/leopardpan.github.io">潘柏信的博客</a>。</p>
+
+<p>在修改过程中，“打赏”属于链接，默认采用 main.css 中默认红色，直接 css 中配置的白色不起作用，最后采用在 html 代码中增加字体颜色解决。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;p&gt;&lt;a</span> <span class="na">href=</span><span class="s">"javascript:void(0)"</span> <span class="na">onclick=</span><span class="s">"dashangToggle()"</span> <span class="na">class=</span><span class="s">"dashang"</span> <span class="na">title=</span><span class="s">"打赏，支持一下"</span><span class="nt">&gt;&lt;font</span> <span class="na">color=</span><span class="s">"white"</span><span class="nt">&gt;</span>打赏<span class="nt">&lt;/font&gt;&lt;/a&gt;&lt;/p&gt;</span>
+</code></pre></div></div>
 </div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-10-02T12:12:00+08:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet --><div class="article__reward"><section>

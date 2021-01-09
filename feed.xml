@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-01-09T16:46:21+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-01-09T20:55:43+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
 </subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">破解最新抓包工具 Charles</title><link href="https://liwugang.github.io/2020/12/06/reverse_charles.html" rel="alternate" type="text/html" title="破解最新抓包工具 Charles" /><published>2020-12-06T17:25:00+08:00</published><updated>2020-12-06T17:25:00+08:00</updated><id>https://liwugang.github.io/2020/12/06/reverse_charles</id><content type="html" xml:base="https://liwugang.github.io/2020/12/06/reverse_charles.html">&lt;p&gt;Charles 是常用的抓包工具，使用 Java 语言写的，支持跨平台。目前最新版本是 4.6.1，本文记录下对该版本的破解。&lt;/p&gt;
 
 &lt;!--more--&gt;
@@ -777,6 +777,8 @@
 
 &lt;p&gt;&lt;strong&gt;2020-10-02&lt;/strong&gt; 新增pdf和ppt显示功能&lt;/p&gt;
 
+&lt;p&gt;&lt;strong&gt;2021-01-09&lt;/strong&gt; 增加打赏功能&lt;/p&gt;
+
 &lt;!--more--&gt;
 
 &lt;h2 id=&quot;文章置顶功能&quot;&gt;文章置顶功能&lt;/h2&gt;
@@ -819,7 +821,16 @@
 
 &lt;h2 id=&quot;pdf和ppt显示功能&quot;&gt;pdf和ppt显示功能&lt;/h2&gt;
 
-&lt;p&gt;使用插件&lt;a href=&quot;https://github.com/MihajloNesic/jekyll-pdf-embed&quot;&gt;jekyll-pdf-embed&lt;/a&gt;.&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="misc" /><summary type="html">目的 该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。 修改记录 2020-10-01 新增置顶功能 2020-10-02 新增pdf和ppt显示功能</summary></entry><entry><title type="html">markdown 如何插入多个空格？</title><link href="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html" rel="alternate" type="text/html" title="markdown 如何插入多个空格？" /><published>2020-09-05T17:10:00+08:00</published><updated>2020-09-05T17:10:00+08:00</updated><id>https://liwugang.github.io/2020/09/05/markdown_insert_blank</id><content type="html" xml:base="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html">&lt;p&gt;使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？&lt;/p&gt;
+&lt;p&gt;使用插件&lt;a href=&quot;https://github.com/MihajloNesic/jekyll-pdf-embed&quot;&gt;jekyll-pdf-embed&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;打赏功能&quot;&gt;打赏功能&lt;/h2&gt;
+
+&lt;p&gt;使用的代码来自于 &lt;a href=&quot;https://github.com/leopardpan/leopardpan.github.io&quot;&gt;潘柏信的博客&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在修改过程中，“打赏”属于链接，默认采用 main.css 中默认红色，直接 css 中配置的白色不起作用，最后采用在 html 代码中增加字体颜色解决。&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;javascript:void(0)&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;onclick=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dashangToggle()&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dashang&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;title=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;打赏，支持一下&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;font&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;color=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;white&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;打赏&lt;span class=&quot;nt&quot;&gt;&amp;lt;/font&amp;gt;&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="misc" /><summary type="html">目的 该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。 修改记录 2020-10-01 新增置顶功能 2020-10-02 新增pdf和ppt显示功能 2021-01-09 增加打赏功能</summary></entry><entry><title type="html">markdown 如何插入多个空格？</title><link href="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html" rel="alternate" type="text/html" title="markdown 如何插入多个空格？" /><published>2020-09-05T17:10:00+08:00</published><updated>2020-09-05T17:10:00+08:00</updated><id>https://liwugang.github.io/2020/09/05/markdown_insert_blank</id><content type="html" xml:base="https://liwugang.github.io/2020/09/05/markdown_insert_blank.html">&lt;p&gt;使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？&lt;/p&gt;
 
 &lt;!--more--&gt;
 
