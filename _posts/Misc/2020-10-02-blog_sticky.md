@@ -18,6 +18,8 @@ key: blog_record
 
 **2020-10-02** 新增pdf和ppt显示功能
 
+**2021-01-09** 增加打赏功能
+
 <!--more-->
 
 ## 文章置顶功能
@@ -59,3 +61,13 @@ key: blog_record
 ## pdf和ppt显示功能
 
 使用插件[jekyll-pdf-embed](https://github.com/MihajloNesic/jekyll-pdf-embed).
+
+## 打赏功能
+
+使用的代码来自于 [潘柏信的博客](https://github.com/leopardpan/leopardpan.github.io)。
+
+在修改过程中，“打赏”属于链接，默认采用 main.css 中默认红色，直接 css 中配置的白色不起作用，最后采用在 html 代码中增加字体颜色解决。
+
+```html
+<p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+```
