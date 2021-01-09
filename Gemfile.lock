@@ -51,6 +51,8 @@ GEM
       jekyll (>= 3.7, < 5.0)
     jekyll-paginate-v2 (3.0.0)
       jekyll (>= 3.0, < 5.0)
+    jekyll-pdf-embed (1.0.4)
+      jekyll
     jekyll-sass-converter (1.5.2)
       sass (~> 3.4)
     jekyll-sitemap (1.4.0)
@@ -102,6 +104,7 @@ PLATFORMS
 DEPENDENCIES
   bundler
   jekyll-paginate-v2
+  jekyll-pdf-embed
   jekyll-stickyposts
   jekyll-text-theme!
   kramdown-parser-gfm

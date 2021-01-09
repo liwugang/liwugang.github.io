@@ -4,6 +4,11 @@
 {%- assign _show_author_profile = __return -%}
 
 {%- include snippets/assign.html
+  target=site.data.variables.default.page.show_reward
+  source0=layout.show_reward source1=page.show_reward -%}
+{%- assign _show_reward = __return -%}
+
+{%- include snippets/assign.html
   target=site.data.variables.default.page.show_subscribe
   source0=layout.show_subscribe source1=page.show_subscribe -%}
 {%- assign _show_subscribe = __return -%}
@@ -36,6 +41,10 @@
       {%- assign _author = site.author -%}
     {%- endif -%}
     {%- include article/footer/author-profile.html author=_author -%}
+  {%- endif -%}
+
+  {%- if _show_reward -%}
+    <div class="article__reward">{%- include reward.html -%}</div>
   {%- endif -%}
 
   {%- if _show_subscribe -%}
