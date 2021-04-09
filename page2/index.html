@@ -908,6 +908,29 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-04-12T10:08:00+08:00">
     <meta itemprop="keywords" content="frida,reverse,Android"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/03/31/neverallow_for_build.html"><h2 itemprop="headline" class="item__header">SELinux 编译时 neverallow 如何限制？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">SELinux编译过程中会对配置进行校验，若有违反neverallow的配置会导致编译失败。
+
+原理
+
+
+  
+    将所有的的policy文件通过m4合入到一个文件policy.conf中，然后通过checkpolicy编译成二进制policy，编译过程中会进行 neverallow 检查；
+  
+  
+    将policy.conf文件中去掉只用于编译时使用的规则生成policy_2.conf，然后使用sepolicy-analyze对上面编译的二进制policy用policy_2.conf进行neverallow检查，模拟CTS测试。
+  
+
+
+为什么有2步？
+SELinux有expandattribute关键字，使用 expandattribute attribute_ty...</div><p><a href="/2020/03/31/neverallow_for_build.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=SELinux">SELinux</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 31, 2020</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-03-31T08:53:00+08:00">
+    <meta itemprop="keywords" content="SELinux,Android"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/03/22/hide_process.html"><h2 itemprop="headline" class="item__header">Linux 下如何隐藏自己不被发现？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">可能在某些情况下，自己运行的程序不想或者不方便被其他人看到，就需要隐藏运行的进程。或者某些攻击者采用了本文介绍的隐藏技术，也可以让大家看到如何进行对抗。
 隐藏有两种方法：
 
@@ -1016,31 +1039,8 @@ int main()
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 18, 2019</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-05-18T22:00:00+08:00">
     <meta itemprop="keywords" content="misc"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/12/crackme_owasp_android_first.html"><h2 itemprop="headline" class="item__header">OWASP Android crackmes</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
-
-最近在学习frida，就拿OWASP上的crackme进行练习，下载地址，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。
-
-UnCrackable App for Android Level 1
-
-#!/usr/bin/python3
-
-import frida
-import sys
-
-def on_message(message, data):
-    if message['type'] == 'send':
-        print("[*] {0}".format(message['payload']))
-    else:
-        print(message)
-
-pid = frida.get_usb_device().spawn([...</div><p><a href="/2019/05/12/crackme_owasp_android_first.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=frida">frida</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 12, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-05-12T18:20:00+08:00">
-    <meta itemprop="keywords" content="frida"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>33 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>34 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/">
             <i class="fas fa-angle-left"></i>

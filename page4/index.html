@@ -896,7 +896,19 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 4</h1></header><meta itemprop="headline" content="liwugang - page 4"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/11/29/python_protection.html"><h2 itemprop="headline" class="item__header">类似py2exe软件真的能保护python源码吗</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 4</h1></header><meta itemprop="headline" content="liwugang - page 4"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
+LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
+
+原理
+
+LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
+LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 07, 2016</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
+    <meta itemprop="keywords" content="Android"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/11/29/python_protection.html"><h2 itemprop="headline" class="item__header">类似py2exe软件真的能保护python源码吗</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
 
 最近写了个工具用于对项目中C/C++文件的字符串常量进行自动化加密处理，用python写的，工具效果不错，所以打算在公司内部推广。为了防止代码泄露就考虑不采用直接给源码方式，而python二进制脚本pyc和pyo，虽然提供的不是源码，但可以通过uncompyle2直接得到源码。通过网上资料发现有Windows下的py2exe、Mac下的py2app和跨平台的PyInstaller工具都可以将python脚本打包成可执行文件，第一反应应该满足需要，但有些不放心，故亲自尝试和分析了这些工具。</div><p><a href="/2015/11/29/python_protection.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
@@ -917,7 +929,7 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-19T21:02:13+08:00">
     <meta itemprop="keywords" content="Android"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>33 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>34 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page3/">
             <i class="fas fa-angle-left"></i>

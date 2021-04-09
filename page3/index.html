@@ -896,7 +896,30 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 3</h1></header><meta itemprop="headline" content="liwugang - page 3"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/11/crackme_cpp_one.html"><h2 itemprop="headline" class="item__header">简单C++ crackme分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">该crackme来自于这里,也可以从这里下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 3</h1></header><meta itemprop="headline" content="liwugang - page 3"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/12/crackme_owasp_android_first.html"><h2 itemprop="headline" class="item__header">OWASP Android crackmes</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
+
+最近在学习frida，就拿OWASP上的crackme进行练习，下载地址，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。
+
+UnCrackable App for Android Level 1
+
+#!/usr/bin/python3
+
+import frida
+import sys
+
+def on_message(message, data):
+    if message['type'] == 'send':
+        print("[*] {0}".format(message['payload']))
+    else:
+        print(message)
+
+pid = frida.get_usb_device().spawn([...</div><p><a href="/2019/05/12/crackme_owasp_android_first.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=frida">frida</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 12, 2019</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-05-12T18:20:00+08:00">
+    <meta itemprop="keywords" content="frida"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/11/crackme_cpp_one.html"><h2 itemprop="headline" class="item__header">简单C++ crackme分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">该crackme来自于这里,也可以从这里下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。
 
 工具选择
 
@@ -1047,20 +1070,8 @@ struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
     <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
-LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
-
-原理
-
-LEB128的表现形式都是一样的，如下面表格所示，由于是little endian，因此是从低字节到高字节。每个字节中的最高bit是标识信息，1表示还有后续字节，0表示结束，后面7bits是有效数据。将多个字节的该7bits从低到高组合起来就是所表示的整数。
-LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 07, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-07T14:08:00+08:00">
-    <meta itemprop="keywords" content="Android"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>33 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>34 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2/">
             <i class="fas fa-angle-left"></i>

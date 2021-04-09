@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-04-07T23:17:37+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-04-09T22:46:13+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
 </subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Android Factory Reset Protection介绍</title><link href="https://liwugang.github.io/2021/04/07/android_frp.html" rel="alternate" type="text/html" title="Android Factory Reset Protection介绍" /><published>2021-04-07T23:15:00+08:00</published><updated>2021-04-07T23:15:00+08:00</updated><id>https://liwugang.github.io/2021/04/07/android_frp</id><content type="html" xml:base="https://liwugang.github.io/2021/04/07/android_frp.html">&lt;p&gt;FRP 从字面意思可知，是用于对恢复出厂设置的保护。比如手机丢了，一般情况下小偷都会恢复出厂设置来绕过锁屏密码，这样就能使用了。但若是登录了 google 账号，此时在开机引导处还是要输入密码或者 google 账号才能进入，这就是使用了 FRP。若是从设置里触发恢复出厂设置，不会触发 FRP，可能 google 在设计时认为能进入到设置中操作，此时桌面已经解锁了，那大概率认为是机主所为，所以不会触发。&lt;/p&gt;
 
 &lt;!--more--&gt;
@@ -776,6 +776,23 @@ platform_app persistent_data_block_service:service_manager find&lt;span class=&q
 
 &lt;h2 id=&quot;android&quot;&gt;Android&lt;/h2&gt;
 
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;序号&lt;/th&gt;
+      &lt;th&gt;文章名&lt;/th&gt;
+      &lt;th&gt;概述&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;/2020/03/31/neverallow_for_build.html&quot;&gt;SELinux 编译时 neverallow 如何限制？&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;不管定义在system或vendor的neverallow规则，都会限制所有规则&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
 &lt;h3 id=&quot;domain&quot;&gt;Domain&lt;/h3&gt;
 
 &lt;h3 id=&quot;file-contexts&quot;&gt;File Contexts&lt;/h3&gt;
@@ -793,7 +810,7 @@ platform_app persistent_data_block_service:service_manager find&lt;span class=&q
   &lt;tbody&gt;
     &lt;tr&gt;
       &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;&lt;a href=&quot;/2020/05/26/debugging_kernel_with_qemu.html&quot;&gt;Coredomain 创建新的 property type&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;/2020/02/29/coredomain_create_new_property.html&quot;&gt;Coredomain 创建新的 property type&lt;/a&gt;&lt;/td&gt;
       &lt;td&gt;treble架构下，coredomain使用新property type&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
