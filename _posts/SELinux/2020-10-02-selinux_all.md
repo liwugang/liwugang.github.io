@@ -17,6 +17,10 @@ sticky: true
 
 ## Android
 
+| 序号 | 文章名 | 概述
+| - | - | -
+|0|[SELinux 编译时 neverallow 如何限制？](/2020/03/31/neverallow_for_build.html) | 不管定义在system或vendor的neverallow规则，都会限制所有规则
+
 ### Domain
 
 ### File Contexts
@@ -25,7 +29,7 @@ sticky: true
 
 | 序号 | 文章名 | 概述
 | - | - | - 
-|0|[Coredomain 创建新的 property type](/2020/05/26/debugging_kernel_with_qemu.html) |treble架构下，coredomain使用新property type
+|0|[Coredomain 创建新的 property type](/2020/02/29/coredomain_create_new_property.html) |treble架构下，coredomain使用新property type
 
 
 ### Service Contexts
