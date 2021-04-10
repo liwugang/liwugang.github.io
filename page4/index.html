@@ -896,7 +896,38 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 4</h1></header><meta itemprop="headline" content="liwugang - page 4"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 4</h1></header><meta itemprop="headline" content="liwugang - page 4"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/13/2_add_two_numbers.html"><h2 itemprop="headline" class="item__header">2-Add Two Numbers @LeetCode</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">题目
+
+
+
+思路
+
+题目中得到的信息有
+
+
+  这是两个非负数，每位分别保存在链表的一个结点上；
+  逆序保存，从低位到高位依次。
+
+
+一般整数的相加都是从低往高进行，和保存的顺序一致，因此一次遍历就可完成，可以看出这道题目不难。
+
+C算法
+
+/**
+ * Definition for singly-linked list. 
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode *ret, *p, ...</div><p><a href="/2016/01/13/2_add_two_numbers.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=LeetCode">LeetCode</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
+    <meta itemprop="keywords" content="LeetCode"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/07/LEB128.html"><h2 itemprop="headline" class="item__header">LEB128相关知识</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">介绍
 LEB128(little endian base 128)是一种变长的整数压缩编码形式，它是出自于DWARF debug file format。在Android的Dalvik Executable format中使用该编码用于表示32位整数。由于32位整数占用固定的4个字节，可能大多数整数并不需要4个字节，最高几个字节可能为0（正数）或者为1（负数），该编码就是不保存最高位的这些字节。
 
 原理
@@ -929,7 +960,7 @@ LEB128分成有符号数...</div><p><a href="/2016/01/07/LEB128.html">Read more<
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-19T21:02:13+08:00">
     <meta itemprop="keywords" content="Android"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>34 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>35 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page3/">
             <i class="fas fa-angle-left"></i>

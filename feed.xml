@@ -1,5 +1,96 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-04-09T22:46:13+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Android Factory Reset Protection介绍</title><link href="https://liwugang.github.io/2021/04/07/android_frp.html" rel="alternate" type="text/html" title="Android Factory Reset Protection介绍" /><published>2021-04-07T23:15:00+08:00</published><updated>2021-04-07T23:15:00+08:00</updated><id>https://liwugang.github.io/2021/04/07/android_frp</id><content type="html" xml:base="https://liwugang.github.io/2021/04/07/android_frp.html">&lt;p&gt;FRP 从字面意思可知，是用于对恢复出厂设置的保护。比如手机丢了，一般情况下小偷都会恢复出厂设置来绕过锁屏密码，这样就能使用了。但若是登录了 google 账号，此时在开机引导处还是要输入密码或者 google 账号才能进入，这就是使用了 FRP。若是从设置里触发恢复出厂设置，不会触发 FRP，可能 google 在设计时认为能进入到设置中操作，此时桌面已经解锁了，那大概率认为是机主所为，所以不会触发。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-04-10T20:16:00+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">批量获取亲宝宝应用中的照片和视频</title><link href="https://liwugang.github.io/2021/04/10/reverse-qinbaobao.html" rel="alternate" type="text/html" title="批量获取亲宝宝应用中的照片和视频" /><published>2021-04-10T18:34:00+08:00</published><updated>2021-04-10T18:34:00+08:00</updated><id>https://liwugang.github.io/2021/04/10/reverse-qinbaobao</id><content type="html" xml:base="https://liwugang.github.io/2021/04/10/reverse-qinbaobao.html">&lt;p&gt;亲宝宝该款软件用起来不错，可以将手机上的孩子的图片和视频归纳起来，并且按照时间线排序；还可以添加亲戚进入，有社交属性，这样上传的孩子照片，亲戚都能看到，很方便。若想下载图片或者视频，只能单个操作，不能批量进行，之前有PC版本可以批量导出，但官方现在不支持。所以我就逆向了亲宝宝的Android版本，来看怎么批量获取。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;分析&quot;&gt;分析&lt;/h2&gt;
+
+&lt;p&gt;正常情况下，应该分析客户端如何从服务端获取到照片的信息，然后根据这些信息去下载，这是正向思维。但是客户端与服务端通信协议，这是每个公司都会花费更多精力去保护，防止竞争对手或者恶意者用于非法用途。由于文件和视频都比较大，肯定是需要缓存下来，我们就从本地保存的数据分析，并结合抓包和逆向。&lt;/p&gt;
+
+&lt;h3 id=&quot;下载地址&quot;&gt;下载地址&lt;/h3&gt;
+
+&lt;p&gt;抓包后发现，图片和视频的下载地址分别为下面格式，并且在请求时不需要额外参数，那么接下来问题是如何获取文件名。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://stphoto-bj.qbb6.com/photo/XXX.jpg
+http://stvideo-bj.qbb6.com/video/XXX.mp4
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;信息保存数据库btimedb&quot;&gt;信息保存数据库btime.db&lt;/h3&gt;
+
+&lt;p&gt;结合逆向，发现图片和视频的的数据都放在了btime.db数据库TbActivity表中，如下图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/qinbaobao_btime.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图右边是文件类型，图片、视频还是音频。data中是具体的数据：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+    &quot;actiTime&quot;: 1617255239000,
+    &quot;commentNum&quot;: 0,
+    &quot;createTime&quot;: 1617258829823,
+    &quot;des&quot;: &quot;这是你第一次游泳，还挺勇敢的。&quot;,
+    ... ...
+    &quot;itemList&quot;: [
+        {
+            &quot;actid&quot;: 5224163125,
+            &quot;data&quot;: &quot;{\&quot;fid\&quot;:XXX,\&quot;secret\&quot;:\&quot;XXXX\&quot;,\&quot;owner\&quot;:XXXX,\&quot;farm\&quot;:10038,\&quot;fileType\&quot;:2001,\&quot;size\&quot;:91974876,\&quot;uploadTime\&quot;:1617270373000,\&quot;duration\&quot;:180800,\&quot;width\&quot;:1280,\&quot;height\&quot;:720,\&quot;status\&quot;:1}&quot;,
+            &quot;itemid&quot;: 7,
+            &quot;type&quot;: 1
+        },
+        {
+            &quot;actid&quot;: 5224163125,
+            &quot;data&quot;: &quot;{\&quot;ftid\&quot;:-1,\&quot;des\&quot;:\&quot;第一次游泳\&quot;}&quot;,
+            &quot;itemid&quot;: 8,
+            &quot;type&quot;: 7
+        }
+    ],
+    &quot;itemNum&quot;: 2,
+    &quot;likeItems&quot;: &quot;&quot;,
+    &quot;likeList&quot;: [],
+    ... ...
+    &quot;ownerName&quot;: &quot;妈妈&quot;,
+    ... ...
+    &quot;updateTime&quot;: 1617270496378
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;itemList中包含有照片或者视频的信息，经测试发现，fid_secret 组合起来是文件名，那么在结合前面的链接就可以获取到照片或者视频了。&lt;/p&gt;
+
+&lt;h3 id=&quot;缓存数据&quot;&gt;缓存数据&lt;/h3&gt;
+
+&lt;p&gt;由于btime.db是在该应用的私有目录中，非root版本无法获取，所以对于非root版本还需要继续分析。接下来看应用的缓存数据。&lt;/p&gt;
+
+&lt;h4 id=&quot;位置确定&quot;&gt;位置确定&lt;/h4&gt;
+
+&lt;p&gt;一般情况下，应用都会将大数据放在外置存储中，来看外置空间中的该应用目录： /sdcard/Android/data/com.dw.btime&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/qinbaobao_size.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;warning&quot;&gt;借助命令： “du -h -d 1” 来查看不同目录下大小&lt;/p&gt;
+
+&lt;p&gt;从上图看到，图片缓存在cache/ImageCache或者cache/thumbnail中，视频肯定是在files/exoplayer目录下。&lt;/p&gt;
+
+&lt;h4 id=&quot;照片&quot;&gt;照片&lt;/h4&gt;
+
+&lt;p&gt;经过逆向代码分析，cache/ImageCache中的文件名是经过hash之后的，所以不能使用。而cache/thumbnail中的文件是最终文件名，但是压缩过的图片，所以我们只取文件名，然后结合上面链接下载最终图片。&lt;/p&gt;
+
+&lt;h4 id=&quot;视频&quot;&gt;视频&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/qinbaobao_exo.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;图上是files/exoplayer目录文件，经搜索可知，exo是exoplayer的视频格式，所以可以将这些文件导出，然后想办法通过exoplayer将这些文件转化成mp4格式。但有个非exo的文件，该文件很显眼，打开后发现该文件有视频完整链接，哈哈，看来可以直接从该文件中获取链接了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/qinbaobao_exo_file.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;总结&quot;&gt;总结&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;root版本，可以直接从/data/data/com.dw.btime/databases/btime.db获取到文件信息；&lt;/li&gt;
+  &lt;li&gt;非root版本，从缓存中获取照片文件名和视频链接，然后在下载。（该种方式一定要在手机上点击过图片或者视频，这样应用才会生成缓存文件）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;工具&quot;&gt;工具&lt;/h2&gt;
+
+&lt;p&gt;本人使用python实现了上述两种方式的获取，&lt;a href=&quot;https://github.com/liwugang/misc/blob/main/tools/qinbaobao.py&quot;&gt;代码地址.&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="reverse" /><summary type="html">亲宝宝该款软件用起来不错，可以将手机上的孩子的图片和视频归纳起来，并且按照时间线排序；还可以添加亲戚进入，有社交属性，这样上传的孩子照片，亲戚都能看到，很方便。若想下载图片或者视频，只能单个操作，不能批量进行，之前有PC版本可以批量导出，但官方现在不支持。所以我就逆向了亲宝宝的Android版本，来看怎么批量获取。</summary></entry><entry><title type="html">Android Factory Reset Protection介绍</title><link href="https://liwugang.github.io/2021/04/07/android_frp.html" rel="alternate" type="text/html" title="Android Factory Reset Protection介绍" /><published>2021-04-07T23:15:00+08:00</published><updated>2021-04-07T23:15:00+08:00</updated><id>https://liwugang.github.io/2021/04/07/android_frp</id><content type="html" xml:base="https://liwugang.github.io/2021/04/07/android_frp.html">&lt;p&gt;FRP 从字面意思可知，是用于对恢复出厂设置的保护。比如手机丢了，一般情况下小偷都会恢复出厂设置来绕过锁屏密码，这样就能使用了。但若是登录了 google 账号，此时在开机引导处还是要输入密码或者 google 账号才能进入，这就是使用了 FRP。若是从设置里触发恢复出厂设置，不会触发 FRP，可能 google 在设计时认为能进入到设置中操作，此时桌面已经解锁了，那大概率认为是机主所为，所以不会触发。&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1235,342 +1326,4 @@ mkroot工具的介绍是”Compiles a toybox-based root filesystem and kernel th
 
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/ramdisk.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;在output/host下，将用户态程序移动到root目录下（可以是root下的任意位置），然后执行cpio.sh将root目录进行打包即可。此时运行qemu-x86_64.sh就会发现可执行文件存在。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。</summary></entry><entry><title type="html">gdb调试断点</title><link href="https://liwugang.github.io/2020/05/10/gdb_break.html" rel="alternate" type="text/html" title="gdb调试断点" /><published>2020-05-10T13:24:00+08:00</published><updated>2020-05-10T13:24:00+08:00</updated><id>https://liwugang.github.io/2020/05/10/gdb_break</id><content type="html" xml:base="https://liwugang.github.io/2020/05/10/gdb_break.html">&lt;p&gt;“源码之前，了无秘密”，阅读源码让我们清楚的了解到程序的逻辑，但对于较大的系统来说，可能会涉及到多线程、系统的状态或者无法定位到关键代码，静态的阅读可能无法掌握所有的信息，此时就需要动态调试，动态调试有助于我们对程序的理解，可以看到每一步执行状态和相应的变化。用好动态调试，可以让我们事半功倍。&lt;/p&gt;
-
-&lt;p&gt;Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在断点处暂停，供我们查看程序的状态。gdb提供三种类型断点，代码断点(breakpoint)、内存断点(watchpoint)和事件断点(catchpoint)。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;代码断点&quot;&gt;代码断点&lt;/h2&gt;
-
-&lt;p&gt;代码断点是最常用的，是用于设置断点到程序的特定地址，特定地址可以用代码行号、函数名、地址值等来指定，可以设置一次断点和条件断点。&lt;/p&gt;
-
-&lt;h3 id=&quot;用法&quot;&gt;用法&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;设置普通断点
-    &lt;blockquote&gt;
-      &lt;p&gt;break location&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;设置一次断点，也称为临时断点，断下来后会自动将该断点删除
-    &lt;blockquote&gt;
-      &lt;p&gt;tbreak location&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;设置条件断点，只有满足condition条件后才会断下来，condition是boolean表达式
-    &lt;blockquote&gt;
-      &lt;p&gt;break location if condition&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;举例&quot;&gt;举例&lt;/h3&gt;
-
-&lt;p&gt;用下面最简单的程序来介绍如何使用普通断点和条件断点，该程序是输出0到9。&lt;/p&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;我们先用普通断点断到main函数上，然后条件断点断到printf所在行如果i等于8时。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian 8.3.1-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 8.3.1
-... ...
-Type &lt;span class=&quot;s2&quot;&gt;&quot;apropos word&quot;&lt;/span&gt; to search &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;commands related to &lt;span class=&quot;s2&quot;&gt;&quot;word&quot;&lt;/span&gt;...
-Reading symbols from watch...
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; b main &lt;span class=&quot;c&quot;&gt;# 设置普通断点在main函数&lt;/span&gt;
-Breakpoint 1 at 0x113d: file watch.c, line 6. &lt;span class=&quot;c&quot;&gt;# 断点编号为1&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; b watch.c:7 &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;i &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 8 &lt;span class=&quot;c&quot;&gt;# 设置条件断点在第七行如果i==8&lt;/span&gt;
-Breakpoint 2 at 0x1146: file watch.c, line 7. &lt;span class=&quot;c&quot;&gt;# 断点编号为2&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run &lt;span class=&quot;c&quot;&gt;#  运行被调试程序&lt;/span&gt;
-Starting program: /home/f/doing/debug/gdb/watch 
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:6 &lt;span class=&quot;c&quot;&gt;# 执行到断点1后停下来&lt;/span&gt;
-6           &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;i &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i &amp;lt; 10&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i++&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# continue是继续执行&lt;/span&gt;
-Continuing.
-0
-1
-2
-3
-4
-5
-6
-7
-
-Breakpoint 2, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7 &lt;span class=&quot;c&quot;&gt;# 断点2满足条件，停下来&lt;/span&gt;
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; print i &lt;span class=&quot;c&quot;&gt;# print 查看变量值，可以看到等于8，满足我们的条件&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 8
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;从上面简单例子可以看到，设置了断点后会为每个断点分配编号，用于后续跟踪和管理。条件断点可以帮助我们过滤想要的结果。&lt;/p&gt;
-
-&lt;h2 id=&quot;内存断点&quot;&gt;内存断点&lt;/h2&gt;
-
-&lt;p&gt;代码断点是以代码为对象进行监控跟踪，而内存断点则是以内存为对象。对内存值进行监控，根据监控类型分为：监控内存值改变(watch)，监控内存值被读取(rwatch)和监控内存值读取或写入(awatch)。&lt;/p&gt;
-
-&lt;h3 id=&quot;用法-1&quot;&gt;用法&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;监控内存值改变
-    &lt;blockquote&gt;
-      &lt;p&gt;watch expr [if condition]&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;监控内存值被读取
-    &lt;blockquote&gt;
-      &lt;p&gt;rwatch expr [if condition]&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;监控内存值被读取和写入
-    &lt;blockquote&gt;
-      &lt;p&gt;awatch expr [if condition]&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p class=&quot;warning&quot;&gt;expr 可以是变量也可以是表达式，但要确保有对应的内存地址，不能是常量。在使用变量时确保该变量在当前所在的上下文中。同样也可以添加if条件。&lt;/p&gt;
-
-&lt;h3 id=&quot;举例-1&quot;&gt;举例&lt;/h3&gt;
-
-&lt;p&gt;同样用上面的例子，断点在i等于8处。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian 8.3.1-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 8.3.1
-... ...
-Reading symbols from watch...
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; b main &lt;span class=&quot;c&quot;&gt;# 要监控变量i，由于i是在main方法中，首先要运行到main函数上下文&lt;/span&gt;
-Breakpoint 1 at 0x113d: file watch.c, line 6.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run  &lt;span class=&quot;c&quot;&gt;# 执行被调试程序&lt;/span&gt;
-Starting program: /home/f/doing/debug/gdb/watch 
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:6 &lt;span class=&quot;c&quot;&gt;# 执行到main函数处中断&lt;/span&gt;
-6           &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;i &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i &amp;lt; 10&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i++&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; watch i &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;i &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 8 &lt;span class=&quot;c&quot;&gt;# 监控变量i，并让i==8时断下来&lt;/span&gt;
-Hardware watchpoint 2: i
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; c
-Continuing.
-0
-1
-2
-3
-4
-5
-6
-7
-
-Hardware watchpoint 2: i
-
-Old value &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 7
-New value &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 8
-0x0000555555555160 &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:6 &lt;span class=&quot;c&quot;&gt;# i从7更改8被断下来&lt;/span&gt;
-6           &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;i &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i &amp;lt; 10&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i++&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;使用watch进行断点i，i变量实质是 *(int *)&amp;amp;i，gdb监控的是i所在地址的四字节值，如果只想监控i的最低字节值改变，可以使用： watch *(unsigned char *)&amp;amp;i。如果只想监控特定地址addr，该地址没有对应的变量，则需要将地址转化成需要监控长度的类型，如监控4字节，则使用： watch *(int *)addr。&lt;/p&gt;
-
-&lt;h2 id=&quot;事件断点&quot;&gt;事件断点&lt;/h2&gt;
-
-&lt;p&gt;事件断点用于监听特殊事件发生，如发生则中断下来，支持的事件有：&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;C++ exception，使用 catch exception [name]&lt;/li&gt;
-  &lt;li&gt;Ada exception，使用 catch handlers [name]&lt;/li&gt;
-  &lt;li&gt;exec事件， 使用 catch exec&lt;/li&gt;
-  &lt;li&gt;fork事件， 使用 catch fork 或者 catch vfork&lt;/li&gt;
-  &lt;li&gt;加载和卸载动态so事件， 使用 catch load|unload [regexp]&lt;/li&gt;
-  &lt;li&gt;监听系统信号，使用 catch signal [signal]&lt;/li&gt;
-  &lt;li&gt;监听系统调用， 使用 catch syscall [name|number|group:groupname|g:groupname] …&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;可以看到事件断点可监听的事件较多，监听系统调用的使用场景可能较多，如查看某系统调用的参数或返回值。可以配置strace(用于监控程序所使用的系统调用)来使用。&lt;/p&gt;
-
-&lt;h3 id=&quot;举例-2&quot;&gt;举例&lt;/h3&gt;
-
-&lt;p&gt;有些时候我们得到了打印消息，但是不知道代码在哪里或者打印消息存在哪里，我们可以使用监听系统调用write来跟踪，还是使用上面的例子，我们来寻找打印消息的内存地址。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian 8.3.1-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 8.3.1
-... ...
-Reading symbols from ./watch...
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; b main
-Breakpoint 1 at 0x113d: file watch.c, line 6.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
-Starting program: /home/f/doing/debug/gdb/watch 
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:6
-6           &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;i &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i &amp;lt; 10&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; i++&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; catch syscall write &lt;span class=&quot;c&quot;&gt;# 事件断点在write系统调用上&lt;/span&gt;
-Catchpoint 2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;syscall &lt;span class=&quot;s1&quot;&gt;'write'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;continue
-&lt;/span&gt;Continuing.
-
-Catchpoint 2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;call to syscall write&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 0x00007ffff7ec8904 &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;__GI___libc_write &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1, &lt;span class=&quot;nv&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0x5555555592a0, &lt;span class=&quot;nv&quot;&gt;nbytes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at ../sysdeps/unix/sysv/linux/write.c:26
-26      ../sysdeps/unix/sysv/linux/write.c: No such file or directory.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/2cb 0x5555555592a0 &lt;span class=&quot;c&quot;&gt;# 根据write的参数，buf和nbytes，我们查看下要打印的内容&lt;/span&gt;
-0x5555555592a0: 48 &lt;span class=&quot;s1&quot;&gt;'0'&lt;/span&gt;  10 &lt;span class=&quot;s1&quot;&gt;'\n'&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 打印内容为 0和换行符&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;continue
-&lt;/span&gt;Continuing.
-0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;断点管理&quot;&gt;断点管理&lt;/h2&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; info breakpoints 
-Num     Type           Disp Enb Address            What
-1       breakpoint     keep y   0x000055555555513d &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main at watch.c:6
-        breakpoint already hit 1 &lt;span class=&quot;nb&quot;&gt;time
-&lt;/span&gt;2       hw watchpoint  keep y                      i
-3       catchpoint     keep y                      syscall &lt;span class=&quot;s2&quot;&gt;&quot;write&quot;&lt;/span&gt; 
-4       breakpoint     del  y   0x000055555555513d &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main at watch.c:6
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;从上面断点的信息从左向右来看，每个断点都包含编号、类型、显示、enable状态、断点地址和描述。这三种断点设置后，都会配置一个编号，之后对在断点管理时可以使用该编号。&lt;/p&gt;
-
-&lt;h3 id=&quot;查看断点&quot;&gt;查看断点&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;查看当前所有断点，使用命令：
-    &lt;blockquote&gt;
-      &lt;p&gt;info breakpoints 或者 info b&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;查看当前的内存断点，使用命令：
-    &lt;blockquote&gt;
-      &lt;p&gt;info watchpoints&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;删除断点&quot;&gt;删除断点&lt;/h3&gt;
-
-&lt;p&gt;使用delete或者clear，delete后面可以指定断点编号，删除指定断点，若不指定，则删除所有断点。而clear针对的是地址。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;delete删除指定断点
-    &lt;blockquote&gt;
-      &lt;p&gt;delete [断点编号]&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;delete删除连续断点
-    &lt;blockquote&gt;
-      &lt;p&gt;delete 断点编号开始-断点编号结束&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;clear删除指定地址的断点
-    &lt;blockquote&gt;
-      &lt;p&gt;clear location&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;启用和禁用&quot;&gt;启用和禁用&lt;/h3&gt;
-
-&lt;p&gt;断点设置后，默认是开启状态，若要禁用可以使用disable，禁用之后要重新启动使用enable。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;禁用
-    &lt;blockquote&gt;
-      &lt;p&gt;disable 断点编号&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;启用
-    &lt;blockquote&gt;
-      &lt;p&gt;enable 断点编号&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;断点后加入命令序列&quot;&gt;断点后加入命令序列&lt;/h2&gt;
-
-&lt;p&gt;gdb 支持断点后执行指定的命令序列，用于定制化需求。将命令序列放入到commands和end中间，并且是在设置断点后。&lt;/p&gt;
-
-&lt;h3 id=&quot;使用&quot;&gt;使用&lt;/h3&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;设置断点
-commands
-定制命令1
-定制命令2
-...
-定制命令N
-end
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;举例-3&quot;&gt;举例&lt;/h3&gt;
-
-&lt;p&gt;还是上面打印的例子，我们在printf输出i之后，1. 增加输出i+1000，2. 不中断下来。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian 8.3.1-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 8.3.1
-... ...
-Reading symbols from ./watch...
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; b watch.c:7 &lt;span class=&quot;c&quot;&gt;# 断点在printf行&lt;/span&gt;
-Breakpoint 1 at 0x1146: file watch.c, line 7.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; commands  &lt;span class=&quot;c&quot;&gt;# 绑定命令序列到该断点上&lt;/span&gt;
-Type commands &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;breakpoint&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 1, one per line.
-End with a line saying just &lt;span class=&quot;s2&quot;&gt;&quot;end&quot;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i+1000 &lt;span class=&quot;c&quot;&gt;# 输出i+1000&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 继续执行&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;end &lt;span class=&quot;c&quot;&gt;# 命令序列完成关键字&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
-Starting program: /home/f/doing/debug/gdb/watch 
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1000
-0
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1001
-1
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1002
-2
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1003
-3
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1004
-4
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1005
-5
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1006
-6
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1007
-7
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1008
-8
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; at watch.c:7
-7               &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, i&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-1009
-9
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Inferior 1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;process 128987&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; exited normally]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">“源码之前，了无秘密”，阅读源码让我们清楚的了解到程序的逻辑，但对于较大的系统来说，可能会涉及到多线程、系统的状态或者无法定位到关键代码，静态的阅读可能无法掌握所有的信息，此时就需要动态调试，动态调试有助于我们对程序的理解，可以看到每一步执行状态和相应的变化。用好动态调试，可以让我们事半功倍。 Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在断点处暂停，供我们查看程序的状态。gdb提供三种类型断点，代码断点(breakpoint)、内存断点(watchpoint)和事件断点(catchpoint)。</summary></entry></feed>
+&lt;p&gt;在output/host下，将用户态程序移动到root目录下（可以是root下的任意位置），然后执行cpio.sh将root目录进行打包即可。此时运行qemu-x86_64.sh就会发现可执行文件存在。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。</summary></entry></feed>
