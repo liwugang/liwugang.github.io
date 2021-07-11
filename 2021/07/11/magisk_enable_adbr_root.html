@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>liwugang - page 3 - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Magisk 环境下增加 adb root 功能 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/page3/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<meta name="description" content="目前市面上的 Android 手机，要想获取 root 权限，主要有两种方式：  通过官方提供的途径，如小米的开发版，会提供官方 root 能力，但是相对比较麻烦。首先需要解锁，然后需要申请开发者权限，最后在手机上进行 root 升级；  通过解锁手机的 BL(bootloader) 锁，然后使用 magisk ...">
+<link rel="canonical" href="https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -263,7 +262,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -892,201 +891,476 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 3</h1></header><meta itemprop="headline" content="liwugang - page 3"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/18/feof_using.html"><h2 itemprop="headline" class="item__header">feof的陷阱</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">feof函数
-
-The function feof() tests the end-of-file indicator for the stream pointed to by stream, returning nonzero if it is set.
-
-feof是用于测试当前是否文件末尾。若是末尾返回非0值。
-
-例子
-
-// test.c    
-#include &lt;stdio.h&gt;
-
-int main()
-{
-    FILE *f = fopen("empty_file", "rb");
-    if (f == NULL) {
-        return -1;
-    }
-    while (!feof(f)) { // 判断是否文件末尾，若不是读取一个字...</div><p><a href="/2019/05/18/feof_using.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 18, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-05-18T22:00:00+08:00">
-    <meta itemprop="keywords" content="misc"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/12/crackme_owasp_android_first.html"><h2 itemprop="headline" class="item__header">OWASP Android crackmes</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
-
-最近在学习frida，就拿OWASP上的crackme进行练习，下载地址，关于该系列crackme分析的文章很多，我只列出相应的frida脚本。
-
-UnCrackable App for Android Level 1
-
-#!/usr/bin/python3
-
-import frida
-import sys
-
-def on_message(message, data):
-    if message['type'] == 'send':
-        print("[*] {0}".format(message['payload']))
-    else:
-        print(message)
-
-pid = frida.get_usb_device().spawn([...</div><p><a href="/2019/05/12/crackme_owasp_android_first.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=frida">frida</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 12, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-05-12T18:20:00+08:00">
-    <meta itemprop="keywords" content="frida"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/05/11/crackme_cpp_one.html"><h2 itemprop="headline" class="item__header">简单C++ crackme分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">该crackme来自于这里,也可以从这里下载，是Linux平台上的C++程序，没加壳，比较简单，故将分析记录下来。
-
-工具选择
-
-Linux静态分析工具使用cutter, ，但由于cutter对C++的函数识别不好，故也使用IDA一起进行分析。
-
-静态分析
-
-先静态分析，了解程序的大概轮廓，并找到关键部分，在结合动态调试，可以达到事半功倍的效果。
-
-搜索关键字符串
-.rodata:08048DFC	00000037	C	Bravo, tu peux valider en utilisant ce mot de passe... 
-.rodata:08048E34	00000031	C	Congratz. You can validate with this password... //...</div><p><a href="/2019/05/11/crackme_cpp_one.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=crackme">crackme</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 11, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-05-11T15:20:00+08:00">
-    <meta itemprop="keywords" content="crackme"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/04/28/git_commits.html"><h2 itemprop="headline" class="item__header">Git自动化合并多个Commit</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">当我们有多个commit或者从开源处拿到多个commit时，想合成一个commit，并保留每个commit的message时，大家都知道用”git rebase -i”可以解决，但这种方式需要手动进行操作，假如我们要处理的比较多，就想要自动化来处理，下面介绍下怎么自动化处理。
-
-git rebase逻辑
-
-当我们”git rebase -i”后，git在当前.git/rebase-merge目录下生成git-rebase-todo文件，然后调用git editor来让用户编辑git-rebase-todo文件进行处理，如果实现自动化就需要：
-
-  修改git editor来使用我们提供的；
-  脚本来处理进行git-rebase-todo文件的处理。
-
-
-git editor的修改
-
-...</div><p><a href="/2019/04/28/git_commits.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=git">git</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 28, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-28T23:10:00+08:00">
-    <meta itemprop="keywords" content="git"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/04/21/openssl_decrypt_fail.html"><h2 itemprop="headline" class="item__header">openssl AES密钥和iv长度问题分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">在做filecrypt项目时花费时间最多的是AES256算法的调试上，出现的问题是：
-调用完加密函数然后直接调用解密函数，这样是可以正确解密的，但是调用完加密函数后将密文保存在文件后，然后重新使用程序进行解密却是无法正常解密，本文分析下该问题的原因。
-
-例子
-
-
-int aes_encrypt_common(uint8_t *input, uint64_t length, const unsigned char *password,
-        const unsigned char *iv, uint8_t *out, uint64_t *out_length);
-int aes_decrypt_common(uint8_t *input, uint64_t length, co...</div><p><a href="/2019/04/21/openssl_decrypt_fail.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=openssl">openssl</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2019</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-04-21T15:13:00+08:00">
-    <meta itemprop="keywords" content="openssl"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2017/09/25/zhaocha.html"><h2 itemprop="headline" class="item__header">找茬游戏辅助工具</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">近在整理硬盘时，看到了几年前写的 美女找茬工具，一时兴起看下现在是否能用，试了下，完全用不了了，界面和以前的界面一样啊，图片的偏移应该没有变，按道理应该能用，猜想可能是图片做了处理。就花了点时间看了下，果然发现了问题，现在和大家分享下。</div><p><a href="/2017/09/25/zhaocha.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=assist">assist</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Sep 25, 2017</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2017-09-25T21:22:18+08:00">
-    <meta itemprop="keywords" content="assist"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/02/24/python_compile_error.html"><h2 itemprop="headline" class="item__header">error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">python通过pip或者源码来安装某些模块时，这些模块包含有c/c++源码，安装过程会调用本地的编译器编译这些代码。在Windows平台下我安装时候的错误消息是“error: Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it from http://aka.ms/vcpython27” 可以看出错误是由于没有找到该vc版本，对应的是vs2008，当然一种解决方法是安装该版本，但我已经安装了vs2015，所以我就需要修改下默认的这种配置。</div><p><a href="/2016/02/24/python_compile_error.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Python">Python</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 24, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-02-24T19:10:50+08:00">
-    <meta itemprop="keywords" content="misc,Python"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/02/21/android_verify_apk.html"><h2 itemprop="headline" class="item__header">android签名证书文件的解析和签名校验的加强</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">这篇文章介绍了apk中META-INF目录下CERT.RSA文件的解析，以及签名校验加强的一些方法。并用C++实现了解析代码，代码地址：https://github.com/liwugang/pkcs7.</div><p><a href="/2016/02/21/android_verify_apk.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>Magisk 环境下增加 adb root 功能</h1></header></div><meta itemprop="headline" content="Magisk 环境下增加 adb root 功能"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 21, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-02-21T14:02:13+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html"><h2 itemprop="headline" class="item__header">3-Longest Substring Without Repeating Characters @LeetCode</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">题目
-
-
-
-题目中得到的信息有
-一段字符串找出不重复子串的最大长度，只需要长度信息。
-
-思路
-肯定是需要将字符串遍历一遍，在遍历过程中就需要查找前面字符串是否出现该字符，因此这是该算法的重点。若没找到，长度加一，若找到了，长度会从前面该字符位置+1处开始算起。下面以图来说明：
-
-
-
-假如我们以begin为子串的开始，current表示当前处理的位置。1）当前位置的字符没有出现在[begin,current)的区间内，说明将该值加入到区间内满足没有重复条件，长度加一；
-2）若当前值已经在该区间内，加入后肯定会出现重复，则应该将begin移动到没有该值的最左边位置，图中 new begin位置满足该条件。
-
-在移动begin之前首先需要判断[begin, current)是否是现有的最大长...</div><p><a href="/2016/01/15/3_longest_substring_without_repeating_characters.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 15, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-15T23:10:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2016/01/13/1_two_sum.html"><h2 itemprop="headline" class="item__header">1-Two Sum @LeetCode</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">题目
-
-
-
-思路
-
-题目中得到的信息有
-
-
-  都是整数，并且可正可负，也可一个值包含多个；
-  只有一个正确的结果。
-
-
-方法一
-最直接的思路就是两重循环遍历，时间复杂度是O(n^2)，这样肯定不行。
-
-方法二
-由于是乱序的，1）可以先排序，2）然后再遍历一遍就可以找到结果。排序的话不能再原来的基础上进行，这样就破坏了下标顺序，因此需要申请额外的空间，用于保存他们的索引，然后再该空间上进行排序。时间复杂度是[排序O(logn) + 查找O(n)]，空间复杂度是O(n)。
-
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, in...</div><p><a href="/2016/01/13/1_two_sum.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=LeetCode">LeetCode</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 13, 2016</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2016-01-13T21:08:00+08:00">
-    <meta itemprop="keywords" content="LeetCode"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>35 post articles, 4 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2/">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
             </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page4/">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=magisk">magisk</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jul 11, 2021</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-07-11T22:11:00+08:00">
+    <meta itemprop="keywords" content="Android,magisk"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>目前市面上的 Android 手机，要想获取 root 权限，主要有两种方式：</p>
+<ol>
+  <li>通过官方提供的途径，如小米的开发版，会提供官方 root 能力，但是相对比较麻烦。首先需要解锁，然后需要申请开发者权限，最后在手机上进行 root 升级；</li>
+  <li>通过解锁手机的 BL(bootloader) 锁，然后使用 magisk 功能获取。</li>
+</ol>
+
+<p>当然除了上面两种方式外， 还可以通过漏洞等其他方式获取 root。</p>
+
+<p>magisk 获取 root 权限是通过放置的 su，adb root 功能并不可用，本文主要是讲在 magisk 环境下增加 adb root 功能。</p>
+
+<!--more-->
+
+<h2 id="adb-root-流程">adb root 流程</h2>
+
+<p>adb 的架构如下图（摘自于 adb 源码），我们主要关注设备端（即 adbd）的处理逻辑，adb root 即是重启 adbd，让 adbd 以 root 用户运行，这样我们 adb 传入的命令就具有 root 权限。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----------+              +------------------------+
+|   ADB    +----------+   |      ADB SERVER        |                   +----------+
+|  CLIENT  |          |   |                        |              (USB)|   ADBD   |
++----------+          |   |                     Transport+-------------+ (DEVICE) |
+                      |   |                        |                   +----------+
++-----------          |   |                        |
+|   ADB    |          v   +                        |                   +----------+
+|  CLIENT  +---------&gt;SmartSocket                  |              (USB)|   ADBD   |
++----------+          ^   | (TCP/IP)            Transport+-------------+ (DEVICE) |
+                      |   |                        |                   +----------+
++----------+          |   |                        |
+|  DDMLIB  |          |   |                     Transport+--+          +----------+
+|  CLIENT  +----------+   |                        |        |  (TCP/IP)|   ADBD   |
++----------+              +------------------------+        +----------|(EMULATOR)|
+                                                                       +----------+
+</code></pre></div></div>
+
+<h3 id="adb-root-处理逻辑">adb root 处理逻辑</h3>
+
+<h4 id="adbd-命令处理代码">adbd 命令处理代码</h4>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unique_fd</span> <span class="nf">daemon_service_to_fd</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span> <span class="n">atransport</span><span class="o">*</span> <span class="n">transport</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ADB_LOG</span><span class="p">(</span><span class="n">Service</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"transport "</span> <span class="o">&lt;&lt;</span> <span class="n">transport</span><span class="o">-&gt;</span><span class="n">serial_name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">" opening service "</span> <span class="o">&lt;&lt;</span> <span class="n">name</span><span class="p">;</span>
+<span class="p">...</span> <span class="p">...</span>
+
+    <span class="p">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">android</span><span class="o">::</span><span class="n">base</span><span class="o">::</span><span class="n">ConsumePrefix</span><span class="p">(</span><span class="o">&amp;</span><span class="n">name</span><span class="p">,</span> <span class="s">"reboot:"</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">reboot_device</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">name</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"root:"</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// 重点</span>
+        <span class="k">return</span> <span class="n">create_service_thread</span><span class="p">(</span><span class="s">"root"</span><span class="p">,</span> <span class="n">restart_root_service</span><span class="p">);</span>  <span class="c1">// 重点</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"unroot:"</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">create_service_thread</span><span class="p">(</span><span class="s">"unroot"</span><span class="p">,</span> <span class="n">restart_unroot_service</span><span class="p">);</span>
+<span class="p">...</span> <span class="p">...</span>
+</code></pre></div></div>
+<p>可以看到 adbd 收到 root 命令后，使用 create_service_thread 启动线程执行 restart_root_service 逻辑。</p>
+
+<h4 id="restart_root_service">restart_root_service</h4>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">restart_root_service</span><span class="p">(</span><span class="n">unique_fd</span> <span class="n">fd</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">getuid</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 判断 1</span>
+        <span class="n">WriteFdExactly</span><span class="p">(</span><span class="n">fd</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="s">"adbd is already running as root</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">__android_log_is_debuggable</span><span class="p">())</span> <span class="p">{</span> <span class="c1">// 判断 2</span>
+        <span class="n">WriteFdExactly</span><span class="p">(</span><span class="n">fd</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="s">"adbd cannot run as root in production builds</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"adbd restarting as root"</span><span class="p">;</span>
+    <span class="n">android</span><span class="o">::</span><span class="n">base</span><span class="o">::</span><span class="n">SetProperty</span><span class="p">(</span><span class="s">"service.adb.root"</span><span class="p">,</span> <span class="s">"1"</span><span class="p">);</span> <span class="c1">// 3</span>
+    <span class="n">WriteFdExactly</span><span class="p">(</span><span class="n">fd</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="s">"restarting adbd as root</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>首先判断 uid == 0，即已经是 root 用户，返回；</li>
+  <li>通过  __android_log_is_debuggable 来判断权限，是否运行开启 root；</li>
+  <li>若权限允许，则设置系统属性 service.adb.root 为 1。</li>
+</ol>
+
+<h4 id="__android_log_is_debuggable">__android_log_is_debuggable</h4>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">__android_log_is_debuggable</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="kt">int</span> <span class="n">is_debuggable</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">{</span> <span class="c1">// 静态变量</span>
+    <span class="kt">char</span> <span class="n">value</span><span class="p">[</span><span class="n">PROP_VALUE_MAX</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">return</span> <span class="n">__system_property_get</span><span class="p">(</span><span class="s">"ro.debuggable"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">"1"</span><span class="p">);</span>
+  <span class="p">}();</span>
+
+  <span class="k">return</span> <span class="n">is_debuggable</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>可以看到该函数若 ro.debuggable = 1 时返回1， 并且 is_debuggable 是静态变量，即只会初始化赋值一次，若是修改了 ro.debuggable 不会更改该函数返回值，需要重新启动 adbd。</p>
+
+<h3 id="adb-root-是如何生效的">adb root 是如何生效的？</h3>
+
+<p>adb root 的逻辑只是设置了属性 service.adb.root，那是如何重启 adbd 为 root 用户的？</p>
+
+<h4 id="adbd-重启">adbd 重启</h4>
+
+<p>假设： 在init.rc 的脚本注册 service.adb.root 属性的监控逻辑，如配置下面命令：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+on property: service.adb.adb<span class="o">=</span>1
+    重启 adbd 为 root 用户
+</code></pre></div></div>
+
+<p>但搜索完代码后未发现，所以是其他方式。</p>
+
+<p>搜索代码发现：</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="n">asocket</span><span class="o">*</span> <span class="nf">create_local_service_socket</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span> <span class="n">atransport</span><span class="o">*</span> <span class="n">transport</span><span class="p">)</span> <span class="p">{</span>
+<span class="cp">#if !ADB_HOST
+</span>    <span class="k">if</span> <span class="p">(</span><span class="n">asocket</span><span class="o">*</span> <span class="n">s</span> <span class="o">=</span> <span class="n">daemon_service_to_socket</span><span class="p">(</span><span class="n">name</span><span class="p">);</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">s</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="cp">#endif
+</span>    <span class="n">unique_fd</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">service_to_fd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">transport</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">nullptr</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">fd_value</span> <span class="o">=</span> <span class="n">fd</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+    <span class="n">asocket</span><span class="o">*</span> <span class="n">s</span> <span class="o">=</span> <span class="n">create_local_socket</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">fd</span><span class="p">));</span>
+    <span class="n">LOG</span><span class="p">(</span><span class="n">VERBOSE</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"LS("</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">&lt;&lt;</span> <span class="s">"): bound to '"</span> <span class="o">&lt;&lt;</span> <span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="s">"' via "</span> <span class="o">&lt;&lt;</span> <span class="n">fd_value</span><span class="p">;</span>
+
+<span class="cp">#if !ADB_HOST
+</span>    <span class="k">if</span> <span class="p">((</span><span class="n">name</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"root:"</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">getuid</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">__android_log_is_debuggable</span><span class="p">())</span> <span class="o">||</span>
+        <span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"unroot:"</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">getuid</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="n">name</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"usb:"</span><span class="p">)</span> <span class="o">||</span>
+        <span class="n">name</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">"tcpip:"</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">D</span><span class="p">(</span><span class="s">"LS(%d): enabling exit_on_close"</span><span class="p">,</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">);</span>
+        <span class="n">s</span><span class="o">-&gt;</span><span class="n">exit_on_close</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// 设置 exit_on_close 值</span>
+    <span class="p">}</span>
+<span class="cp">#endif
+</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>此处也调用 __android_log_is_debuggable 进行判断，若满足条件设置 exit_on_close 为1。</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// be sure to hold the socket list lock when calling this</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">local_socket_destroy</span><span class="p">(</span><span class="n">asocket</span><span class="o">*</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">exit_on_close</span> <span class="o">=</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">exit_on_close</span><span class="p">;</span>
+
+    <span class="n">D</span><span class="p">(</span><span class="s">"LS(%d): destroying fde.fd=%d"</span><span class="p">,</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">);</span>
+
+    <span class="n">deferred_close</span><span class="p">(</span><span class="n">fdevent_release</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">fde</span><span class="p">));</span>
+
+    <span class="n">remove_socket</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+    <span class="k">delete</span> <span class="n">s</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">exit_on_close</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">D</span><span class="p">(</span><span class="s">"local_socket_destroy: exiting"</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// 退出</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>在 local_socket_destroy 中判断若 exit_on_close 为 1，则调用 exit 退出，即会有 adbd 重启。</p>
+
+<h4 id="adbd-启动">adbd 启动</h4>
+
+<p>adbd 的启动配置是在 adbd.rc 文件中，如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service adbd /apex/com.android.adbd/bin/adbd <span class="nt">--root_seclabel</span><span class="o">=</span>u:r:su:s0
+    class core
+    socket adbd seqpacket 660 system system
+    disabled
+    override
+    seclabel u:r:adbd:s0
+</code></pre></div></div>
+
+<p>可以看到，没有指定 user 和 group，则 adbd 默认启动为 root 用户。</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">adbd_main</span><span class="p">(</span><span class="kt">int</span> <span class="n">server_port</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span> <span class="p">...</span>
+
+<span class="cp">#if defined(__ANDROID__)
+</span>    <span class="n">drop_privileges</span><span class="p">(</span><span class="n">server_port</span><span class="p">);</span>
+<span class="cp">#endif
+</span>
+    <span class="p">...</span> <span class="p">...</span>
+</code></pre></div></div>
+
+<p>在启动后会调用 drop_privileges 来执行降权操作。</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">drop_privileges</span><span class="p">(</span><span class="kt">int</span> <span class="n">server_port</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ScopedMinijail</span> <span class="n">jail</span><span class="p">(</span><span class="n">minijail_new</span><span class="p">());</span>
+
+    <span class="n">gid_t</span> <span class="n">groups</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="n">AID_ADB</span><span class="p">,</span>          <span class="n">AID_LOG</span><span class="p">,</span>          <span class="n">AID_INPUT</span><span class="p">,</span>    <span class="n">AID_INET</span><span class="p">,</span>
+                      <span class="n">AID_NET_BT</span><span class="p">,</span>       <span class="n">AID_NET_BT_ADMIN</span><span class="p">,</span> <span class="n">AID_SDCARD_R</span><span class="p">,</span> <span class="n">AID_SDCARD_RW</span><span class="p">,</span>
+                      <span class="n">AID_NET_BW_STATS</span><span class="p">,</span> <span class="n">AID_READPROC</span><span class="p">,</span>     <span class="n">AID_UHID</span><span class="p">,</span>     <span class="n">AID_EXT_DATA_RW</span><span class="p">,</span>
+                      <span class="n">AID_EXT_OBB_RW</span><span class="p">};</span>
+    <span class="n">minijail_set_supplementary_gids</span><span class="p">(</span><span class="n">jail</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">arraysize</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span> <span class="n">groups</span><span class="p">);</span>
+
+    <span class="c1">// Don't listen on a port (default 5037) if running in secure mode.</span>
+    <span class="c1">// Don't run as root if running in secure mode.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">should_drop_privileges</span><span class="p">())</span> <span class="p">{</span> <span class="c1">// 判断是否需要降权 1</span>
+        <span class="k">const</span> <span class="kt">bool</span> <span class="n">should_drop_caps</span> <span class="o">=</span> <span class="o">!</span><span class="n">__android_log_is_debuggable</span><span class="p">();</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">should_drop_caps</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">minijail_use_caps</span><span class="p">(</span><span class="n">jail</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">CAP_TO_MASK</span><span class="p">(</span><span class="n">CAP_SETUID</span><span class="p">)</span> <span class="o">|</span> <span class="n">CAP_TO_MASK</span><span class="p">(</span><span class="n">CAP_SETGID</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="n">minijail_change_gid</span><span class="p">(</span><span class="n">jail</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">AID_SHELL</span><span class="p">);</span> <span class="c1">// 降权 2</span>
+        <span class="n">minijail_change_uid</span><span class="p">(</span><span class="n">jail</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">AID_SHELL</span><span class="p">);</span>
+        <span class="c1">// minijail_enter() will abort if any priv-dropping step fails.</span>
+        <span class="n">minijail_enter</span><span class="p">(</span><span class="n">jail</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
+
+        <span class="c1">// Whenever ambient capabilities are being used, minijail cannot</span>
+        <span class="c1">// simultaneously drop the bounding capability set to just</span>
+        <span class="c1">// CAP_SETUID|CAP_SETGID while clearing the inheritable, effective,</span>
+        <span class="c1">// and permitted sets. So we need to do that in two steps.</span>
+        <span class="k">using</span> <span class="n">ScopedCaps</span> <span class="o">=</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">remove_pointer</span><span class="o">&lt;</span><span class="n">cap_t</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">cap_t</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+        <span class="n">ScopedCaps</span> <span class="n">caps</span><span class="p">(</span><span class="n">cap_get_proc</span><span class="p">(),</span> <span class="o">&amp;</span><span class="n">cap_free</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cap_clear_flag</span><span class="p">(</span><span class="n">caps</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">CAP_INHERITABLE</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// 降权 2</span>
+            <span class="n">PLOG</span><span class="p">(</span><span class="n">FATAL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"cap_clear_flag(INHERITABLE) failed"</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cap_clear_flag</span><span class="p">(</span><span class="n">caps</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">CAP_EFFECTIVE</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">PLOG</span><span class="p">(</span><span class="n">FATAL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"cap_clear_flag(PEMITTED) failed"</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cap_clear_flag</span><span class="p">(</span><span class="n">caps</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">CAP_PERMITTED</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">PLOG</span><span class="p">(</span><span class="n">FATAL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"cap_clear_flag(PEMITTED) failed"</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cap_set_proc</span><span class="p">(</span><span class="n">caps</span><span class="p">.</span><span class="n">get</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">PLOG</span><span class="p">(</span><span class="n">FATAL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"cap_set_proc() failed"</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">D</span><span class="p">(</span><span class="s">"Local port disabled"</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// minijail_enter() will abort if any priv-dropping step fails.</span>
+        <span class="n">minijail_enter</span><span class="p">(</span><span class="n">jail</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">root_seclabel</span> <span class="o">!=</span> <span class="nb">nullptr</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">selinux_android_setcon</span><span class="p">(</span><span class="n">root_seclabel</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 不降权 3</span>
+                <span class="n">LOG</span><span class="p">(</span><span class="n">FATAL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"Could not set SELinux context"</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>调用 should_drop_privileges 判断是否需要降权；</li>
+  <li>若降权，则 修改用户和用户组为 shell，并对 capabilities 权限清空；</li>
+  <li>若不降权，则设置 security contexts 为 u:r:su:s0，root_seclabel 在 adbd.rc 中指定。</li>
+</ol>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">bool</span> <span class="nf">should_drop_privileges</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// The properties that affect `adb root` and `adb unroot` are ro.secure and</span>
+    <span class="c1">// ro.debuggable. In this context the names don't make the expected behavior</span>
+    <span class="c1">// particularly obvious.</span>
+    <span class="c1">//</span>
+    <span class="c1">// ro.debuggable:</span>
+    <span class="c1">//   Allowed to become root, but not necessarily the default. Set to 1 on</span>
+    <span class="c1">//   eng and userdebug builds.</span>
+    <span class="c1">//</span>
+    <span class="c1">// ro.secure:</span>
+    <span class="c1">//   Drop privileges by default. Set to 1 on userdebug and user builds.</span>
+    <span class="kt">bool</span> <span class="n">ro_secure</span> <span class="o">=</span> <span class="n">android</span><span class="o">::</span><span class="n">base</span><span class="o">::</span><span class="n">GetBoolProperty</span><span class="p">(</span><span class="s">"ro.secure"</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="n">ro_debuggable</span> <span class="o">=</span> <span class="n">__android_log_is_debuggable</span><span class="p">();</span>
+
+    <span class="c1">// Drop privileges if ro.secure is set...</span>
+    <span class="kt">bool</span> <span class="n">drop</span> <span class="o">=</span> <span class="n">ro_secure</span><span class="p">;</span> <span class="c1">// 初始值</span>
+
+    <span class="c1">// ... except "adb root" lets you keep privileges in a debuggable build.</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">prop</span> <span class="o">=</span> <span class="n">android</span><span class="o">::</span><span class="n">base</span><span class="o">::</span><span class="n">GetProperty</span><span class="p">(</span><span class="s">"service.adb.root"</span><span class="p">,</span> <span class="s">""</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="n">adb_root</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span> <span class="o">==</span> <span class="s">"1"</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="n">adb_unroot</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span> <span class="o">==</span> <span class="s">"0"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ro_debuggable</span> <span class="o">&amp;&amp;</span> <span class="n">adb_root</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">drop</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// 修改逻辑</span>
+    <span class="p">}</span>
+    <span class="c1">// ... and "adb unroot" lets you explicitly drop privileges.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">adb_unroot</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">drop</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">drop</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>从上面修改逻辑可以看到，若 ro.debuggable == 1 &amp;&amp; service.adb.root == 1 时 drop 为 false，即不降权。</p>
+
+<h4 id="总结">总结</h4>
+
+<p>adb root 生效需要的操作为：</p>
+
+<ul>
+  <li>修改 ro.debuggable 为 1</li>
+  <li>杀掉 adbd，让 __android_log_is_debuggable 返回为 1</li>
+  <li>调用 adb root 用于配置 service.adb.root = 1</li>
+</ul>
+
+<h2 id="magisk-工具使用">Magisk 工具使用</h2>
+
+<h3 id="属性设置">属性设置</h3>
+
+<p>使用 magisk 提供的修改属性工具 resetprop，将 ro.debuggable 设置为 1。</p>
+
+<h3 id="权限处理">权限处理</h3>
+
+<p>设置了属性执行后失败，查看是缺少 SELinux 权限：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span> 5252.630174] <span class="nb">type</span><span class="o">=</span>1400 audit<span class="o">(</span>1626010790.323:6145<span class="o">)</span>: avc: denied <span class="o">{</span> setcurrent <span class="o">}</span> <span class="k">for </span><span class="nb">comm</span><span class="o">=</span><span class="s2">"adbd"</span> <span class="nv">scontext</span><span class="o">=</span>u:r:adbd:s0 <span class="nv">tcontext</span><span class="o">=</span>u:r:adbd:s0 <span class="nv">tclass</span><span class="o">=</span>process <span class="nv">permissive</span><span class="o">=</span>1
+<span class="o">[</span> 5252.630353] <span class="nb">type</span><span class="o">=</span>1400 audit<span class="o">(</span>1626010790.323:6146<span class="o">)</span>: avc: denied <span class="o">{</span> dyntransition <span class="o">}</span> <span class="k">for </span><span class="nb">comm</span><span class="o">=</span><span class="s2">"adbd"</span> <span class="nv">scontext</span><span class="o">=</span>u:r:adbd:s0 <span class="nv">tcontext</span><span class="o">=</span>u:r:su:s0 <span class="nv">tclass</span><span class="o">=</span>process <span class="nv">permissive</span><span class="o">=</span>1
+</code></pre></div></div>
+
+<p>缺少下面权限：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow adbd self:process setcurrent<span class="p">;</span>
+allow adbd su:process dyntransition<span class="p">;</span>
+</code></pre></div></div>
+
+<p>查看 AOSP 代码发现如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>userdebug_or_eng<span class="o">(</span><span class="sb">`</span>
+  allow adbd self:process setcurrent<span class="p">;</span>
+  allow adbd su:process dyntransition<span class="p">;</span>
+<span class="s1">')
+</span></code></pre></div></div>
+<p>可以看到，只有在 userdebug 和 eng 版本中才会有，所以正常 user 是不能使用 adb root 的。还有为了 adbd 转成 su domain后不受限制，我们将 su 配置为 permissive 状态。</p>
+
+<p>使用 magisk 中的 magiskpolicy 工具将 su 配置为 permissive，即：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>magiskpolicy <span class="nt">--live</span> <span class="s1">'permissive { su }'</span>
+</code></pre></div></div>
+
+<h2 id="实现">实现</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/system/bin/sh</span>
+su <span class="nt">-c</span> <span class="s2">"resetprop ro.debuggable 1"</span>
+su <span class="nt">-c</span> <span class="s2">"resetprop service.adb.root 1"</span> <span class="c"># 减少调用 adb root</span>
+su <span class="nt">-c</span> <span class="s2">"magiskpolicy --live 'allow adbd adbd process setcurrent'"</span> <span class="c"># 配置缺少的权限</span>
+su <span class="nt">-c</span> <span class="s2">"magiskpolicy --live 'allow adbd su process dyntransition'"</span> <span class="c"># 配置缺少的权限</span>
+su <span class="nt">-c</span> <span class="s2">"magiskpolicy --live 'permissive { su }'"</span> <span class="c"># 将 su 配置为 permissive，防止后续命令执行缺少权限</span>
+su <span class="nt">-c</span> <span class="s2">"kill -9 </span><span class="sb">`</span>ps <span class="nt">-A</span> | <span class="nb">grep </span>adbd | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> <span class="sb">`</span><span class="s2">"</span> <span class="c"># 杀掉 adbd</span>
+
+</code></pre></div></div>
+
+<p>执行上面脚本，然后再执行 adb shell 即可，此时已具备 root 权限。</p>
+
+<h2 id="总结-1">总结</h2>
+
+<ol>
+  <li>adbd 正常是 root 用户启动，然后通过降权到 shell 用户，我们是通过修改属性来达到不降权；</li>
+  <li>还有 adb root 操作正常情况下是用在 userdebug 和 eng 版本中，而这些版本我们外部是拿不到的，只有 user 版本，而 user 版本在 SELinux 权限上限制会更多，所以需要处理权限问题。</li>
+</ol>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-07-11T22:11:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__reward"><section>
+  <div class="content-play">
+    <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+    <div class="hide_box-play"></div>
+    <div class="shang_box-play">
+      <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/assets/pictures/pay/close.jpg" alt="取消" /></a>
+      <div class="shang_tit-play">
+        <p>感谢您的支持!</p>
+      </div>
+      <div class="shang_payimg">
+          <img src="/assets/pictures/pay/alipayimg.jpg" alt="扫码支持" />
+      </div>
+    <div class="shang_payimg">
+          <img src="/assets/pictures/pay/weipayimg.png" alt="扫码支持" />
+      </div>
+      <div class="pay_explain">扫码打赏，您说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="alipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        <div class="pay_item" data-id="weipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/wechat.jpg" alt="微信" /></span>
+        </div>
+      </div>
+      <div class="shang_info-play">
+        <p>打开支付宝或微信扫一扫，即可进行扫码打赏哦</p>
+      </div>
     </div>
-  </div></div>
-<script>/*(function () {
+  </div>
+  <script type="text/javascript">
+  function dashangToggle(){
+    $(".hide_box-play").fadeToggle();
+    $(".shang_box-play").fadeToggle();
+  }
+  </script>
 
-})();*/
-</script>
+  <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
 
 
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+  <style type="text/css">
+    .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+    .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+    .shang_box-play{width:540px;height:500px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+    .shang_box-play img{border:none;border-width:0;}
+    .dashang{display:block;width:150px;margin:5px auto;height:40px;line-height:25px;padding:10px;background-color:#f72828;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:18px;transition: all 0.3s;}
+    .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+    .shang_close-play{float:right;display:inline-block;
+      margin-right: 10px;margin-top: 20px;
+    }
+
+    .shang_logo{display:block;text-align:center;margin:20px auto;}
+    .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+    .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+    .shang_payimg{width:230px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+    .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+    .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+    .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+    .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+    .shang_info-play{clear:both;}
+    .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+  </style>
+
+</section>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2021/04/07/android_frp.html">Android Factory Reset Protection介绍</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.5.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.5.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'magisk_enable_adb_root'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -1637,6 +1911,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
