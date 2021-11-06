@@ -900,13 +900,10 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
                 href="/archive.html?tag=Android">Android</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=CTS">CTS</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=SELinux">SELinux</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 29, 2019</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-29T08:51:00+08:00">
-    <meta itemprop="keywords" content="Android,CTS,SELinux"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+    <meta itemprop="keywords" content="Android,SELinux"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</p>
 

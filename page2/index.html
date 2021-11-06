@@ -906,16 +906,10 @@ Linux环境下用的最多的调试工具是gdb，设置断点可以让程序在
     <meta itemprop="keywords" content="debug"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/04/12/reverse_with_frida.html"><h2 itemprop="headline" class="item__header">使用frida hook插件化apk</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">最近拿到一个XX视频apk样本，里面有视频、直播和小说，没有VIP只能试看30秒，刚好最近学习frida，用来练习下，分析过程中发现是一个插件化的apk，本文记录下分析的过程。</div><p><a href="/2020/04/12/reverse_with_frida.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=frida">frida</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=reverse">reverse</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-04-12T10:08:00+08:00">
-    <meta itemprop="keywords" content="frida,reverse,Android"></div>
+    <meta itemprop="keywords" content="reverse"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/03/31/neverallow_for_build.html"><h2 itemprop="headline" class="item__header">SELinux 编译时 neverallow 如何限制？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">SELinux编译过程中会对配置进行校验，若有违反neverallow的配置会导致编译失败。
 
 原理
@@ -949,12 +943,9 @@ SELinux有expandattribute关键字，使用 expandattribute attribute_ty...</div
 方法一是需要修改内核，本文主要是讲第二种方法。</div><p><a href="/2020/03/22/hide_process.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Linux">Linux</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Security">Security</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 22, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-03-22T19:12:00+08:00">
-    <meta itemprop="keywords" content="Linux,Security"></div>
+    <meta itemprop="keywords" content="Linux"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/02/29/coredomain_create_new_property.html"><h2 itemprop="headline" class="item__header">Coredomain 创建新的 property type</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">背景
 
 Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动和 Android system 系统分开，Android system 可以单独升级。SELinux 同样分成了两部分，位于 /system/etc/selinux 下的 platform 部分和位于 /vendor/etc/selinux 下的 vendor 部分。本文分析 Android 大版本升级过程中对 property 增加的一些限制，已经如何绕过这些限制。</div><p><a href="/2020/02/29/coredomain_create_new_property.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
@@ -976,31 +967,25 @@ Android 8.1 中引入了 Project Treble 架构，用于将 vendor 下的驱动�
     <meta itemprop="keywords" content="Python"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/01/01/filecrypt_aes.html"><h2 itemprop="headline" class="item__header">filecrypt工具加解密大文件失败问题分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">最近在使用filecrypt加密一个大文件时发现在使用AES算法时会失败，有些机器上会异常退出，到底是哪里出现了问题，本文记录下分析和修复的过程。</div><p><a href="/2020/01/01/filecrypt_aes.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=filecrypt">filecrypt</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=AES">AES</a>
+                href="/archive.html?tag=openssl">openssl</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 01, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-01-01T10:39:00+08:00">
-    <meta itemprop="keywords" content="filecrypt,AES"></div>
+    <meta itemprop="keywords" content="openssl"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/12/30/git_commits_en.html"><h2 itemprop="headline" class="item__header">A Tool To Automate Multiple Commits Into One</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">If we have multiple commits or some patches from the software supplier, and want to synthesize one commit and retain the commit message of each one, someone knows that git rebase -i can be used to solve it, but this method requires manual for operations. If we have a lot to do, it will took a lot of time. Here I will introduce a tool which to au...</div><p><a href="/2019/12/30/git_commits_en.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=git">git</a>
+                href="/archive.html?tag=tools">tools</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 30, 2019</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-30T21:55:00+08:00">
-    <meta itemprop="keywords" content="git"></div>
+    <meta itemprop="keywords" content="tools"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/12/29/CTS-neverallow.html"><h2 itemprop="headline" class="item__header">Android CTS中neverallow规则生成过程</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">CTS里面SELinux相关测试中neverallow测试项占绝大多数，Android系统开发者都应该知道，在修改sepolicy时，需要确保不能违反这些neverallow规则，不然会过不了CTS。CTS中nerverallow测试都是在SELinuxNeverallowRulesTest.java文件中，并且从AOSP代码中发现该文件不是人工提交的，而是通过python脚本生成的，为了以后更好的修改sepolicy，就需要了解下SELinuxNeverallowRulesTest.java是如何生成的。</div><p><a href="/2019/12/29/CTS-neverallow.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Android">Android</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=CTS">CTS</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=SELinux">SELinux</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 29, 2019</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-12-29T08:51:00+08:00">
-    <meta itemprop="keywords" content="Android,CTS,SELinux"></div>
+    <meta itemprop="keywords" content="Android,SELinux"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2019/07/06/arm_stm_and_ldm.html"><h2 itemprop="headline" class="item__header">ARM中的STM和LDM指令的解析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">STM指令
 
 STM是Store Multipile registers到连续的存储空间中，并且是按寄存器编号从低到高放置在存储空间的从低到高的位置中。
@@ -1020,10 +1005,10 @@ xx用于确认放置根据下面两个条件区分：
   
 ...</div><p><a href="/2019/07/06/arm_stm_and_ldm.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=arm">arm</a>
+                href="/archive.html?tag=reverse">reverse</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jul 06, 2019</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2019-07-06T14:00:00+08:00">
-    <meta itemprop="keywords" content="arm"></div>
+    <meta itemprop="keywords" content="reverse"></div>
       </article></div>
 </div><div class="layout--home"><div class="pagination"><p>35 post articles, 4 pages.</p>
     <div class="pagination__menu">
