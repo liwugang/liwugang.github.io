@@ -1,5 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-11-06T20:35:42+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">Magisk 环境下增加 adb root 功能</title><link href="https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root.html" rel="alternate" type="text/html" title="Magisk 环境下增加 adb root 功能" /><published>2021-07-11T22:11:00+08:00</published><updated>2021-07-11T22:11:00+08:00</updated><id>https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root</id><content type="html" xml:base="https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root.html">&lt;p&gt;目前市面上的 Android 手机，要想获取 root 权限，主要有两种方式：&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-11-06T20:37:16+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">如何下载64位的apk？</title><link href="https://liwugang.github.io/2021/11/06/download_64_apk.html" rel="alternate" type="text/html" title="如何下载64位的apk？" /><published>2021-11-06T20:35:00+08:00</published><updated>2021-11-06T20:35:00+08:00</updated><id>https://liwugang.github.io/2021/11/06/download_64_apk</id><content type="html" xml:base="https://liwugang.github.io/2021/11/06/download_64_apk.html">&lt;p&gt;64位的apk指的是so库是64位的，在目前的64位架构机型上运行会更有效率，而现在新机型大多数是64位。但目前各大厂商官网提供的都是32位的apk，这样的apk能跑在所有的机型上，以牺牲了部分性能代价。其实也可以在apk里包含有32位和64位的so，但这样apk包会大不小，大厂基本上都不会这样选择。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;64位apk的来源&quot;&gt;64位apk的来源&lt;/h2&gt;
+
+&lt;p&gt;大厂都会将自家apk上传到各大应用商店里，会分成32位和64位的apk，应用商店在用户下载时，会根据机型选择是使用那种架构的apk。即在64位机型上选择64位的apk。&lt;/p&gt;
+
+&lt;h2 id=&quot;获取64位apk&quot;&gt;获取64位apk&lt;/h2&gt;
+
+&lt;h3 id=&quot;使用64位机型下载&quot;&gt;使用64位机型下载&lt;/h3&gt;
+
+&lt;p&gt;等apk安装完后，使用下面命令获取apk的路径，然后将64位的apk拿出来。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;adb shell pm path &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;包名] &lt;span class=&quot;c&quot;&gt;# 获取安装包的路径&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;获取下载链接&quot;&gt;获取下载链接&lt;/h3&gt;
+
+&lt;p&gt;只是适用于小米机型，其他机型未测试过。&lt;/p&gt;
+
+&lt;h4 id=&quot;应用商店中关闭删除安装包&quot;&gt;应用商店中关闭“删除安装包”&lt;/h4&gt;
+
+&lt;p&gt;关闭该选项后，会保留下载记录，这样能拿到下载链接。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/android/market_config.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如图所示，在小米应用商店的设置，关闭“删除安装包”选项。&lt;/p&gt;
+
+&lt;p class=&quot;warning&quot;&gt;不关闭选项也可以，只不会需要在下载时进行后面的操作&lt;/p&gt;
+
+&lt;h4 id=&quot;查看下载记录&quot;&gt;查看下载记录&lt;/h4&gt;
+
+&lt;p&gt;应用商店会调用系统的下载管理，使用下面的命令可查看下载记录：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;adb shell dumpsys activity provider com.android.providers.downloads/.provider.DownloadProvider
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这样会dump出所有下载记录，会查看到我们下载的apk记录&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/android/downloadprovider.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如上图，我们下载了抖音极速版，1处为下载链接，拿到这个链接我们可以在电脑或其他地方下载，2处为本地保存的文件，我们也可以使用该文件。&lt;/p&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;使用小米手机获取64位apk的三种方式：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Android通用方式，使用 pm path [包名] 获取apk的地址&lt;/li&gt;
+  &lt;li&gt;查看apk的下载记录，获取下载链接&lt;/li&gt;
+  &lt;li&gt;查看apk的下载记录，获取本地保存的apk&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><summary type="html">64位的apk指的是so库是64位的，在目前的64位架构机型上运行会更有效率，而现在新机型大多数是64位。但目前各大厂商官网提供的都是32位的apk，这样的apk能跑在所有的机型上，以牺牲了部分性能代价。其实也可以在apk里包含有32位和64位的so，但这样apk包会大不小，大厂基本上都不会这样选择。</summary></entry><entry><title type="html">Magisk 环境下增加 adb root 功能</title><link href="https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root.html" rel="alternate" type="text/html" title="Magisk 环境下增加 adb root 功能" /><published>2021-07-11T22:11:00+08:00</published><updated>2021-07-11T22:11:00+08:00</updated><id>https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root</id><content type="html" xml:base="https://liwugang.github.io/2021/07/11/magisk_enable_adbr_root.html">&lt;p&gt;目前市面上的 Android 手机，要想获取 root 权限，主要有两种方式：&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;通过官方提供的途径，如小米的开发版，会提供官方 root 能力，但是相对比较麻烦。首先需要解锁，然后需要申请开发者权限，最后在手机上进行 root 升级；&lt;/li&gt;
   &lt;li&gt;通过解锁手机的 BL(bootloader) 锁，然后使用 magisk 功能获取。&lt;/li&gt;
@@ -1493,89 +1544,4 @@ platform_app persistent_data_block_service:service_manager find&lt;span class=&q
 
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/ghidra_close.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;关闭后效果会更好，可以直接知道每行汇编代码是针对那个局部变量进行处理，并且针对RBP的偏移也有展示。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="reverse" /><summary type="html">Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。</summary></entry><entry><title type="html">使用QEMU调试Linux内核</title><link href="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html" rel="alternate" type="text/html" title="使用QEMU调试Linux内核" /><published>2020-05-26T23:00:00+08:00</published><updated>2020-05-26T23:00:00+08:00</updated><id>https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu</id><content type="html" xml:base="https://liwugang.github.io/2020/05/26/debugging_kernel_with_qemu.html">&lt;p&gt;最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。&lt;/p&gt;
-
-&lt;!--more--&gt;
-&lt;h2 id=&quot;环境搭建&quot;&gt;环境搭建&lt;/h2&gt;
-
-&lt;h3 id=&quot;mkroot工具&quot;&gt;mkroot工具&lt;/h3&gt;
-&lt;p&gt;mkroot工具作者是landley大佬，landley大佬是著名的toybox工具的owner，toybox是集成绝大多数Linux命令为一个可执行文件中，以简单、小巧和快速等特点被集成到Android中。
-mkroot工具的介绍是”Compiles a toybox-based root filesystem and kernel that can boot under qemu.”，可以看到直接使用mkroot工具可以帮我们构建一个由QEMU启动的kernel和ramdisk。&lt;/p&gt;
-
-&lt;p&gt;在原来工具基础上，我有两处修改，&lt;a href=&quot;https://github.com/liwugang/mkroot&quot;&gt;下载地址&lt;/a&gt;&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;kernel的下载地址替换为国内清华源；&lt;/li&gt;
-  &lt;li&gt;将目录打包成ramdisk命令提取到单独文件中。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;运行&quot;&gt;运行&lt;/h3&gt;
-
-&lt;p&gt;在下载工具的根目录下执行：&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;./mkroot.sh  NO_CLEANUP=true kernel&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;默认情况下编译完后会将源码删掉，为了保留源码，需要带上参数 NO_CLEANUP=true。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/mkroot.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;从图上看到，根目录下的build目录是源码位置，output/host下有生成的ramdisk、kernel、QEMU启动脚本等文件。&lt;/p&gt;
-
-&lt;p&gt;由于编译kernel的选项是采用简单配置，可能不满足需求，此时需要到build目录下的linux源码目录下，重启配置选项编译，然后将生成的bzImage拷贝到output/host或者修改qemu-x86_64.sh脚本，将kernel指向刚生成的bzImage。&lt;/p&gt;
-
-&lt;h2 id=&quot;调试&quot;&gt;调试&lt;/h2&gt;
-
-&lt;p&gt;使用两个终端，终端一在output/host目录下，执行：&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;./qemu-x86_64.sh -s -S&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;-s是”-gdb tcp::1234“的简写，用于监听tcp::1234端口，-S是让在启动后暂停&lt;/p&gt;
-
-&lt;p&gt;终端二在kernel源码目录(build/host-tmp/linux-5.1)下，执行：&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;gdb vmlinux&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;gdb加载kernel&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;target remote:1234&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;连接1234端口&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;b start_kernel&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在start_kernel函数下断点&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;continue&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;继续执行&lt;/p&gt;
-
-&lt;p&gt;此时会断点在start_kernel函数中，当然也可以根据需求设置其他函数断点，然后进行调试。&lt;/p&gt;
-
-&lt;h2 id=&quot;用户态程序执行&quot;&gt;用户态程序执行&lt;/h2&gt;
-
-&lt;p&gt;要调试kernel的某个函数，默认情况下触发不到怎么办？ 那只有自己写用户态程序进行主动触发。&lt;/p&gt;
-
-&lt;h3 id=&quot;用户态程序要求&quot;&gt;用户态程序要求&lt;/h3&gt;
-
-&lt;p&gt;由于ramdisk中不包含有共享库，所以用户态程序依赖共享库。生成简单的helloworld可执行文件，用ldd输出可执行文件依赖的共享库&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/dynamic_so.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;可以看到有依赖的共享库，为了能够运行，需要编译时将依赖的都编译进可执行文件中，&lt;strong&gt;gcc或g++编译时增加 -static 参数即可&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/static_exe.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;加上参数后，可以看到没有依赖的共享库。&lt;/p&gt;
-
-&lt;h3 id=&quot;打包进ramdisk&quot;&gt;打包进ramdisk&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/ramdisk.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在output/host下，将用户态程序移动到root目录下（可以是root下的任意位置），然后执行cpio.sh将root目录进行打包即可。此时运行qemu-x86_64.sh就会发现可执行文件存在。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">最近准备深入写关于SELinux方面文章，SELinux逻辑主要是在内核，所以需要搭建下调试内核的环境，本文介绍使用QEMU调试，下一篇文章将介绍主机调试virtualbox中centos。</summary></entry></feed>
+&lt;p&gt;关闭后效果会更好，可以直接知道每行汇编代码是针对那个局部变量进行处理，并且针对RBP的偏移也有展示。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="reverse" /><summary type="html">Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。</summary></entry></feed>
