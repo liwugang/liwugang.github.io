@@ -2,7 +2,7 @@
 layout: article
 
 title:  如何下载64位的apk？
-date:   2021-11-06 15:39:00 +0800
+date:   2021-11-06 20:35:00 +0800
 tags: Android
 key: download_64_apk
 ---
