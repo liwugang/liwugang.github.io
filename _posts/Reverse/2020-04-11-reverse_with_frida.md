@@ -4,7 +4,7 @@ layout: article
 title:  使用frida hook插件化apk
 date:   2020-04-12 10:08:00 +0800
  
-tags: frida reverse Android
+tags: reverse
 key: frida_hook_shadow
 ---
 

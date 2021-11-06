@@ -4,7 +4,7 @@ layout: article
 title:  简单C++ crackme分析
 date:   2019-05-11 15:20:00 +0800
  
-tag: crackme
+tag: reverse
 key: crackme_cpp_01
 ---
 

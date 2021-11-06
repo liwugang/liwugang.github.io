@@ -3,7 +3,7 @@ layout: article
 
 title:  A Tool To Automate Multiple Commits Into One
 date:   2019-12-30 21:55:00 +0800
-tag: git
+tag: tools
 key: git_merge_commit_en
 ---
 

@@ -4,7 +4,7 @@ layout: article
 title:  Linux 下如何隐藏自己不被发现？
 date:   2020-03-22 19:12:00 +0800
  
-tags: Linux Security
+tags: Linux
 key: hide_process
 ---
 

@@ -4,7 +4,7 @@ layout: article
 title:  Linux Security Module 框架介绍
 date:   2020-10-25 14:17:00 +0800
 
-tags: Linux Security
+tags: Linux
 key: introduce_lsm
 ---
 

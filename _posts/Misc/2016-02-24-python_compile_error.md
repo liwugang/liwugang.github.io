@@ -4,7 +4,7 @@ layout: article
 title:  error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案
 date:    2016-02-24 19:10:50 +0800
  
-tags: misc Python
+tags: Python
 key: python_vc
 ---
 

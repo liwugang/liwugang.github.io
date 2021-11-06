@@ -3,7 +3,7 @@ layout: article
 
 title:  Android CTS中neverallow规则生成过程
 date:   2019-12-29 08:51:00 +0800
-tags: Android CTS SELinux
+tags: Android SELinux
 key: cts_neverallow
 ---
 

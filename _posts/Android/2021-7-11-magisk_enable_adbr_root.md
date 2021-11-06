@@ -3,7 +3,7 @@ layout: article
 
 title:  Magisk 环境下增加 adb root 功能
 date:   2021-07-11 22:11:00 +0800
-tags: Android magisk
+tags: Android
 key: magisk_enable_adb_root
 ---
 

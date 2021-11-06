@@ -4,7 +4,7 @@ layout: article
 title:  OWASP Android crackmes
 date:   2019-05-12 18:20:00 +0800
  
-tag: frida
+tag: reverse
 key: reverse_01
 ---
 

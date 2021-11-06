@@ -4,7 +4,7 @@ layout: article
 title:  Makefile中的ifeq 多条件使用
 date:   2015-08-21 20:14:23 +0800
  
-tags: Makefile
+tags: misc
 key: makefile_ifelse
 ---
 

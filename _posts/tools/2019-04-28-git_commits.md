@@ -3,7 +3,7 @@ layout: article
 
 title:  Git自动化合并多个Commit
 date:   2019-04-28 23:10:00 +0800
-tag: git
+tag: tools
 key: git_merge_commit
 ---
 
