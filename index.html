@@ -902,6 +902,24 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 03, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-03T11:55:00+08:00">
     <meta itemprop="keywords" content="SELinux"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/11/21/analysis_jd_mystique.html"><h2 itemprop="headline" class="item__header">京东安全发现的魔形女漏洞分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">根据魔形女漏洞网站介绍，可以看到其漏洞可以：
+
+
+  打破应用沙箱机制
+  可攻击其他 app，读取其 app 私有数据等
+
+
+应用沙箱机制，Android 是使用了 Linux 多用户机制，即每个 app 单独 uid，漏洞竟然能打破这个？看到这个就非常好奇。
+
+这个漏洞从公布我就一直关注，直到最近 AOSP 公开了修复 patch 才搞清楚到底是怎么回事，本文记录下该漏洞的原理和使用模拟器复现该漏洞。</div><p><a href="/2021/11/21/analysis_jd_mystique.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Security">Security</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 21, 2021</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-11-21T21:23:00+08:00">
+    <meta itemprop="keywords" content="Android,Security"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/11/06/download_64_apk.html"><h2 itemprop="headline" class="item__header">如何下载64位的apk？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">64位的apk指的是so库是64位的，在目前的64位架构机型上运行会更有效率，而现在新机型大多数是64位。但目前各大厂商官网提供的都是32位的apk，这样的apk能跑在所有的机型上，以牺牲了部分性能代价。其实也可以在apk里包含有32位和64位的so，但这样apk包会大不小，大厂基本上都不会这样选择。</div><p><a href="/2021/11/06/download_64_apk.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Android">Android</a>
@@ -968,14 +986,8 @@ magisk 获取 root 权限是通过放置的 su，adb root 功能并不可用，�
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 30, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-08-30T21:00:00+08:00">
     <meta itemprop="keywords" content="debug"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/08/01/ghidra.html"><h2 itemprop="headline" class="item__header">Ghidra对局部变量的标识</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。</div><p><a href="/2020/08/01/ghidra.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=reverse">reverse</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 01, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-08-01T13:36:00+08:00">
-    <meta itemprop="keywords" content="reverse"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>36 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>37 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-left"></i>

