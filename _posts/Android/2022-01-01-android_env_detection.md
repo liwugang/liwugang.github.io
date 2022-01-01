@@ -14,7 +14,7 @@ key: android_env_detection
 
 <!--more-->
 
-## 双开和多开检测思路
+## 双开和多开检测
 
 ### 背景
 
@@ -67,7 +67,7 @@ user=_app minTargetSdkVersion=26 domain=untrusted_app_27 type=app_data_file leve
 ![graph]({{"/assets/pictures/android/riskenv_dual.png" | prepend:site.baseurl}})
 
 
-## EdXposed 和 LSPosed 检测思路
+## EdXposed 和 LSPosed 检测
 
 Xposed 最高支持到 Androd8，若要使用 Xposed 框架，就需要使用 EdXposed 和 LSPosed，这两个框架需要搭配 magisk 来使用，并且需要使用 magisk 插件 [Riru](https://github.com/RikkaApps/Riru)。
 
