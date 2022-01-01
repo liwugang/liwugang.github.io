@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>liwugang - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>设备风控攻防 - 设备环境检测 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<meta name="description" content="本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。若有转载和引用，请附上完整链接，谢谢。">
+<link rel="canonical" href="https://liwugang.github.io/2022/01/01/android_env_detection.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -263,7 +262,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -892,127 +891,284 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang</h1></header><meta itemprop="headline" content="liwugang"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/03/selinux_all.html"><h2 itemprop="headline" class="item__header"><font color="#EE0000">[置顶]</font>深入理解 SELinux</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">本文为 SELinux 专辑，记录相关文章。</div><p><a href="/2020/10/03/selinux_all.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=SELinux">SELinux</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 03, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-03T11:55:00+08:00">
-    <meta itemprop="keywords" content="SELinux"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2022/01/01/android_env_detection.html"><h2 itemprop="headline" class="item__header">设备风控攻防 - 设备环境检测</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。
-
-若有转载和引用，请附上完整链接，谢谢。</div><p><a href="/2022/01/01/android_env_detection.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>设备风控攻防 - 设备环境检测</h1></header></div><meta itemprop="headline" content="设备风控攻防 - 设备环境检测"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Android">Android</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 01, 2022</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-01-01T23:26:13+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/11/21/analysis_jd_mystique.html"><h2 itemprop="headline" class="item__header">京东安全发现的魔形女漏洞分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">根据魔形女漏洞网站介绍，可以看到其漏洞可以：
+    <meta itemprop="keywords" content="Android"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。</p>
 
-  打破应用沙箱机制
-  可攻击其他 app，读取其 app 私有数据等
+<p>若有转载和引用，请附上完整链接，谢谢。</p>
 
+<!--more-->
 
-应用沙箱机制，Android 是使用了 Linux 多用户机制，即每个 app 单独 uid，漏洞竟然能打破这个？看到这个就非常好奇。
+<h2 id="双开和多开检测思路">双开和多开检测思路</h2>
 
-这个漏洞从公布我就一直关注，直到最近 AOSP 公开了修复 patch 才搞清楚到底是怎么回事，本文记录下该漏洞的原理和使用模拟器复现该漏洞。</div><p><a href="/2021/11/21/analysis_jd_mystique.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Security">Security</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 21, 2021</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-11-21T21:23:00+08:00">
-    <meta itemprop="keywords" content="Android,Security"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/11/06/download_64_apk.html"><h2 itemprop="headline" class="item__header">如何下载64位的apk？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">64位的apk指的是so库是64位的，在目前的64位架构机型上运行会更有效率，而现在新机型大多数是64位。但目前各大厂商官网提供的都是32位的apk，这样的apk能跑在所有的机型上，以牺牲了部分性能代价。其实也可以在apk里包含有32位和64位的so，但这样apk包会大不小，大厂基本上都不会这样选择。</div><p><a href="/2021/11/06/download_64_apk.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Nov 06, 2021</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-11-06T20:35:00+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/07/11/magisk_enable_adbr_root.html"><h2 itemprop="headline" class="item__header">Magisk 环境下增加 adb root 功能</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">目前市面上的 Android 手机，要想获取 root 权限，主要有两种方式：
+<h3 id="背景">背景</h3>
 
-  通过官方提供的途径，如小米的开发版，会提供官方 root 能力，但是相对比较麻烦。首先需要解锁，然后需要申请开发者权限，最后在手机上进行 root 升级；
-  通过解锁手机的 BL(bootloader) 锁，然后使用 magisk 功能获取。
+<p>Android 5.0以上强制开启 SELinux，每个 app 都会分配 SELinux domain，三方 app 都是 untrusted_app，但随着版本升高，untrusted_app 也会在后面加版本。
+如 untrusted_app_25、untrusted_app_27等。</p>
 
+<h3 id="检测思路">检测思路</h3>
 
-当然除了上面两种方式外， 还可以通过漏洞等其他方式获取 root。
+<p>使用 SELinux domain 进行检测，若 app 运行在双开 app 的环境下，domain 使用的是双开 app 的，而该 app 实际的 domain 和双开不一致则可检测出来。需要满足下面条件，不能100%检测，但若是检测出，则一样是有问题的</p>
 
-magisk 获取 root 权限是通过放置的 su，adb root 功能并不可用，本文主要是讲在 magisk 环境下增加 adb root 功能。</div><p><a href="/2021/07/11/magisk_enable_adbr_root.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jul 11, 2021</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-07-11T22:11:00+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/04/07/android_frp.html"><h2 itemprop="headline" class="item__header">Android Factory Reset Protection介绍</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">FRP 从字面意思可知，是用于对恢复出厂设置的保护。比如手机丢了，一般情况下小偷都会恢复出厂设置来绕过锁屏密码，这样就能使用了。但若是登录了 google 账号，此时在开机引导处还是要输入密码或者 google 账号才能进入，这就是使用了 FRP。若是从设置里触发恢复出厂设置，不会触发 FRP，可能 google 在设计时认为能进入到设置中操作，此时桌面已经解锁了，那大概率认为是机主所为，所以不会触发。</div><p><a href="/2021/04/07/android_frp.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 07, 2021</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2021-04-07T23:15:00+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/12/06/reverse_charles.html"><h2 itemprop="headline" class="item__header">破解最新抓包工具 Charles</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">Charles 是常用的抓包工具，使用 Java 语言写的，支持跨平台。目前最新版本是 4.6.1，本文记录下对该版本的破解。</div><p><a href="/2020/12/06/reverse_charles.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=reverse">reverse</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Dec 06, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-12-06T17:25:00+08:00">
-    <meta itemprop="keywords" content="reverse"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/25/introduce_lsm.html"><h2 itemprop="headline" class="item__header">Linux Security Module 框架介绍</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">LSM 在被合入到 Linux 之前，当时的访问控制机制还不足以提供强大的安全性，存在的一些增强的访问控制机制，由于缺少安全社区的共识而没有被合入到 Linux 中。Linux 是通用操作系统，需要满足不同需求，访问控制机制同样需要满足不同的访问控制机制。在这样的背景下，LSM 因运而生，满足轻量级、通用性和可集成不同的访问控制机制等特点，被合入到 Linux 中。</div><p><a href="/2020/10/25/introduce_lsm.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Linux">Linux</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 25, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-25T14:17:00+08:00">
-    <meta itemprop="keywords" content="Linux"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/02/blog_sticky.html"><h2 itemprop="headline" class="item__header">博客修改记录</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">目的
+<h3 id="前提条件">前提条件</h3>
 
-该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。
+<p>需要双开或多开软件和检测 app 的 targetsdkversion 不一样，并且在当前手机系统上 targetsdkversion 生成的 domain 不一样才可以。</p>
 
-修改记录
+<h3 id="技术原理">技术原理</h3>
 
-2020-10-01 新增置顶功能
+<p>本文不详细介绍 domain 的生成过程，只说下大概思路：</p>
+<ol>
+  <li>首先根据签名信息和系统中的mac_permissions.xml文件比较，获取 seinfo 信息，三方 app 的 seinfo 格式为：default:targetSdkVersion=XX,  代码在SELinuxMMAC.java</li>
+  <li>然后通过 seinfo 和 seapp_contexts 中的配置信息匹配，计算出 domain。</li>
+</ol>
 
-2020-10-02 新增pdf和ppt显示功能
+<p>如下面的是 Android12 关于三方 app 的配置，只关注 minTargetSdkVersion 和 domain 字段，若当前 app targetsdkversion &gt;= minTargetSdkVersion，会匹配到后面的 domain，顺序从高开始。若当前 app 的 targetsdkversion 是 30，匹配到第一条规则，则 domain 就是 untrusted_app，若 targetsdkversion 是 27，会匹配到最后一条，则 domain 是 untrusted_app_27</p>
 
-2021-01-09 增加打赏功能</div><p><a href="/2020/10/02/blog_sticky.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 02, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-02T12:12:00+08:00">
-    <meta itemprop="keywords" content="misc"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/09/05/markdown_insert_blank.html"><h2 itemprop="headline" class="item__header">markdown 如何插入多个空格？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？</div><p><a href="/2020/09/05/markdown_insert_blank.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=tools">tools</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Sep 05, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-09-05T17:10:00+08:00">
-    <meta itemprop="keywords" content="tools"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>38 post articles, 4 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
-            <i class="fas fa-angle-left"></i>
-          </div></li><li>
-              <div class="button button--primary button--circle focus"><span>1</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page2/">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>... ...
+<span class="nv">user</span><span class="o">=</span>_app <span class="nv">minTargetSdkVersion</span><span class="o">=</span>30 <span class="nv">domain</span><span class="o">=</span>untrusted_app <span class="nb">type</span><span class="o">=</span>app_data_file <span class="nv">levelFrom</span><span class="o">=</span>all
+<span class="nv">user</span><span class="o">=</span>_app <span class="nv">minTargetSdkVersion</span><span class="o">=</span>29 <span class="nv">domain</span><span class="o">=</span>untrusted_app_29 <span class="nb">type</span><span class="o">=</span>app_data_file <span class="nv">levelFrom</span><span class="o">=</span>all
+<span class="nv">user</span><span class="o">=</span>_app <span class="nv">minTargetSdkVersion</span><span class="o">=</span>28 <span class="nv">domain</span><span class="o">=</span>untrusted_app_27 <span class="nb">type</span><span class="o">=</span>app_data_file <span class="nv">levelFrom</span><span class="o">=</span>all
+<span class="nv">user</span><span class="o">=</span>_app <span class="nv">minTargetSdkVersion</span><span class="o">=</span>26 <span class="nv">domain</span><span class="o">=</span>untrusted_app_27 <span class="nb">type</span><span class="o">=</span>app_data_file <span class="nv">levelFrom</span><span class="o">=</span>user
+... ...
+
+</code></pre></div></div>
+
+<h4 id="不同-android-版本和-mintargetsdkversion-生成-domain-的表格">不同 Android 版本和 minTargetSdkVersion 生成 domain 的表格</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>8.0(26)</th>
+      <th>8.1(27)</th>
+      <th>9(28)</th>
+      <th>10(29)</th>
+      <th>11(30)</th>
+      <th>12(31)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>min30</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>untrusted_app</td>
+      <td>untrusted_app</td>
+    </tr>
+    <tr>
+      <td>min29</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>untrusted_app</td>
+      <td>untrusted_app_29</td>
+      <td>untrusted_app_29</td>
+    </tr>
+    <tr>
+      <td>min28</td>
+      <td> </td>
+      <td> </td>
+      <td>untrusted_app</td>
+      <td>untrusted_app_27</td>
+      <td>untrusted_app_27</td>
+      <td>untrusted_app_27</td>
+    </tr>
+    <tr>
+      <td>min26</td>
+      <td>untrusted_app</td>
+      <td>untrusted_app</td>
+      <td>untrusted_app_27</td>
+      <td>untrusted_app_27</td>
+      <td>untrusted_app_27</td>
+      <td>untrusted_app_27</td>
+    </tr>
+    <tr>
+      <td>&lt; 26</td>
+      <td>untrusted_app_25</td>
+      <td>untrusted_app_25</td>
+      <td>untrusted_app_25</td>
+      <td>untrusted_app_25</td>
+      <td>untrusted_app_25</td>
+      <td>untrusted_app_25</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>横坐标为 Android 版本，纵坐标为 minTargetSdkVersion</p>
+
+<h3 id="测试">测试</h3>
+
+<p>在 Android11 的手机上使用 双开助手-微多开分身 这款双开 app 测试，该 app 的 targetsdkversion 为 26，检测 app 的 targetsdkversion 为31，根据上面表格可知，双开 app 的 domain 是untrusted_app_27，而检测 app 的 domain 为untrusted_app，domain 不一致则检测出有使用双开，如下图：</p>
+
+<p><img src="/assets/pictures/android/riskenv_dual.png" alt="graph" /></p>
+
+<h2 id="edxposed-和-lsposed-检测思路">EdXposed 和 LSPosed 检测思路</h2>
+
+<p>Xposed 最高支持到 Androd8，若要使用 Xposed 框架，就需要使用 EdXposed 和 LSPosed，这两个框架需要搭配 magisk 来使用，并且需要使用 magisk 插件 <a href="https://github.com/RikkaApps/Riru">Riru</a>。</p>
+
+<h3 id="检测思路-1">检测思路</h3>
+
+<p>该类 hook 框架都需要注入到目标进程中，Riru提供了一种能力，可以在目标进程中隐藏注入的 so 文件，检测思路就是在隐藏的内存中搜索注入框架的特征。</p>
+
+<h3 id="技术原理-1">技术原理</h3>
+
+<p>Riru 隐藏的代码在 <a href="https://github.com/RikkaApps/Riru/blob/master/riru/src/main/cpp/hide/hide.cpp">这里</a>，思路：</p>
+
+<ol>
+  <li>先备份隐藏的内存，首先申请内存，将要隐藏的内存拷贝到申请的内存里</li>
+  <li>释放需要隐藏的内存</li>
+  <li>然后重新申请内存，并且指定的地址为刚才释放的隐藏内存</li>
+  <li>最后将最开始备份的内存拷贝回去</li>
+</ol>
+
+<p>这样的效果是读取内存列表文件 /proc/[target pid]/maps 时隐藏的内存后面没有文件名，像下面这样，是匿名内存</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+7f063d8000-7f06770000 <span class="nt">---p</span> 00000000 00:00 0 
+7f06770000-7f06772000 rw-p 00000000 00:00 0 
+7f06772000-7f073d8000 <span class="nt">---p</span> 00000000 00:00 0 
+7f073d8000-7f073d9000 <span class="nt">---p</span> 00000000 00:00 0 
+
+</code></pre></div></div>
+
+<p>但是上述的隐藏不会修改内存的权限，一般匿名内存都是可读可写，有可执行权限的情况比较少，所以我们只需要对匿名内存中有可执行权限的进行搜索，这样就避免对整个内存进行搜索。</p>
+
+<h3 id="测试-1">测试</h3>
+
+<p><img src="/assets/pictures/android/riskenv_lsposed.png" alt="graph" /></p>
+
+<p>将测试发现，EdXposed 和 LSPosed 都是可以检测出来的。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>对于双开检测，针对系统和目标 app 都是高版本，则比较有效，一般双开或多开 app 的 targetsdkversion 都较低，若升高可能某些 API 不可用或者适配代价较大。</p>
+
+<p>对于 EdXposed 和 LSPosed 目前只是粗略的对相关 so 进行检测，以后看下是否可以直接检测出 hook 的类和方法。</p>
+
+<p>最后给出代码： <a href="https://github.com/liwugang/RiskEnvDetection">https://github.com/liwugang/RiskEnvDetection</a></p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2022-01-01T23:26:13+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__reward"><section>
+  <div class="content-play">
+    <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+    <div class="hide_box-play"></div>
+    <div class="shang_box-play">
+      <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/assets/pictures/pay/close.jpg" alt="取消" /></a>
+      <div class="shang_tit-play">
+        <p>感谢您的支持!</p>
+      </div>
+      <div class="shang_payimg">
+          <img src="/assets/pictures/pay/alipayimg.jpg" alt="扫码支持" />
+      </div>
+    <div class="shang_payimg">
+          <img src="/assets/pictures/pay/weipayimg.png" alt="扫码支持" />
+      </div>
+      <div class="pay_explain">扫码打赏，您说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="alipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        <div class="pay_item" data-id="weipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/wechat.jpg" alt="微信" /></span>
+        </div>
+      </div>
+      <div class="shang_info-play">
+        <p>打开支付宝或微信扫一扫，即可进行扫码打赏哦</p>
+      </div>
     </div>
-  </div></div>
-<script>/*(function () {
+  </div>
+  <script type="text/javascript">
+  function dashangToggle(){
+    $(".hide_box-play").fadeToggle();
+    $(".shang_box-play").fadeToggle();
+  }
+  </script>
 
-})();*/
-</script>
+  <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
 
 
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+  <style type="text/css">
+    .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+    .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+    .shang_box-play{width:540px;height:500px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+    .shang_box-play img{border:none;border-width:0;}
+    .dashang{display:block;width:150px;margin:5px auto;height:40px;line-height:25px;padding:10px;background-color:#f72828;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:18px;transition: all 0.3s;}
+    .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+    .shang_close-play{float:right;display:inline-block;
+      margin-right: 10px;margin-top: 20px;
+    }
+
+    .shang_logo{display:block;text-align:center;margin:20px auto;}
+    .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+    .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+    .shang_payimg{width:230px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+    .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+    .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+    .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+    .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+    .shang_info-play{clear:both;}
+    .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+  </style>
+
+</section>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2021/11/21/analysis_jd_mystique.html">京东安全发现的魔形女漏洞分析</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'android_env_detection'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -1563,6 +1719,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
