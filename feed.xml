@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2022-01-01T23:26:43+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2022-01-01T23:29:39+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
 </subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">设备风控攻防 - 设备环境检测</title><link href="https://liwugang.github.io/2022/01/01/android_env_detection.html" rel="alternate" type="text/html" title="设备风控攻防 - 设备环境检测" /><published>2022-01-01T23:26:13+08:00</published><updated>2022-01-01T23:26:13+08:00</updated><id>https://liwugang.github.io/2022/01/01/android_env_detection</id><content type="html" xml:base="https://liwugang.github.io/2022/01/01/android_env_detection.html">&lt;p&gt;本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。&lt;/p&gt;
 
 &lt;p&gt;若有转载和引用，请附上完整链接，谢谢。&lt;/p&gt;
 
 &lt;!--more--&gt;
 
-&lt;h2 id=&quot;双开和多开检测思路&quot;&gt;双开和多开检测思路&lt;/h2&gt;
+&lt;h2 id=&quot;双开和多开检测&quot;&gt;双开和多开检测&lt;/h2&gt;
 
 &lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
 
@@ -110,7 +110,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/android/riskenv_dual.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;edxposed-和-lsposed-检测思路&quot;&gt;EdXposed 和 LSPosed 检测思路&lt;/h2&gt;
+&lt;h2 id=&quot;edxposed-和-lsposed-检测&quot;&gt;EdXposed 和 LSPosed 检测&lt;/h2&gt;
 
 &lt;p&gt;Xposed 最高支持到 Androd8，若要使用 Xposed 框架，就需要使用 EdXposed 和 LSPosed，这两个框架需要搭配 magisk 来使用，并且需要使用 magisk 插件 &lt;a href=&quot;https://github.com/RikkaApps/Riru&quot;&gt;Riru&lt;/a&gt;。&lt;/p&gt;
 
