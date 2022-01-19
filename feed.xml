@@ -1,159 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2022-01-01T23:29:39+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
-</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">设备风控攻防 - 设备环境检测</title><link href="https://liwugang.github.io/2022/01/01/android_env_detection.html" rel="alternate" type="text/html" title="设备风控攻防 - 设备环境检测" /><published>2022-01-01T23:26:13+08:00</published><updated>2022-01-01T23:26:13+08:00</updated><id>https://liwugang.github.io/2022/01/01/android_env_detection</id><content type="html" xml:base="https://liwugang.github.io/2022/01/01/android_env_detection.html">&lt;p&gt;本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。&lt;/p&gt;
-
-&lt;p&gt;若有转载和引用，请附上完整链接，谢谢。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;双开和多开检测&quot;&gt;双开和多开检测&lt;/h2&gt;
-
-&lt;h3 id=&quot;背景&quot;&gt;背景&lt;/h3&gt;
-
-&lt;p&gt;Android 5.0以上强制开启 SELinux，每个 app 都会分配 SELinux domain，三方 app 都是 untrusted_app，但随着版本升高，untrusted_app 也会在后面加版本。
-如 untrusted_app_25、untrusted_app_27等。&lt;/p&gt;
-
-&lt;h3 id=&quot;检测思路&quot;&gt;检测思路&lt;/h3&gt;
-
-&lt;p&gt;使用 SELinux domain 进行检测，若 app 运行在双开 app 的环境下，domain 使用的是双开 app 的，而该 app 实际的 domain 和双开不一致则可检测出来。需要满足下面条件，不能100%检测，但若是检测出，则一样是有问题的&lt;/p&gt;
-
-&lt;h3 id=&quot;前提条件&quot;&gt;前提条件&lt;/h3&gt;
-
-&lt;p&gt;需要双开或多开软件和检测 app 的 targetsdkversion 不一样，并且在当前手机系统上 targetsdkversion 生成的 domain 不一样才可以。&lt;/p&gt;
-
-&lt;h3 id=&quot;技术原理&quot;&gt;技术原理&lt;/h3&gt;
-
-&lt;p&gt;本文不详细介绍 domain 的生成过程，只说下大概思路：&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;首先根据签名信息和系统中的mac_permissions.xml文件比较，获取 seinfo 信息，三方 app 的 seinfo 格式为：default:targetSdkVersion=XX,  代码在SELinuxMMAC.java&lt;/li&gt;
-  &lt;li&gt;然后通过 seinfo 和 seapp_contexts 中的配置信息匹配，计算出 domain。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如下面的是 Android12 关于三方 app 的配置，只关注 minTargetSdkVersion 和 domain 字段，若当前 app targetsdkversion &amp;gt;= minTargetSdkVersion，会匹配到后面的 domain，顺序从高开始。若当前 app 的 targetsdkversion 是 30，匹配到第一条规则，则 domain 就是 untrusted_app，若 targetsdkversion 是 27，会匹配到最后一条，则 domain 是 untrusted_app_27&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;... ...
-&lt;span class=&quot;nv&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;_app &lt;span class=&quot;nv&quot;&gt;minTargetSdkVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;30 &lt;span class=&quot;nv&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;untrusted_app &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app_data_file &lt;span class=&quot;nv&quot;&gt;levelFrom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;all
-&lt;span class=&quot;nv&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;_app &lt;span class=&quot;nv&quot;&gt;minTargetSdkVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;29 &lt;span class=&quot;nv&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;untrusted_app_29 &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app_data_file &lt;span class=&quot;nv&quot;&gt;levelFrom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;all
-&lt;span class=&quot;nv&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;_app &lt;span class=&quot;nv&quot;&gt;minTargetSdkVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;28 &lt;span class=&quot;nv&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;untrusted_app_27 &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app_data_file &lt;span class=&quot;nv&quot;&gt;levelFrom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;all
-&lt;span class=&quot;nv&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;_app &lt;span class=&quot;nv&quot;&gt;minTargetSdkVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;26 &lt;span class=&quot;nv&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;untrusted_app_27 &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;app_data_file &lt;span class=&quot;nv&quot;&gt;levelFrom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;user
-... ...
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;不同-android-版本和-mintargetsdkversion-生成-domain-的表格&quot;&gt;不同 Android 版本和 minTargetSdkVersion 生成 domain 的表格&lt;/h4&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;8.0(26)&lt;/th&gt;
-      &lt;th&gt;8.1(27)&lt;/th&gt;
-      &lt;th&gt;9(28)&lt;/th&gt;
-      &lt;th&gt;10(29)&lt;/th&gt;
-      &lt;th&gt;11(30)&lt;/th&gt;
-      &lt;th&gt;12(31)&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;min30&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;untrusted_app&lt;/td&gt;
-      &lt;td&gt;untrusted_app&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;min29&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;untrusted_app&lt;/td&gt;
-      &lt;td&gt;untrusted_app_29&lt;/td&gt;
-      &lt;td&gt;untrusted_app_29&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;min28&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;untrusted_app&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;min26&lt;/td&gt;
-      &lt;td&gt;untrusted_app&lt;/td&gt;
-      &lt;td&gt;untrusted_app&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-      &lt;td&gt;untrusted_app_27&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&amp;lt; 26&lt;/td&gt;
-      &lt;td&gt;untrusted_app_25&lt;/td&gt;
-      &lt;td&gt;untrusted_app_25&lt;/td&gt;
-      &lt;td&gt;untrusted_app_25&lt;/td&gt;
-      &lt;td&gt;untrusted_app_25&lt;/td&gt;
-      &lt;td&gt;untrusted_app_25&lt;/td&gt;
-      &lt;td&gt;untrusted_app_25&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;横坐标为 Android 版本，纵坐标为 minTargetSdkVersion&lt;/p&gt;
-
-&lt;h3 id=&quot;测试&quot;&gt;测试&lt;/h3&gt;
-
-&lt;p&gt;在 Android11 的手机上使用 双开助手-微多开分身 这款双开 app 测试，该 app 的 targetsdkversion 为 26，检测 app 的 targetsdkversion 为31，根据上面表格可知，双开 app 的 domain 是untrusted_app_27，而检测 app 的 domain 为untrusted_app，domain 不一致则检测出有使用双开，如下图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/android/riskenv_dual.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;edxposed-和-lsposed-检测&quot;&gt;EdXposed 和 LSPosed 检测&lt;/h2&gt;
-
-&lt;p&gt;Xposed 最高支持到 Androd8，若要使用 Xposed 框架，就需要使用 EdXposed 和 LSPosed，这两个框架需要搭配 magisk 来使用，并且需要使用 magisk 插件 &lt;a href=&quot;https://github.com/RikkaApps/Riru&quot;&gt;Riru&lt;/a&gt;。&lt;/p&gt;
-
-&lt;h3 id=&quot;检测思路-1&quot;&gt;检测思路&lt;/h3&gt;
-
-&lt;p&gt;该类 hook 框架都需要注入到目标进程中，Riru提供了一种能力，可以在目标进程中隐藏注入的 so 文件，检测思路就是在隐藏的内存中搜索注入框架的特征。&lt;/p&gt;
-
-&lt;h3 id=&quot;技术原理-1&quot;&gt;技术原理&lt;/h3&gt;
-
-&lt;p&gt;Riru 隐藏的代码在 &lt;a href=&quot;https://github.com/RikkaApps/Riru/blob/master/riru/src/main/cpp/hide/hide.cpp&quot;&gt;这里&lt;/a&gt;，思路：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;先备份隐藏的内存，首先申请内存，将要隐藏的内存拷贝到申请的内存里&lt;/li&gt;
-  &lt;li&gt;释放需要隐藏的内存&lt;/li&gt;
-  &lt;li&gt;然后重新申请内存，并且指定的地址为刚才释放的隐藏内存&lt;/li&gt;
-  &lt;li&gt;最后将最开始备份的内存拷贝回去&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这样的效果是读取内存列表文件 /proc/[target pid]/maps 时隐藏的内存后面没有文件名，像下面这样，是匿名内存&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-7f063d8000-7f06770000 &lt;span class=&quot;nt&quot;&gt;---p&lt;/span&gt; 00000000 00:00 0 
-7f06770000-7f06772000 rw-p 00000000 00:00 0 
-7f06772000-7f073d8000 &lt;span class=&quot;nt&quot;&gt;---p&lt;/span&gt; 00000000 00:00 0 
-7f073d8000-7f073d9000 &lt;span class=&quot;nt&quot;&gt;---p&lt;/span&gt; 00000000 00:00 0 
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;但是上述的隐藏不会修改内存的权限，一般匿名内存都是可读可写，有可执行权限的情况比较少，所以我们只需要对匿名内存中有可执行权限的进行搜索，这样就避免对整个内存进行搜索。&lt;/p&gt;
-
-&lt;h3 id=&quot;测试-1&quot;&gt;测试&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pictures/android/riskenv_lsposed.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;将测试发现，EdXposed 和 LSPosed 都是可以检测出来的。&lt;/p&gt;
-
-&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;对于双开检测，针对系统和目标 app 都是高版本，则比较有效，一般双开或多开 app 的 targetsdkversion 都较低，若升高可能某些 API 不可用或者适配代价较大。&lt;/p&gt;
-
-&lt;p&gt;对于 EdXposed 和 LSPosed 目前只是粗略的对相关 so 进行检测，以后看下是否可以直接检测出 hook 的类和方法。&lt;/p&gt;
-
-&lt;p&gt;最后给出代码： &lt;a href=&quot;https://github.com/liwugang/RiskEnvDetection&quot;&gt;https://github.com/liwugang/RiskEnvDetection&lt;/a&gt;&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="Android" /><summary type="html">本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。 若有转载和引用，请附上完整链接，谢谢。</summary></entry><entry><title type="html">京东安全发现的魔形女漏洞分析</title><link href="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html" rel="alternate" type="text/html" title="京东安全发现的魔形女漏洞分析" /><published>2021-11-21T21:23:00+08:00</published><updated>2021-11-21T21:23:00+08:00</updated><id>https://liwugang.github.io/2021/11/21/analysis_jd_mystique</id><content type="html" xml:base="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html">&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/jd_intro.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2022-01-19T22:09:06+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+</subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">京东安全发现的魔形女漏洞分析</title><link href="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html" rel="alternate" type="text/html" title="京东安全发现的魔形女漏洞分析" /><published>2021-11-21T21:23:00+08:00</published><updated>2021-11-21T21:23:00+08:00</updated><id>https://liwugang.github.io/2021/11/21/analysis_jd_mystique</id><content type="html" xml:base="https://liwugang.github.io/2021/11/21/analysis_jd_mystique.html">&lt;p&gt;&lt;img src=&quot;/assets/pictures/security/jd_intro.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;根据&lt;a href=&quot;https://dawnslab.jd.com/mystique/&quot;&gt;魔形女漏洞&lt;/a&gt;网站介绍，可以看到其漏洞可以：&lt;/p&gt;
 
@@ -1715,4 +1561,80 @@ platform_app persistent_data_block_service:service_manager find&lt;span class=&q
 
 &lt;h2 id=&quot;效果&quot;&gt;效果&lt;/h2&gt;
 
-&lt;p&gt;markdown　　　　　　　　　　　　is good!&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="tools" /><summary type="html">使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？</summary></entry></feed>
+&lt;p&gt;markdown　　　　　　　　　　　　is good!&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="tools" /><summary type="html">使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？</summary></entry><entry><title type="html">记一次头文件不一致导致的异常</title><link href="https://liwugang.github.io/2020/08/30/header_mismatch.html" rel="alternate" type="text/html" title="记一次头文件不一致导致的异常" /><published>2020-08-30T21:00:00+08:00</published><updated>2020-08-30T21:00:00+08:00</updated><id>https://liwugang.github.io/2020/08/30/header_mismatch</id><content type="html" xml:base="https://liwugang.github.io/2020/08/30/header_mismatch.html">&lt;p&gt;最近下载了&lt;a href=&quot;https://github.com/SELinuxProject/selinux&quot;&gt;SELinux&lt;/a&gt;代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;vs-code-配置调试环境&quot;&gt;VS code 配置调试环境&lt;/h2&gt;
+
+&lt;p&gt;由于checkpolicy是自己使用源码编译，可以使用调试来分析问题。gdb是经常使用的命令行调试工具，但为了方便调试，这次是用VS code进行，顺便学习下如何配置。&lt;/p&gt;
+
+&lt;p&gt;首先VS code默认是个编辑器，首先要安装C/C++的插件，这样才能进行代码提示、跳转、编译和调试。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/install_extension.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;安装插件如上图，点击左侧栏最下面插件按钮，默认会显示最常用的，也可以在上面输入框搜索C/C++，我们选择第一个出现的进行安装，由Microsoft提供的。&lt;/p&gt;
+
+&lt;p&gt;接下来打开我们要调试的源码。
+&lt;img src=&quot;/assets/pictures/debug/debug_first.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如上图进行配置调试，首先：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;选择菜单Run –&amp;gt; Start Debugging；&lt;/li&gt;
+  &lt;li&gt;出现的调试列表选择C++(GDB/LLDB)。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;选择C++(GDB/LLDB)后， 会根据当前打开的文件出现不同菜单，若当前文件为.c或者.cpp等源码文件，会出现如下图：
+&lt;img src=&quot;/assets/pictures/debug/build_and_debug.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;有两种配置方式：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Build and debug。该方式是先进行编译，然后在进行调试，并且可以选择不同的编译器；&lt;/li&gt;
+  &lt;li&gt;Debug。最后的Default Configuration，该方式只会进行调试，不编译。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;若当前文件非.c或者.cpp等源码文件，则会跳过”Build and debug”方式，默认使用上图Default Configuration方式并打开配置：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/debug_configuration.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;我们只需要填写上“要填写的程序”和“调试参数”就行。&lt;/p&gt;
+
+&lt;h2 id=&quot;调试程序&quot;&gt;调试程序&lt;/h2&gt;
+
+&lt;p&gt;由于执行会段错误，那先不用设置断点，执行后会断在异常地方。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/segment_fault.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如图，执行后断在ebitmap_cpy函数 new-&amp;gt;startbit = n-&amp;gt;startbit该行，结合左侧局部变量中看到，n = 0x40，问题就出现在这里。&lt;/p&gt;
+
+&lt;p&gt;根据左侧的调用堆栈显示，是main调用expand_module，expand_module调用ebitmap_cpy，下面根据栈回溯来分析。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/stack_main.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到，在main函数中时policycaps中的node不为0x40。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/stack_expand.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;而在expand_module中发现已经变为0x40，这个什么原因导致的？&lt;/p&gt;
+
+&lt;p&gt;一般出现这种情况都怀疑是多线程中其他线程修改这值导致，但是该程序不是多线程，并且是调用expand_module前后不同。所以问题不是多线程导致。&lt;/p&gt;
+
+&lt;p&gt;我们把调用前后的变量添加到watch处，发现地址都相同，并且都属于policydb_t *类型，但为什么不同？当我们添加了sizeof记录这两个变量的长度时，发现竟然不同。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/compare.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;由于expand_module是属于libsepol，是在引入的静态库libsepol.a中，而main是在checkpolicy中，此时需要查看编译情况。&lt;/p&gt;
+
+&lt;h2 id=&quot;编译检查&quot;&gt;编译检查&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/makefile.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;libsepol.a 是使用SELinux下的libsepol目录生成，而checkpolicy生成是依赖于policydb.h头文件，从Makefile中并没有特殊指定目录，所以应该是使用系统目录下的policydb.h，而libsepol.a是使用SELinux目录下的。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pictures/debug/more.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;通过对比发现，确实用于生成的libsepol.a的policydb_t类型多了filename_trans_count参数。要修复该问题，只需要将编译checkpolicy的CFLAGS增加 -I../libsepol/include即可，也就是使用和libsepol.a同样的头文件。&lt;/p&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;头文件信息将会打包到程序中，并且也会随时更新，所以在编译代码时要注意头文件的一致，防止不一致导致的问题。特别是在升级系统后，要注意类似问题。&lt;/p&gt;</content><author><name>liwugang</name><email>liwugang@outlook.com</email></author><category term="debug" /><summary type="html">最近下载了SELinux代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。</summary></entry></feed>
