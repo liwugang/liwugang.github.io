@@ -12,11 +12,6 @@ key: page_about
 
 该博客主要记录我日常的技术总结，并且会有相应专题系统文章。我主要专注在Android、安全、逆向、Linux等方面。
 
-
-# 公众号
-
- ![graph]({{"/assets/gongzhonghao.jpg" | prepend:site.baseurl}})
-
 # 开源贡献
 
 | Software | Patch
