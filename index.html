@@ -902,6 +902,28 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 03, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-03T11:55:00+08:00">
     <meta itemprop="keywords" content="SELinux"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2022/02/27/android10_no_read_code.html"><h2 itemprop="headline" class="item__header">Android 10 系统库代码段去掉读权限探讨</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">前段时间在对系统函数进行 hook 检测时，发现了一些异常 crash，并且只发生在 Android 10 系统上，经过对错误日志分析，确认这是 Android 10 新增加的功能：系统库的代码段会映射到可执行内存，没有读权限。hook 检测的逻辑是需要读取指令解析来确认，所以导致了异常。
+
+简介
+
+从官方介绍 可知，增加该功能是为了安全考虑，并且该功能只支持 AArch64 架构，需要硬件和 Kernel 共同支持，硬件提供 PAN(Privileged Access Never) 和 kernel 提供 XOM(eXecute-Only Memory)，详细资料可查看：Execute-only Memory (XOM) for AArch64 Binaries
+
+
+
+但是在 And...</div><p><a href="/2022/02/27/android10_no_read_code.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Feb 27, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-02-27T13:03:00+08:00">
+    <meta itemprop="keywords" content="Android"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2022/01/01/android_env_detection.html"><h2 itemprop="headline" class="item__header">设备风控攻防 - 设备环境检测</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">本文中提到的检测方式，都是笔者自己总结，现有公开资料都未有涉及，若有雷同检测思路，笔者保证绝没有借鉴和抄袭，特此声明。
+
+若有转载和引用，请附上完整链接，谢谢。</div><p><a href="/2022/01/01/android_env_detection.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jan 01, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-01-01T23:26:13+08:00">
+    <meta itemprop="keywords" content="Android"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2021/11/21/analysis_jd_mystique.html"><h2 itemprop="headline" class="item__header">京东安全发现的魔形女漏洞分析</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">根据魔形女漏洞网站介绍，可以看到其漏洞可以：
 
 
@@ -974,20 +996,8 @@ magisk 获取 root 权限是通过放置的 su，adb root 功能并不可用，�
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 02, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-02T12:12:00+08:00">
     <meta itemprop="keywords" content="misc"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/09/05/markdown_insert_blank.html"><h2 itemprop="headline" class="item__header">markdown 如何插入多个空格？</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">使用 markdown 发现，即使输入多个空格最终展示上也只有一个空格，那怎么实现展示多个空格？</div><p><a href="/2020/09/05/markdown_insert_blank.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=tools">tools</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Sep 05, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-09-05T17:10:00+08:00">
-    <meta itemprop="keywords" content="tools"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/08/30/header_mismatch.html"><h2 itemprop="headline" class="item__header">记一次头文件不一致导致的异常</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">最近下载了SELinux代码，编译了checkpolicy，但是使用时出现了段错误，本文记录下分析过程。</div><p><a href="/2020/08/30/header_mismatch.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=debug">debug</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 30, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-08-30T21:00:00+08:00">
-    <meta itemprop="keywords" content="debug"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>37 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>39 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-left"></i>
