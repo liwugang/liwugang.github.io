@@ -1,0 +1,1859 @@
+
+<html>
+<head>
+<title>Build Docs</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<style>
+.accordion,.simple{margin-left:1.5em;text-indent:-1.5em;margin-top:.25em}
+.collapsible{border-width:0 0 0 1;margin-left:.25em;padding-left:.25em;border-style:solid;
+  border-color:grey;display:none;}
+span.fixed{display: block; float: left; clear: left; width: 1em;}
+ul {
+	list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 30ch;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+li a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+li a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+</style>
+
+<script type="text/javascript">
+window.addEventListener('message', (e) => {
+  if (e != null && e.data != null && e.data.type === "SET_BASE" && e.data.base != null) {
+    const existingBase = document.querySelector('base');
+    if (existingBase != null) {
+      existingBase.parentElement.removeChild(existingBase);
+    }
+
+    const base = document.createElement('base');
+    base.setAttribute('href', e.data.base);
+    document.head.appendChild(base);
+  }
+});
+</script>
+
+</head>
+<body><ul>
+<li><h3>etc package</h3></li>
+<li><a href="etc.html#prebuilt_etc">prebuilt_etc</a></li>
+<li><a href="etc.html#prebuilt_etc_host">prebuilt_etc_host</a></li>
+<li><a href="etc.html#prebuilt_firmware">prebuilt_firmware</a></li>
+<li><a href="etc.html#prebuilt_font">prebuilt_font</a></li>
+<li><a href="etc.html#prebuilt_usr_share">prebuilt_usr_share</a></li>
+<li><a href="etc.html#prebuilt_usr_share_host">prebuilt_usr_share_host</a></li>
+</ul>
+
+<div style="margin-left:30ch;padding:1px 16px;">
+
+	
+	<p>
+  <h2 id="prebuilt_etc">prebuilt_etc</h2>
+  prebuilt_etc is for a prebuilt artifact that is installed in
+&lt;partition&gt;/etc/&lt;sub_dir&gt; directory.
+
+<div class="breadcrumb">
+    
+				<a href=etc.html#prebuilt_etc.name>name</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.src>src</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.arch>arch</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.device_specific>device_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.dist>dist</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.enabled>enabled</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.filename>filename</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.filename_from_src>filename_from_src</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.host_required>host_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.init_rc>init_rc</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.installable>installable</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.licenses>licenses</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.multilib>multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.notice>notice</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.owner>owner</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.product_specific>product_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.proprietary>proprietary</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.ramdisk>ramdisk</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.recovery>recovery</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.recovery_available>recovery_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.required>required</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.soc_specific>soc_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.sub_dir>sub_dir</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.target>target</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.target.host>target.host</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.target_required>target_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.vendor>vendor</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_etc.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_etc.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>, Source file of this prebuilt.
+
+</div>
+    <div class="simple" id="prebuilt_etc.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_etc.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_etc.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_etc.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_etc.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_etc.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_etc.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_etc.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_etc.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_etc.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed file. If unspecified, name of the module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_etc.filename_from_src">
+        <span class="fixed">&nbsp;</span><b>filename_from_src </b>
+        <i>bool</i>, when set to true, and filename property is not set, the name for the installed file
+is the same as the file name of the source file.
+
+</div>
+    <div class="simple" id="prebuilt_etc.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this module is directly installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="prebuilt_etc.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_etc.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_etc.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_etc.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_etc.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_etc.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_etc.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_etc.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_etc.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk.
+
+</div>
+    <div class="simple" id="prebuilt_etc.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_etc.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery.
+
+</div>
+    <div class="simple" id="prebuilt_etc.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_etc.sub_dir">
+        <span class="fixed">&nbsp;</span><b>sub_dir </b>
+        <i>string</i>, optional subdirectory under which this file is installed into
+
+</div>
+    <div class="simple" id="prebuilt_etc.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_etc.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_etc.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_etc.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_etc.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_etc.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="prebuilt_etc_host">prebuilt_etc_host</h2>
+  prebuilt_etc_host is for a host prebuilt artifact that is installed in
+$(HOST_OUT)/etc/&lt;sub_dir&gt; directory.
+
+<div class="breadcrumb">
+    
+				<a href=etc.html#prebuilt_etc_host.name>name</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.src>src</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.arch>arch</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.device_specific>device_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.dist>dist</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.enabled>enabled</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.filename>filename</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.filename_from_src>filename_from_src</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.host_required>host_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.init_rc>init_rc</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.installable>installable</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.licenses>licenses</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.multilib>multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.notice>notice</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.owner>owner</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.product_specific>product_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.proprietary>proprietary</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.ramdisk>ramdisk</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.recovery>recovery</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.recovery_available>recovery_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.required>required</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.soc_specific>soc_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.sub_dir>sub_dir</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.target>target</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.target.host>target.host</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.target_required>target_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.vendor>vendor</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=etc.html#prebuilt_etc_host.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_etc_host.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>, Source file of this prebuilt.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_etc_host.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_etc_host.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_etc_host.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_etc_host.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed file. If unspecified, name of the module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.filename_from_src">
+        <span class="fixed">&nbsp;</span><b>filename_from_src </b>
+        <i>bool</i>, when set to true, and filename property is not set, the name for the installed file
+is the same as the file name of the source file.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this module is directly installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_etc_host.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.sub_dir">
+        <span class="fixed">&nbsp;</span><b>sub_dir </b>
+        <i>string</i>, optional subdirectory under which this file is installed into
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_etc_host.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_etc_host.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_etc_host.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_etc_host.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="prebuilt_firmware">prebuilt_firmware</h2>
+  prebuilt_firmware installs a firmware file to &lt;partition&gt;/etc/firmware directory for system image.
+If soc_specific property is set to true, the firmware file is installed to the vendor &lt;partition&gt;/firmware
+directory for vendor image.
+
+<div class="breadcrumb">
+    
+				<a href=etc.html#prebuilt_firmware.name>name</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.src>src</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.arch>arch</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.device_specific>device_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.dist>dist</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.enabled>enabled</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.filename>filename</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.filename_from_src>filename_from_src</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.host_required>host_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.init_rc>init_rc</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.installable>installable</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.licenses>licenses</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.multilib>multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.notice>notice</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.owner>owner</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.product_specific>product_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.proprietary>proprietary</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.ramdisk>ramdisk</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.recovery>recovery</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.recovery_available>recovery_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.required>required</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.soc_specific>soc_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.sub_dir>sub_dir</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.target>target</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.target.host>target.host</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.target_required>target_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.vendor>vendor</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=etc.html#prebuilt_firmware.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_firmware.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>, Source file of this prebuilt.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_firmware.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_firmware.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_firmware.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_firmware.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_firmware.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_firmware.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_firmware.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed file. If unspecified, name of the module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_firmware.filename_from_src">
+        <span class="fixed">&nbsp;</span><b>filename_from_src </b>
+        <i>bool</i>, when set to true, and filename property is not set, the name for the installed file
+is the same as the file name of the source file.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_firmware.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_firmware.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this module is directly installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_firmware.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_firmware.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_firmware.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_firmware.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_firmware.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_firmware.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_firmware.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_firmware.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_firmware.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_firmware.sub_dir">
+        <span class="fixed">&nbsp;</span><b>sub_dir </b>
+        <i>string</i>, optional subdirectory under which this file is installed into
+
+</div>
+    <div class="simple" id="prebuilt_firmware.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_firmware.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_firmware.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_firmware.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_firmware.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_firmware.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_firmware.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_firmware.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="prebuilt_font">prebuilt_font</h2>
+  prebuilt_font installs a font in &lt;partition&gt;/fonts directory.
+
+<div class="breadcrumb">
+    
+				<a href=etc.html#prebuilt_font.name>name</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.src>src</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.arch>arch</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.device_specific>device_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.dist>dist</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.enabled>enabled</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.filename>filename</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.filename_from_src>filename_from_src</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.host_required>host_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.init_rc>init_rc</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.installable>installable</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.licenses>licenses</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.multilib>multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.notice>notice</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.owner>owner</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.product_specific>product_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.proprietary>proprietary</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.ramdisk>ramdisk</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.recovery>recovery</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.recovery_available>recovery_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.required>required</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.soc_specific>soc_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.sub_dir>sub_dir</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.target>target</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.target.host>target.host</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.target_required>target_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.vendor>vendor</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=etc.html#prebuilt_font.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_font.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_font.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>, Source file of this prebuilt.
+
+</div>
+    <div class="simple" id="prebuilt_font.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_font.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_font.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_font.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_font.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_font.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_font.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_font.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_font.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_font.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed file. If unspecified, name of the module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_font.filename_from_src">
+        <span class="fixed">&nbsp;</span><b>filename_from_src </b>
+        <i>bool</i>, when set to true, and filename property is not set, the name for the installed file
+is the same as the file name of the source file.
+
+</div>
+    <div class="simple" id="prebuilt_font.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_font.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_font.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this module is directly installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="prebuilt_font.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_font.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_font.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_font.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_font.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_font.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_font.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_font.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_font.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk.
+
+</div>
+    <div class="simple" id="prebuilt_font.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_font.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery.
+
+</div>
+    <div class="simple" id="prebuilt_font.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_font.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_font.sub_dir">
+        <span class="fixed">&nbsp;</span><b>sub_dir </b>
+        <i>string</i>, optional subdirectory under which this file is installed into
+
+</div>
+    <div class="simple" id="prebuilt_font.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_font.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_font.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_font.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_font.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_font.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_font.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_font.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="prebuilt_usr_share">prebuilt_usr_share</h2>
+  prebuilt_usr_share is for a prebuilt artifact that is installed in
+&lt;partition&gt;/usr/share/&lt;sub_dir&gt; directory.
+
+<div class="breadcrumb">
+    
+				<a href=etc.html#prebuilt_usr_share.name>name</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.src>src</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.arch>arch</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.device_specific>device_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.dist>dist</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.enabled>enabled</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.filename>filename</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.filename_from_src>filename_from_src</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.host_required>host_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.init_rc>init_rc</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.installable>installable</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.licenses>licenses</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.multilib>multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.notice>notice</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.owner>owner</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.product_specific>product_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.proprietary>proprietary</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.ramdisk>ramdisk</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.recovery>recovery</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.recovery_available>recovery_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.required>required</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.soc_specific>soc_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.sub_dir>sub_dir</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.target>target</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.target.host>target.host</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.target_required>target_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.vendor>vendor</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_usr_share.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>, Source file of this prebuilt.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_usr_share.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_usr_share.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_usr_share.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_usr_share.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed file. If unspecified, name of the module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.filename_from_src">
+        <span class="fixed">&nbsp;</span><b>filename_from_src </b>
+        <i>bool</i>, when set to true, and filename property is not set, the name for the installed file
+is the same as the file name of the source file.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this module is directly installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_usr_share.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.sub_dir">
+        <span class="fixed">&nbsp;</span><b>sub_dir </b>
+        <i>string</i>, optional subdirectory under which this file is installed into
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_usr_share.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_usr_share.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_usr_share.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="prebuilt_usr_share_host">prebuilt_usr_share_host</h2>
+  prebuild_usr_share_host is for a host prebuilt artifact that is installed in
+$(HOST_OUT)/usr/share/&lt;sub_dir&gt; directory.
+
+<div class="breadcrumb">
+    
+				<a href=etc.html#prebuilt_usr_share_host.name>name</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.src>src</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.arch>arch</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.device_specific>device_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.dist>dist</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.enabled>enabled</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.filename>filename</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.filename_from_src>filename_from_src</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.host_required>host_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.init_rc>init_rc</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.installable>installable</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.licenses>licenses</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.multilib>multilib</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.notice>notice</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.owner>owner</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.product_specific>product_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.proprietary>proprietary</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.ramdisk>ramdisk</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.recovery>recovery</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.recovery_available>recovery_available</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.required>required</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.soc_specific>soc_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.sub_dir>sub_dir</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.target>target</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.target.host>target.host</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.target_required>target_required</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.vendor>vendor</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=etc.html#prebuilt_usr_share_host.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_usr_share_host.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>, Source file of this prebuilt.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_usr_share_host.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_usr_share_host.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_usr_share_host.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed file. If unspecified, name of the module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.filename_from_src">
+        <span class="fixed">&nbsp;</span><b>filename_from_src </b>
+        <i>bool</i>, when set to true, and filename property is not set, the name for the installed file
+is the same as the file name of the source file.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this module is directly installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.sub_dir">
+        <span class="fixed">&nbsp;</span><b>sub_dir </b>
+        <i>string</i>, optional subdirectory under which this file is installed into
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_usr_share_host.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_usr_share_host.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_usr_share_host.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_usr_share_host.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div></div>
+<script>
+  accordions = document.getElementsByClassName('accordion');
+  for (i=0; i < accordions.length; ++i) {
+    accordions[i].addEventListener("click", function() {
+      var panel = this.nextElementSibling;
+      var child = this.firstElementChild;
+      if (panel.style.display === "block") {
+          panel.style.display = "none";
+          child.textContent = '\u2295';
+      } else {
+          panel.style.display = "block";
+          child.textContent = '\u2296';
+      }
+    });
+  }
+</script>
+</body>
