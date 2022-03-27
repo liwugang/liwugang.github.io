@@ -1,0 +1,3183 @@
+
+<html>
+<head>
+<title>Build Docs</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<style>
+.accordion,.simple{margin-left:1.5em;text-indent:-1.5em;margin-top:.25em}
+.collapsible{border-width:0 0 0 1;margin-left:.25em;padding-left:.25em;border-style:solid;
+  border-color:grey;display:none;}
+span.fixed{display: block; float: left; clear: left; width: 1em;}
+ul {
+	list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 30ch;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+li a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+li a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+</style>
+
+<script type="text/javascript">
+window.addEventListener('message', (e) => {
+  if (e != null && e.data != null && e.data.type === "SET_BASE" && e.data.base != null) {
+    const existingBase = document.querySelector('base');
+    if (existingBase != null) {
+      existingBase.parentElement.removeChild(existingBase);
+    }
+
+    const base = document.createElement('base');
+    base.setAttribute('href', e.data.base);
+    document.head.appendChild(base);
+  }
+});
+</script>
+
+</head>
+<body><ul>
+<li><h3>apex package</h3></li>
+<li><a href="apex.html#apex">apex</a></li>
+<li><a href="apex.html#apex_defaults">apex_defaults</a></li>
+<li><a href="apex.html#apex_key">apex_key</a></li>
+<li><a href="apex.html#apex_set">apex_set</a></li>
+<li><a href="apex.html#apex_test">apex_test</a></li>
+<li><a href="apex.html#apex_vndk">apex_vndk</a></li>
+<li><a href="apex.html#override_apex">override_apex</a></li>
+<li><a href="apex.html#prebuilt_apex">prebuilt_apex</a></li>
+</ul>
+
+<div style="margin-left:30ch;padding:1px 16px;">
+
+	
+	<p>
+  <h2 id="apex">apex</h2>
+  apex packages other modules into an APEX file which is a packaging format for system-level
+components like binaries, shared libraries, etc.
+
+<div class="breadcrumb">
+    
+				<a href=apex.html#apex.name>name</a>
+				,&nbsp;<a href=apex.html#apex.host_supported>host_supported</a>
+				,&nbsp;<a href=apex.html#apex.device_supported>device_supported</a>
+				,&nbsp;<a href=apex.html#apex.allowed_files>allowed_files</a>
+				,&nbsp;<a href=apex.html#apex.androidManifest>androidManifest</a>
+				,&nbsp;<a href=apex.html#apex.apex_name>apex_name</a>
+				,&nbsp;<a href=apex.html#apex.apps>apps</a>
+				,&nbsp;<a href=apex.html#apex.arch>arch</a>
+				,&nbsp;<a href=apex.html#apex.binaries>binaries</a>
+				,&nbsp;<a href=apex.html#apex.certificate>certificate</a>
+				,&nbsp;<a href=apex.html#apex.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#apex.defaults>defaults</a>
+				,&nbsp;<a href=apex.html#apex.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#apex.dist>dist</a>
+				,&nbsp;<a href=apex.html#apex.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#apex.file_contexts>file_contexts</a>
+				,&nbsp;<a href=apex.html#apex.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#apex.ignore_system_library_special_case>ignore_system_library_special_case</a>
+				,&nbsp;<a href=apex.html#apex.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#apex.installable>installable</a>
+				,&nbsp;<a href=apex.html#apex.java_libs>java_libs</a>
+				,&nbsp;<a href=apex.html#apex.key>key</a>
+				,&nbsp;<a href=apex.html#apex.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#apex.logging_parent>logging_parent</a>
+				,&nbsp;<a href=apex.html#apex.manifest>manifest</a>
+				,&nbsp;<a href=apex.html#apex.min_sdk_version>min_sdk_version</a>
+				,&nbsp;<a href=apex.html#apex.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#apex.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#apex.native_shared_libs>native_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex.notice>notice</a>
+				,&nbsp;<a href=apex.html#apex.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#apex.owner>owner</a>
+				,&nbsp;<a href=apex.html#apex.package_name>package_name</a>
+				,&nbsp;<a href=apex.html#apex.payload_type>payload_type</a>
+				,&nbsp;<a href=apex.html#apex.prebuilts>prebuilts</a>
+				,&nbsp;<a href=apex.html#apex.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#apex.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#apex.provide_cpp_shared_libs>provide_cpp_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#apex.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#apex.required>required</a>
+				,&nbsp;<a href=apex.html#apex.sdk_member_name>sdk_member_name</a>
+				,&nbsp;<a href=apex.html#apex.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#apex.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#apex.target>target</a>
+				,&nbsp;<a href=apex.html#apex.target.android>target.android</a>
+				,&nbsp;<a href=apex.html#apex.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#apex.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#apex.test_only_no_hashtree>test_only_no_hashtree</a>
+				,&nbsp;<a href=apex.html#apex.test_only_unsigned_payload>test_only_unsigned_payload</a>
+				,&nbsp;<a href=apex.html#apex.tests>tests</a>
+				,&nbsp;<a href=apex.html#apex.updatable>updatable</a>
+				,&nbsp;<a href=apex.html#apex.use_vendor>use_vendor</a>
+				,&nbsp;<a href=apex.html#apex.uses>uses</a>
+				,&nbsp;<a href=apex.html#apex.uses_sdks>uses_sdks</a>
+				,&nbsp;<a href=apex.html#apex.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#apex.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#apex.visibility>visibility</a></div>
+    <div class="simple" id="apex.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="apex.host_supported">
+        <span class="fixed">&nbsp;</span><b>host_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the host.  Defaults to false.
+
+</div>
+    <div class="simple" id="apex.device_supported">
+        <span class="fixed">&nbsp;</span><b>device_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the device.  Defaults to true.
+
+</div>
+    <div class="simple" id="apex.allowed_files">
+        <span class="fixed">&nbsp;</span><b>allowed_files </b>
+        <i>string</i>, A txt file containing list of files that are allowed to be included in this APEX.
+
+</div>
+    <div class="simple" id="apex.androidManifest">
+        <span class="fixed">&nbsp;</span><b>androidManifest </b>
+        <i>string</i>, AndroidManifest.xml file used for the zip container of this APEX bundle.
+If unspecified, a default one is automatically generated.
+
+</div>
+    <div class="simple" id="apex.apex_name">
+        <span class="fixed">&nbsp;</span><b>apex_name </b>
+        <i>string</i>, Canonical name of the APEX bundle. Used to determine the path to the activated APEX on
+device (/apex/&lt;apex_name&gt;).
+If unspecified, defaults to the value of name.
+
+</div>
+    <div class="simple" id="apex.apps">
+        <span class="fixed">&nbsp;</span><b>apps </b>
+        <i>list of strings</i>, List of APKs to package inside APEX
+
+</div>
+    <div class="simple" id="apex.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex.binaries">
+        <span class="fixed">&nbsp;</span><b>binaries </b>
+        <i>list of strings</i>, List of executables that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex.certificate">
+        <span class="fixed">&nbsp;</span><b>certificate </b>
+        <i>string</i>, The name of a certificate in the default certificate directory, blank to use the default product certificate,
+or an android_app_certificate module name in the form &#34;:module&#34;.
+
+</div>
+    <div class="simple" id="apex.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="apex.defaults">
+        <span class="fixed">&nbsp;</span><b>defaults </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="apex.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="apex.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="apex.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="apex.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="apex.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="apex.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="apex.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="apex.file_contexts">
+        <span class="fixed">&nbsp;</span><b>file_contexts </b>
+        <i>string</i>, Determines the file contexts file for setting security context to each file in this APEX bundle.
+For platform APEXes, this should points to a file under /system/sepolicy
+Default: /system/sepolicy/apex/&lt;module_name&gt;_file_contexts.
+
+</div>
+    <div class="simple" id="apex.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="apex.ignore_system_library_special_case">
+        <span class="fixed">&nbsp;</span><b>ignore_system_library_special_case </b>
+        <i>bool</i>, For telling the apex to ignore special handling for system libraries such as bionic. Default is false.
+
+</div>
+    <div class="simple" id="apex.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this APEX is installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="apex.java_libs">
+        <span class="fixed">&nbsp;</span><b>java_libs </b>
+        <i>list of strings</i>, List of java libraries that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex.key">
+        <span class="fixed">&nbsp;</span><b>key </b>
+        <i>string</i>, Name of the apex_key module that provides the private key to sign APEX
+
+</div>
+    <div class="simple" id="apex.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="apex.logging_parent">
+        <span class="fixed">&nbsp;</span><b>logging_parent </b>
+        <i>string</i>, Logging Parent value
+
+</div>
+    <div class="simple" id="apex.manifest">
+        <span class="fixed">&nbsp;</span><b>manifest </b>
+        <i>string</i>, Json manifest file describing meta info of this APEX bundle. Default:
+&#34;apex_manifest.json&#34;
+
+</div>
+    <div class="simple" id="apex.min_sdk_version">
+        <span class="fixed">&nbsp;</span><b>min_sdk_version </b>
+        <i>string</i>, The minimum SDK version that this apex must be compatible with.
+
+</div>
+    <div class="simple" id="apex.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="apex.native_shared_libs">
+        <span class="fixed">&nbsp;</span><b>native_shared_libs </b>
+        <i>list of strings</i>, List of native shared libs that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="apex.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="apex.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="apex.package_name">
+        <span class="fixed">&nbsp;</span><b>package_name </b>
+        <i>string</i>, Apex Container Package Name.
+Override value for attribute package:name in AndroidManifest.xml
+
+</div>
+    <div class="simple" id="apex.payload_type">
+        <span class="fixed">&nbsp;</span><b>payload_type </b>
+        <i>string</i>, The type of APEX to build. Controls what the APEX payload is. Either
+&#39;image&#39;, &#39;zip&#39; or &#39;both&#39;. Default: &#39;image&#39;.
+
+</div>
+    <div class="simple" id="apex.prebuilts">
+        <span class="fixed">&nbsp;</span><b>prebuilts </b>
+        <i>list of strings</i>, List of prebuilt files that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="apex.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="apex.provide_cpp_shared_libs">
+        <span class="fixed">&nbsp;</span><b>provide_cpp_shared_libs </b>
+        <i>bool</i>, Indicates this APEX provides C++ shared libaries to other APEXes. Default: false.
+
+</div>
+    <div class="simple" id="apex.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="apex.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="apex.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="apex.sdk_member_name">
+        <span class="fixed">&nbsp;</span><b>sdk_member_name </b>
+        <i>string</i>, Name of the module that this sdk member is representing
+
+</div>
+    <div class="simple" id="apex.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="apex.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="apex.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="apex.target.android">
+        <span class="fixed">&#x2295</span><b>target.android</b>, target.host, target.linux_bionic, target.linux_glibc</div>
+      <div class="collapsible">Multilib properties only for android.
+
+ Multilib properties only for host.
+
+Multilib properties only for host linux_bionic.
+
+Multilib properties only for host linux_glibc.
+
+
+        
+    <div class="simple" id="apex.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>apexMultilibProperties</i>
+</div></div>
+    <div class="accordion"  id="apex.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="apex.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="apex.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="apex.test_only_no_hashtree">
+        <span class="fixed">&nbsp;</span><b>test_only_no_hashtree </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should include dm-verity hashtree.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex.test_only_unsigned_payload">
+        <span class="fixed">&nbsp;</span><b>test_only_unsigned_payload </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should not be dm-verity signed.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex.tests">
+        <span class="fixed">&nbsp;</span><b>tests </b>
+        <i>list of strings</i>, List of tests that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex.updatable">
+        <span class="fixed">&nbsp;</span><b>updatable </b>
+        <i>bool</i>, Whether this APEX is considered updatable or not. When set to true, this will enforce additional
+rules for making sure that the APEX is truly updatable.
+- To be updatable, min_sdk_version should be set as well
+This will also disable the size optimizations like symlinking to the system libs.
+Default is false.
+
+</div>
+    <div class="simple" id="apex.use_vendor">
+        <span class="fixed">&nbsp;</span><b>use_vendor </b>
+        <i>bool</i>, For native libraries and binaries, use the vendor variant instead of the core (platform) variant.
+Default is false.
+
+</div>
+    <div class="simple" id="apex.uses">
+        <span class="fixed">&nbsp;</span><b>uses </b>
+        <i>list of strings</i>, List of providing APEXes&#39; names so that this APEX can depend on provided shared libraries.
+
+</div>
+    <div class="simple" id="apex.uses_sdks">
+        <span class="fixed">&nbsp;</span><b>uses_sdks </b>
+        <i>list of strings</i>, List of SDKs that are used to build this APEX. A reference to an SDK should be either
+`name#version` or `name` which is an alias for `name#current`. If left empty, `platform#current`
+is implied. This value affects all modules included in this APEX. In other words, they are
+also built with the SDKs specified here.
+
+</div>
+    <div class="simple" id="apex.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="apex.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="apex_defaults">apex_defaults</h2>
+  
+<div class="breadcrumb">
+    
+				<a href=apex.html#apex_defaults.name>name</a>
+				,&nbsp;<a href=apex.html#apex_defaults.host_supported>host_supported</a>
+				,&nbsp;<a href=apex.html#apex_defaults.device_supported>device_supported</a>
+				,&nbsp;<a href=apex.html#apex_defaults.allowed_files>allowed_files</a>
+				,&nbsp;<a href=apex.html#apex_defaults.androidManifest>androidManifest</a>
+				,&nbsp;<a href=apex.html#apex_defaults.apex_available>apex_available</a>
+				,&nbsp;<a href=apex.html#apex_defaults.apex_name>apex_name</a>
+				,&nbsp;<a href=apex.html#apex_defaults.apps>apps</a>
+				,&nbsp;<a href=apex.html#apex_defaults.arch>arch</a>
+				,&nbsp;<a href=apex.html#apex_defaults.binaries>binaries</a>
+				,&nbsp;<a href=apex.html#apex_defaults.certificate>certificate</a>
+				,&nbsp;<a href=apex.html#apex_defaults.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#apex_defaults.defaults>defaults</a>
+				,&nbsp;<a href=apex.html#apex_defaults.defaults_visibility>defaults_visibility</a>
+				,&nbsp;<a href=apex.html#apex_defaults.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#apex_defaults.dist>dist</a>
+				,&nbsp;<a href=apex.html#apex_defaults.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#apex_defaults.file_contexts>file_contexts</a>
+				,&nbsp;<a href=apex.html#apex_defaults.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#apex_defaults.ignore_system_library_special_case>ignore_system_library_special_case</a>
+				,&nbsp;<a href=apex.html#apex_defaults.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#apex_defaults.installable>installable</a>
+				,&nbsp;<a href=apex.html#apex_defaults.java_libs>java_libs</a>
+				,&nbsp;<a href=apex.html#apex_defaults.key>key</a>
+				,&nbsp;<a href=apex.html#apex_defaults.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#apex_defaults.logging_parent>logging_parent</a>
+				,&nbsp;<a href=apex.html#apex_defaults.manifest>manifest</a>
+				,&nbsp;<a href=apex.html#apex_defaults.min_sdk_version>min_sdk_version</a>
+				,&nbsp;<a href=apex.html#apex_defaults.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#apex_defaults.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#apex_defaults.native_shared_libs>native_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex_defaults.notice>notice</a>
+				,&nbsp;<a href=apex.html#apex_defaults.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#apex_defaults.owner>owner</a>
+				,&nbsp;<a href=apex.html#apex_defaults.package_name>package_name</a>
+				,&nbsp;<a href=apex.html#apex_defaults.payload_type>payload_type</a>
+				,&nbsp;<a href=apex.html#apex_defaults.prebuilts>prebuilts</a>
+				,&nbsp;<a href=apex.html#apex_defaults.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#apex_defaults.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#apex_defaults.provide_cpp_shared_libs>provide_cpp_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex_defaults.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#apex_defaults.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#apex_defaults.required>required</a>
+				,&nbsp;<a href=apex.html#apex_defaults.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#apex_defaults.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#apex_defaults.target>target</a>
+				,&nbsp;<a href=apex.html#apex_defaults.target.android>target.android</a>
+				,&nbsp;<a href=apex.html#apex_defaults.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#apex_defaults.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#apex_defaults.test_only_no_hashtree>test_only_no_hashtree</a>
+				,&nbsp;<a href=apex.html#apex_defaults.test_only_unsigned_payload>test_only_unsigned_payload</a>
+				,&nbsp;<a href=apex.html#apex_defaults.tests>tests</a>
+				,&nbsp;<a href=apex.html#apex_defaults.updatable>updatable</a>
+				,&nbsp;<a href=apex.html#apex_defaults.use_vendor>use_vendor</a>
+				,&nbsp;<a href=apex.html#apex_defaults.uses>uses</a>
+				,&nbsp;<a href=apex.html#apex_defaults.uses_sdks>uses_sdks</a>
+				,&nbsp;<a href=apex.html#apex_defaults.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#apex_defaults.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#apex_defaults.visibility>visibility</a></div>
+    <div class="simple" id="apex_defaults.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="apex_defaults.host_supported">
+        <span class="fixed">&nbsp;</span><b>host_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the host.  Defaults to false.
+
+</div>
+    <div class="simple" id="apex_defaults.device_supported">
+        <span class="fixed">&nbsp;</span><b>device_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the device.  Defaults to true.
+
+</div>
+    <div class="simple" id="apex_defaults.allowed_files">
+        <span class="fixed">&nbsp;</span><b>allowed_files </b>
+        <i>string</i>, A txt file containing list of files that are allowed to be included in this APEX.
+
+</div>
+    <div class="simple" id="apex_defaults.androidManifest">
+        <span class="fixed">&nbsp;</span><b>androidManifest </b>
+        <i>string</i>, AndroidManifest.xml file used for the zip container of this APEX bundle.
+If unspecified, a default one is automatically generated.
+
+</div>
+    <div class="simple" id="apex_defaults.apex_available">
+        <span class="fixed">&nbsp;</span><b>apex_available </b>
+        <i>list of strings</i>, Availability of this module in APEXes. Only the listed APEXes can contain
+this module. If the module has stubs then other APEXes and the platform may
+access it through them (subject to visibility).
+
+&#34;//apex_available:anyapex&#34; is a pseudo APEX name that matches to any APEX.
+&#34;//apex_available:platform&#34; refers to non-APEX partitions like &#34;system.img&#34;.
+Default is [&#34;//apex_available:platform&#34;].
+
+</div>
+    <div class="simple" id="apex_defaults.apex_name">
+        <span class="fixed">&nbsp;</span><b>apex_name </b>
+        <i>string</i>, Canonical name of the APEX bundle. Used to determine the path to the activated APEX on
+device (/apex/&lt;apex_name&gt;).
+If unspecified, defaults to the value of name.
+
+</div>
+    <div class="simple" id="apex_defaults.apps">
+        <span class="fixed">&nbsp;</span><b>apps </b>
+        <i>list of strings</i>, List of APKs to package inside APEX
+
+</div>
+    <div class="simple" id="apex_defaults.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_defaults.binaries">
+        <span class="fixed">&nbsp;</span><b>binaries </b>
+        <i>list of strings</i>, List of executables that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_defaults.certificate">
+        <span class="fixed">&nbsp;</span><b>certificate </b>
+        <i>string</i>, The name of a certificate in the default certificate directory, blank to use the default product certificate,
+or an android_app_certificate module name in the form &#34;:module&#34;.
+
+</div>
+    <div class="simple" id="apex_defaults.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="apex_defaults.defaults">
+        <span class="fixed">&nbsp;</span><b>defaults </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="apex_defaults.defaults_visibility">
+        <span class="fixed">&nbsp;</span><b>defaults_visibility </b>
+        <i>list of strings</i>, Controls the visibility of the defaults module itself.
+
+</div>
+    <div class="simple" id="apex_defaults.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="apex_defaults.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="apex_defaults.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="apex_defaults.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="apex_defaults.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="apex_defaults.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="apex_defaults.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="apex_defaults.file_contexts">
+        <span class="fixed">&nbsp;</span><b>file_contexts </b>
+        <i>string</i>, Determines the file contexts file for setting security context to each file in this APEX bundle.
+For platform APEXes, this should points to a file under /system/sepolicy
+Default: /system/sepolicy/apex/&lt;module_name&gt;_file_contexts.
+
+</div>
+    <div class="simple" id="apex_defaults.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="apex_defaults.ignore_system_library_special_case">
+        <span class="fixed">&nbsp;</span><b>ignore_system_library_special_case </b>
+        <i>bool</i>, For telling the apex to ignore special handling for system libraries such as bionic. Default is false.
+
+</div>
+    <div class="simple" id="apex_defaults.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_defaults.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this APEX is installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="apex_defaults.java_libs">
+        <span class="fixed">&nbsp;</span><b>java_libs </b>
+        <i>list of strings</i>, List of java libraries that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_defaults.key">
+        <span class="fixed">&nbsp;</span><b>key </b>
+        <i>string</i>, Name of the apex_key module that provides the private key to sign APEX
+
+</div>
+    <div class="simple" id="apex_defaults.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="apex_defaults.logging_parent">
+        <span class="fixed">&nbsp;</span><b>logging_parent </b>
+        <i>string</i>, Logging Parent value
+
+</div>
+    <div class="simple" id="apex_defaults.manifest">
+        <span class="fixed">&nbsp;</span><b>manifest </b>
+        <i>string</i>, Json manifest file describing meta info of this APEX bundle. Default:
+&#34;apex_manifest.json&#34;
+
+</div>
+    <div class="simple" id="apex_defaults.min_sdk_version">
+        <span class="fixed">&nbsp;</span><b>min_sdk_version </b>
+        <i>string</i>, The minimum SDK version that this apex must be compatible with.
+
+</div>
+    <div class="simple" id="apex_defaults.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>apexMultilibProperties</i>
+</div>
+    <div class="simple" id="apex_defaults.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="apex_defaults.native_shared_libs">
+        <span class="fixed">&nbsp;</span><b>native_shared_libs </b>
+        <i>list of strings</i>, List of native shared libs that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_defaults.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="apex_defaults.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="apex_defaults.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="apex_defaults.package_name">
+        <span class="fixed">&nbsp;</span><b>package_name </b>
+        <i>string</i>, Apex Container Package Name.
+Override value for attribute package:name in AndroidManifest.xml
+
+</div>
+    <div class="simple" id="apex_defaults.payload_type">
+        <span class="fixed">&nbsp;</span><b>payload_type </b>
+        <i>string</i>, The type of APEX to build. Controls what the APEX payload is. Either
+&#39;image&#39;, &#39;zip&#39; or &#39;both&#39;. Default: &#39;image&#39;.
+
+</div>
+    <div class="simple" id="apex_defaults.prebuilts">
+        <span class="fixed">&nbsp;</span><b>prebuilts </b>
+        <i>list of strings</i>, List of prebuilt files that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_defaults.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="apex_defaults.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="apex_defaults.provide_cpp_shared_libs">
+        <span class="fixed">&nbsp;</span><b>provide_cpp_shared_libs </b>
+        <i>bool</i>, Indicates this APEX provides C++ shared libaries to other APEXes. Default: false.
+
+</div>
+    <div class="simple" id="apex_defaults.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="apex_defaults.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="apex_defaults.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="apex_defaults.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="apex_defaults.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="apex_defaults.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="apex_defaults.target.android">
+        <span class="fixed">&#x2295</span><b>target.android</b>, target.host, target.linux_bionic, target.linux_glibc</div>
+      <div class="collapsible">Multilib properties only for android.
+
+ Multilib properties only for host.
+
+Multilib properties only for host linux_bionic.
+
+Multilib properties only for host linux_glibc.
+
+
+        
+    <div class="simple" id="apex_defaults.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>apexMultilibProperties</i>
+</div></div>
+    <div class="accordion"  id="apex_defaults.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="apex_defaults.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="apex_defaults.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="apex_defaults.test_only_no_hashtree">
+        <span class="fixed">&nbsp;</span><b>test_only_no_hashtree </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should include dm-verity hashtree.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex_defaults.test_only_unsigned_payload">
+        <span class="fixed">&nbsp;</span><b>test_only_unsigned_payload </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should not be dm-verity signed.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex_defaults.tests">
+        <span class="fixed">&nbsp;</span><b>tests </b>
+        <i>list of strings</i>, List of tests that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_defaults.updatable">
+        <span class="fixed">&nbsp;</span><b>updatable </b>
+        <i>bool</i>, Whether this APEX is considered updatable or not. When set to true, this will enforce additional
+rules for making sure that the APEX is truly updatable.
+- To be updatable, min_sdk_version should be set as well
+This will also disable the size optimizations like symlinking to the system libs.
+Default is false.
+
+</div>
+    <div class="simple" id="apex_defaults.use_vendor">
+        <span class="fixed">&nbsp;</span><b>use_vendor </b>
+        <i>bool</i>, For native libraries and binaries, use the vendor variant instead of the core (platform) variant.
+Default is false.
+
+</div>
+    <div class="simple" id="apex_defaults.uses">
+        <span class="fixed">&nbsp;</span><b>uses </b>
+        <i>list of strings</i>, List of providing APEXes&#39; names so that this APEX can depend on provided shared libraries.
+
+</div>
+    <div class="simple" id="apex_defaults.uses_sdks">
+        <span class="fixed">&nbsp;</span><b>uses_sdks </b>
+        <i>list of strings</i>, List of SDKs that are used to build this APEX. A reference to an SDK should be either
+`name#version` or `name` which is an alias for `name#current`. If left empty, `platform#current`
+is implied. This value affects all modules included in this APEX. In other words, they are
+also built with the SDKs specified here.
+
+</div>
+    <div class="simple" id="apex_defaults.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="apex_defaults.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_defaults.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="apex_key">apex_key</h2>
+  
+<div class="breadcrumb">
+    
+				<a href=apex.html#apex_key.name>name</a>
+				,&nbsp;<a href=apex.html#apex_key.host_supported>host_supported</a>
+				,&nbsp;<a href=apex.html#apex_key.device_supported>device_supported</a>
+				,&nbsp;<a href=apex.html#apex_key.arch>arch</a>
+				,&nbsp;<a href=apex.html#apex_key.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#apex_key.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#apex_key.dist>dist</a>
+				,&nbsp;<a href=apex.html#apex_key.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#apex_key.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#apex_key.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#apex_key.installable>installable</a>
+				,&nbsp;<a href=apex.html#apex_key.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#apex_key.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#apex_key.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#apex_key.notice>notice</a>
+				,&nbsp;<a href=apex.html#apex_key.owner>owner</a>
+				,&nbsp;<a href=apex.html#apex_key.private_key>private_key</a>
+				,&nbsp;<a href=apex.html#apex_key.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#apex_key.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#apex_key.public_key>public_key</a>
+				,&nbsp;<a href=apex.html#apex_key.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#apex_key.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#apex_key.required>required</a>
+				,&nbsp;<a href=apex.html#apex_key.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#apex_key.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#apex_key.target>target</a>
+				,&nbsp;<a href=apex.html#apex_key.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#apex_key.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#apex_key.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#apex_key.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#apex_key.visibility>visibility</a></div>
+    <div class="simple" id="apex_key.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="apex_key.host_supported">
+        <span class="fixed">&nbsp;</span><b>host_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the host.  Defaults to false.
+
+</div>
+    <div class="simple" id="apex_key.device_supported">
+        <span class="fixed">&nbsp;</span><b>device_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the device.  Defaults to true.
+
+</div>
+    <div class="simple" id="apex_key.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_key.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="apex_key.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="apex_key.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="apex_key.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="apex_key.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="apex_key.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="apex_key.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="apex_key.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="apex_key.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="apex_key.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_key.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this key is installable to one of the partitions. Defualt: true.
+
+</div>
+    <div class="simple" id="apex_key.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="apex_key.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_key.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="apex_key.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="apex_key.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="apex_key.private_key">
+        <span class="fixed">&nbsp;</span><b>private_key </b>
+        <i>string</i>, Path or module to the private key file in pem format. Used to sign APEXs.
+
+</div>
+    <div class="simple" id="apex_key.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="apex_key.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="apex_key.public_key">
+        <span class="fixed">&nbsp;</span><b>public_key </b>
+        <i>string</i>, Path or module to the public key file in avbpubkey format. Installed to the device.
+Base name of the file is used as the ID for the key.
+
+</div>
+    <div class="simple" id="apex_key.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="apex_key.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="apex_key.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="apex_key.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="apex_key.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="apex_key.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="apex_key.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="apex_key.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="apex_key.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="apex_key.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="apex_key.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_key.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="apex_set">apex_set</h2>
+  prebuilt_apex imports an `.apex` file into the build graph as if it was built with apex.
+
+<div class="breadcrumb">
+    
+				<a href=apex.html#apex_set.name>name</a>
+				,&nbsp;<a href=apex.html#apex_set.arch>arch</a>
+				,&nbsp;<a href=apex.html#apex_set.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#apex_set.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#apex_set.dist>dist</a>
+				,&nbsp;<a href=apex.html#apex_set.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#apex_set.filename>filename</a>
+				,&nbsp;<a href=apex.html#apex_set.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#apex_set.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#apex_set.installable>installable</a>
+				,&nbsp;<a href=apex.html#apex_set.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#apex_set.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#apex_set.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#apex_set.notice>notice</a>
+				,&nbsp;<a href=apex.html#apex_set.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#apex_set.owner>owner</a>
+				,&nbsp;<a href=apex.html#apex_set.prefer>prefer</a>
+				,&nbsp;<a href=apex.html#apex_set.prerelease>prerelease</a>
+				,&nbsp;<a href=apex.html#apex_set.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#apex_set.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#apex_set.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#apex_set.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#apex_set.required>required</a>
+				,&nbsp;<a href=apex.html#apex_set.set>set</a>
+				,&nbsp;<a href=apex.html#apex_set.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#apex_set.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#apex_set.target>target</a>
+				,&nbsp;<a href=apex.html#apex_set.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#apex_set.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#apex_set.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#apex_set.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#apex_set.visibility>visibility</a></div>
+    <div class="simple" id="apex_set.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="apex_set.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_set.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="apex_set.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="apex_set.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="apex_set.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="apex_set.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="apex_set.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="apex_set.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="apex_set.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="apex_set.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, optional name for the installed apex. If unspecified, name of the
+module is used as the file name
+
+</div>
+    <div class="simple" id="apex_set.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="apex_set.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_set.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, whether the extracted apex file installable.
+
+</div>
+    <div class="simple" id="apex_set.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="apex_set.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_set.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="apex_set.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="apex_set.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="apex_set.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="apex_set.prefer">
+        <span class="fixed">&nbsp;</span><b>prefer </b>
+        <i>bool</i>, When prefer is set to true the prebuilt will be used instead of any source module with
+a matching name.
+
+</div>
+    <div class="simple" id="apex_set.prerelease">
+        <span class="fixed">&nbsp;</span><b>prerelease </b>
+        <i>bool</i>, apexes in this set use prerelease SDK version
+
+</div>
+    <div class="simple" id="apex_set.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="apex_set.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="apex_set.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="apex_set.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="apex_set.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="apex_set.set">
+        <span class="fixed">&nbsp;</span><b>set </b>
+        <i>string</i>, the .apks file path that contains prebuilt apex files to be extracted.
+
+</div>
+    <div class="simple" id="apex_set.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="apex_set.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="apex_set.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="apex_set.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="apex_set.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="apex_set.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="apex_set.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="apex_set.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_set.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="apex_test">apex_test</h2>
+  apex_test is an APEX for testing. The difference from the ordinary apex module type is that
+certain compatibility checks such as apex_available are not done for apex_test.
+
+<div class="breadcrumb">
+    
+				<a href=apex.html#apex_test.name>name</a>
+				,&nbsp;<a href=apex.html#apex_test.host_supported>host_supported</a>
+				,&nbsp;<a href=apex.html#apex_test.device_supported>device_supported</a>
+				,&nbsp;<a href=apex.html#apex_test.allowed_files>allowed_files</a>
+				,&nbsp;<a href=apex.html#apex_test.androidManifest>androidManifest</a>
+				,&nbsp;<a href=apex.html#apex_test.apex_name>apex_name</a>
+				,&nbsp;<a href=apex.html#apex_test.apps>apps</a>
+				,&nbsp;<a href=apex.html#apex_test.arch>arch</a>
+				,&nbsp;<a href=apex.html#apex_test.binaries>binaries</a>
+				,&nbsp;<a href=apex.html#apex_test.certificate>certificate</a>
+				,&nbsp;<a href=apex.html#apex_test.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#apex_test.defaults>defaults</a>
+				,&nbsp;<a href=apex.html#apex_test.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#apex_test.dist>dist</a>
+				,&nbsp;<a href=apex.html#apex_test.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#apex_test.file_contexts>file_contexts</a>
+				,&nbsp;<a href=apex.html#apex_test.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#apex_test.ignore_system_library_special_case>ignore_system_library_special_case</a>
+				,&nbsp;<a href=apex.html#apex_test.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#apex_test.installable>installable</a>
+				,&nbsp;<a href=apex.html#apex_test.java_libs>java_libs</a>
+				,&nbsp;<a href=apex.html#apex_test.key>key</a>
+				,&nbsp;<a href=apex.html#apex_test.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#apex_test.logging_parent>logging_parent</a>
+				,&nbsp;<a href=apex.html#apex_test.manifest>manifest</a>
+				,&nbsp;<a href=apex.html#apex_test.min_sdk_version>min_sdk_version</a>
+				,&nbsp;<a href=apex.html#apex_test.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#apex_test.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#apex_test.native_shared_libs>native_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex_test.notice>notice</a>
+				,&nbsp;<a href=apex.html#apex_test.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#apex_test.owner>owner</a>
+				,&nbsp;<a href=apex.html#apex_test.package_name>package_name</a>
+				,&nbsp;<a href=apex.html#apex_test.payload_type>payload_type</a>
+				,&nbsp;<a href=apex.html#apex_test.prebuilts>prebuilts</a>
+				,&nbsp;<a href=apex.html#apex_test.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#apex_test.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#apex_test.provide_cpp_shared_libs>provide_cpp_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex_test.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#apex_test.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#apex_test.required>required</a>
+				,&nbsp;<a href=apex.html#apex_test.sdk_member_name>sdk_member_name</a>
+				,&nbsp;<a href=apex.html#apex_test.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#apex_test.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#apex_test.target>target</a>
+				,&nbsp;<a href=apex.html#apex_test.target.android>target.android</a>
+				,&nbsp;<a href=apex.html#apex_test.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#apex_test.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#apex_test.test_only_no_hashtree>test_only_no_hashtree</a>
+				,&nbsp;<a href=apex.html#apex_test.test_only_unsigned_payload>test_only_unsigned_payload</a>
+				,&nbsp;<a href=apex.html#apex_test.tests>tests</a>
+				,&nbsp;<a href=apex.html#apex_test.updatable>updatable</a>
+				,&nbsp;<a href=apex.html#apex_test.use_vendor>use_vendor</a>
+				,&nbsp;<a href=apex.html#apex_test.uses>uses</a>
+				,&nbsp;<a href=apex.html#apex_test.uses_sdks>uses_sdks</a>
+				,&nbsp;<a href=apex.html#apex_test.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#apex_test.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#apex_test.visibility>visibility</a></div>
+    <div class="simple" id="apex_test.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="apex_test.host_supported">
+        <span class="fixed">&nbsp;</span><b>host_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the host.  Defaults to false.
+
+</div>
+    <div class="simple" id="apex_test.device_supported">
+        <span class="fixed">&nbsp;</span><b>device_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the device.  Defaults to true.
+
+</div>
+    <div class="simple" id="apex_test.allowed_files">
+        <span class="fixed">&nbsp;</span><b>allowed_files </b>
+        <i>string</i>, A txt file containing list of files that are allowed to be included in this APEX.
+
+</div>
+    <div class="simple" id="apex_test.androidManifest">
+        <span class="fixed">&nbsp;</span><b>androidManifest </b>
+        <i>string</i>, AndroidManifest.xml file used for the zip container of this APEX bundle.
+If unspecified, a default one is automatically generated.
+
+</div>
+    <div class="simple" id="apex_test.apex_name">
+        <span class="fixed">&nbsp;</span><b>apex_name </b>
+        <i>string</i>, Canonical name of the APEX bundle. Used to determine the path to the activated APEX on
+device (/apex/&lt;apex_name&gt;).
+If unspecified, defaults to the value of name.
+
+</div>
+    <div class="simple" id="apex_test.apps">
+        <span class="fixed">&nbsp;</span><b>apps </b>
+        <i>list of strings</i>, List of APKs to package inside APEX
+
+</div>
+    <div class="simple" id="apex_test.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_test.binaries">
+        <span class="fixed">&nbsp;</span><b>binaries </b>
+        <i>list of strings</i>, List of executables that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_test.certificate">
+        <span class="fixed">&nbsp;</span><b>certificate </b>
+        <i>string</i>, The name of a certificate in the default certificate directory, blank to use the default product certificate,
+or an android_app_certificate module name in the form &#34;:module&#34;.
+
+</div>
+    <div class="simple" id="apex_test.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="apex_test.defaults">
+        <span class="fixed">&nbsp;</span><b>defaults </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="apex_test.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="apex_test.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="apex_test.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="apex_test.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="apex_test.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="apex_test.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="apex_test.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="apex_test.file_contexts">
+        <span class="fixed">&nbsp;</span><b>file_contexts </b>
+        <i>string</i>, Determines the file contexts file for setting security context to each file in this APEX bundle.
+For platform APEXes, this should points to a file under /system/sepolicy
+Default: /system/sepolicy/apex/&lt;module_name&gt;_file_contexts.
+
+</div>
+    <div class="simple" id="apex_test.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="apex_test.ignore_system_library_special_case">
+        <span class="fixed">&nbsp;</span><b>ignore_system_library_special_case </b>
+        <i>bool</i>, For telling the apex to ignore special handling for system libraries such as bionic. Default is false.
+
+</div>
+    <div class="simple" id="apex_test.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_test.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this APEX is installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="apex_test.java_libs">
+        <span class="fixed">&nbsp;</span><b>java_libs </b>
+        <i>list of strings</i>, List of java libraries that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_test.key">
+        <span class="fixed">&nbsp;</span><b>key </b>
+        <i>string</i>, Name of the apex_key module that provides the private key to sign APEX
+
+</div>
+    <div class="simple" id="apex_test.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="apex_test.logging_parent">
+        <span class="fixed">&nbsp;</span><b>logging_parent </b>
+        <i>string</i>, Logging Parent value
+
+</div>
+    <div class="simple" id="apex_test.manifest">
+        <span class="fixed">&nbsp;</span><b>manifest </b>
+        <i>string</i>, Json manifest file describing meta info of this APEX bundle. Default:
+&#34;apex_manifest.json&#34;
+
+</div>
+    <div class="simple" id="apex_test.min_sdk_version">
+        <span class="fixed">&nbsp;</span><b>min_sdk_version </b>
+        <i>string</i>, The minimum SDK version that this apex must be compatible with.
+
+</div>
+    <div class="simple" id="apex_test.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_test.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="apex_test.native_shared_libs">
+        <span class="fixed">&nbsp;</span><b>native_shared_libs </b>
+        <i>list of strings</i>, List of native shared libs that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_test.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="apex_test.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="apex_test.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="apex_test.package_name">
+        <span class="fixed">&nbsp;</span><b>package_name </b>
+        <i>string</i>, Apex Container Package Name.
+Override value for attribute package:name in AndroidManifest.xml
+
+</div>
+    <div class="simple" id="apex_test.payload_type">
+        <span class="fixed">&nbsp;</span><b>payload_type </b>
+        <i>string</i>, The type of APEX to build. Controls what the APEX payload is. Either
+&#39;image&#39;, &#39;zip&#39; or &#39;both&#39;. Default: &#39;image&#39;.
+
+</div>
+    <div class="simple" id="apex_test.prebuilts">
+        <span class="fixed">&nbsp;</span><b>prebuilts </b>
+        <i>list of strings</i>, List of prebuilt files that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_test.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="apex_test.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="apex_test.provide_cpp_shared_libs">
+        <span class="fixed">&nbsp;</span><b>provide_cpp_shared_libs </b>
+        <i>bool</i>, Indicates this APEX provides C++ shared libaries to other APEXes. Default: false.
+
+</div>
+    <div class="simple" id="apex_test.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="apex_test.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="apex_test.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="apex_test.sdk_member_name">
+        <span class="fixed">&nbsp;</span><b>sdk_member_name </b>
+        <i>string</i>, Name of the module that this sdk member is representing
+
+</div>
+    <div class="simple" id="apex_test.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="apex_test.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="apex_test.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="apex_test.target.android">
+        <span class="fixed">&#x2295</span><b>target.android</b>, target.host, target.linux_bionic, target.linux_glibc</div>
+      <div class="collapsible">Multilib properties only for android.
+
+ Multilib properties only for host.
+
+Multilib properties only for host linux_bionic.
+
+Multilib properties only for host linux_glibc.
+
+
+        
+    <div class="simple" id="apex_test.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>apexMultilibProperties</i>
+</div></div>
+    <div class="accordion"  id="apex_test.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="apex_test.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="apex_test.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="apex_test.test_only_no_hashtree">
+        <span class="fixed">&nbsp;</span><b>test_only_no_hashtree </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should include dm-verity hashtree.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex_test.test_only_unsigned_payload">
+        <span class="fixed">&nbsp;</span><b>test_only_unsigned_payload </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should not be dm-verity signed.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex_test.tests">
+        <span class="fixed">&nbsp;</span><b>tests </b>
+        <i>list of strings</i>, List of tests that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_test.updatable">
+        <span class="fixed">&nbsp;</span><b>updatable </b>
+        <i>bool</i>, Whether this APEX is considered updatable or not. When set to true, this will enforce additional
+rules for making sure that the APEX is truly updatable.
+- To be updatable, min_sdk_version should be set as well
+This will also disable the size optimizations like symlinking to the system libs.
+Default is false.
+
+</div>
+    <div class="simple" id="apex_test.use_vendor">
+        <span class="fixed">&nbsp;</span><b>use_vendor </b>
+        <i>bool</i>, For native libraries and binaries, use the vendor variant instead of the core (platform) variant.
+Default is false.
+
+</div>
+    <div class="simple" id="apex_test.uses">
+        <span class="fixed">&nbsp;</span><b>uses </b>
+        <i>list of strings</i>, List of providing APEXes&#39; names so that this APEX can depend on provided shared libraries.
+
+</div>
+    <div class="simple" id="apex_test.uses_sdks">
+        <span class="fixed">&nbsp;</span><b>uses_sdks </b>
+        <i>list of strings</i>, List of SDKs that are used to build this APEX. A reference to an SDK should be either
+`name#version` or `name` which is an alias for `name#current`. If left empty, `platform#current`
+is implied. This value affects all modules included in this APEX. In other words, they are
+also built with the SDKs specified here.
+
+</div>
+    <div class="simple" id="apex_test.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="apex_test.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_test.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="apex_vndk">apex_vndk</h2>
+  apex_vndk creates a special variant of apex modules which contains only VNDK libraries.
+If `vndk_version` is specified, the VNDK libraries of the specified VNDK version are gathered automatically.
+If not specified, then the &#34;current&#34; versions are gathered.
+
+<div class="breadcrumb">
+    
+				<a href=apex.html#apex_vndk.name>name</a>
+				,&nbsp;<a href=apex.html#apex_vndk.host_supported>host_supported</a>
+				,&nbsp;<a href=apex.html#apex_vndk.device_supported>device_supported</a>
+				,&nbsp;<a href=apex.html#apex_vndk.allowed_files>allowed_files</a>
+				,&nbsp;<a href=apex.html#apex_vndk.androidManifest>androidManifest</a>
+				,&nbsp;<a href=apex.html#apex_vndk.apex_name>apex_name</a>
+				,&nbsp;<a href=apex.html#apex_vndk.apps>apps</a>
+				,&nbsp;<a href=apex.html#apex_vndk.arch>arch</a>
+				,&nbsp;<a href=apex.html#apex_vndk.binaries>binaries</a>
+				,&nbsp;<a href=apex.html#apex_vndk.certificate>certificate</a>
+				,&nbsp;<a href=apex.html#apex_vndk.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#apex_vndk.defaults>defaults</a>
+				,&nbsp;<a href=apex.html#apex_vndk.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#apex_vndk.dist>dist</a>
+				,&nbsp;<a href=apex.html#apex_vndk.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#apex_vndk.file_contexts>file_contexts</a>
+				,&nbsp;<a href=apex.html#apex_vndk.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#apex_vndk.ignore_system_library_special_case>ignore_system_library_special_case</a>
+				,&nbsp;<a href=apex.html#apex_vndk.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#apex_vndk.installable>installable</a>
+				,&nbsp;<a href=apex.html#apex_vndk.java_libs>java_libs</a>
+				,&nbsp;<a href=apex.html#apex_vndk.key>key</a>
+				,&nbsp;<a href=apex.html#apex_vndk.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#apex_vndk.logging_parent>logging_parent</a>
+				,&nbsp;<a href=apex.html#apex_vndk.manifest>manifest</a>
+				,&nbsp;<a href=apex.html#apex_vndk.min_sdk_version>min_sdk_version</a>
+				,&nbsp;<a href=apex.html#apex_vndk.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#apex_vndk.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#apex_vndk.native_shared_libs>native_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex_vndk.notice>notice</a>
+				,&nbsp;<a href=apex.html#apex_vndk.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#apex_vndk.owner>owner</a>
+				,&nbsp;<a href=apex.html#apex_vndk.package_name>package_name</a>
+				,&nbsp;<a href=apex.html#apex_vndk.payload_type>payload_type</a>
+				,&nbsp;<a href=apex.html#apex_vndk.prebuilts>prebuilts</a>
+				,&nbsp;<a href=apex.html#apex_vndk.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#apex_vndk.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#apex_vndk.provide_cpp_shared_libs>provide_cpp_shared_libs</a>
+				,&nbsp;<a href=apex.html#apex_vndk.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#apex_vndk.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#apex_vndk.required>required</a>
+				,&nbsp;<a href=apex.html#apex_vndk.sdk_member_name>sdk_member_name</a>
+				,&nbsp;<a href=apex.html#apex_vndk.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#apex_vndk.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#apex_vndk.target>target</a>
+				,&nbsp;<a href=apex.html#apex_vndk.target.android>target.android</a>
+				,&nbsp;<a href=apex.html#apex_vndk.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#apex_vndk.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#apex_vndk.test_only_no_hashtree>test_only_no_hashtree</a>
+				,&nbsp;<a href=apex.html#apex_vndk.test_only_unsigned_payload>test_only_unsigned_payload</a>
+				,&nbsp;<a href=apex.html#apex_vndk.tests>tests</a>
+				,&nbsp;<a href=apex.html#apex_vndk.updatable>updatable</a>
+				,&nbsp;<a href=apex.html#apex_vndk.use_vendor>use_vendor</a>
+				,&nbsp;<a href=apex.html#apex_vndk.uses>uses</a>
+				,&nbsp;<a href=apex.html#apex_vndk.uses_sdks>uses_sdks</a>
+				,&nbsp;<a href=apex.html#apex_vndk.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#apex_vndk.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#apex_vndk.visibility>visibility</a>
+				,&nbsp;<a href=apex.html#apex_vndk.vndk_version>vndk_version</a></div>
+    <div class="simple" id="apex_vndk.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="apex_vndk.host_supported">
+        <span class="fixed">&nbsp;</span><b>host_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the host.  Defaults to false.
+
+</div>
+    <div class="simple" id="apex_vndk.device_supported">
+        <span class="fixed">&nbsp;</span><b>device_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the device.  Defaults to true.
+
+</div>
+    <div class="simple" id="apex_vndk.allowed_files">
+        <span class="fixed">&nbsp;</span><b>allowed_files </b>
+        <i>string</i>, A txt file containing list of files that are allowed to be included in this APEX.
+
+</div>
+    <div class="simple" id="apex_vndk.androidManifest">
+        <span class="fixed">&nbsp;</span><b>androidManifest </b>
+        <i>string</i>, AndroidManifest.xml file used for the zip container of this APEX bundle.
+If unspecified, a default one is automatically generated.
+
+</div>
+    <div class="simple" id="apex_vndk.apex_name">
+        <span class="fixed">&nbsp;</span><b>apex_name </b>
+        <i>string</i>, Canonical name of the APEX bundle. Used to determine the path to the activated APEX on
+device (/apex/&lt;apex_name&gt;).
+If unspecified, defaults to the value of name.
+
+</div>
+    <div class="simple" id="apex_vndk.apps">
+        <span class="fixed">&nbsp;</span><b>apps </b>
+        <i>list of strings</i>, List of APKs to package inside APEX
+
+</div>
+    <div class="simple" id="apex_vndk.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="apex_vndk.binaries">
+        <span class="fixed">&nbsp;</span><b>binaries </b>
+        <i>list of strings</i>, List of executables that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_vndk.certificate">
+        <span class="fixed">&nbsp;</span><b>certificate </b>
+        <i>string</i>, The name of a certificate in the default certificate directory, blank to use the default product certificate,
+or an android_app_certificate module name in the form &#34;:module&#34;.
+
+</div>
+    <div class="simple" id="apex_vndk.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="apex_vndk.defaults">
+        <span class="fixed">&nbsp;</span><b>defaults </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="apex_vndk.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="apex_vndk.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="apex_vndk.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="apex_vndk.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="apex_vndk.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="apex_vndk.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="apex_vndk.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="apex_vndk.file_contexts">
+        <span class="fixed">&nbsp;</span><b>file_contexts </b>
+        <i>string</i>, Determines the file contexts file for setting security context to each file in this APEX bundle.
+For platform APEXes, this should points to a file under /system/sepolicy
+Default: /system/sepolicy/apex/&lt;module_name&gt;_file_contexts.
+
+</div>
+    <div class="simple" id="apex_vndk.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="apex_vndk.ignore_system_library_special_case">
+        <span class="fixed">&nbsp;</span><b>ignore_system_library_special_case </b>
+        <i>bool</i>, For telling the apex to ignore special handling for system libraries such as bionic. Default is false.
+
+</div>
+    <div class="simple" id="apex_vndk.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_vndk.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>, Whether this APEX is installable to one of the partitions. Default: true.
+
+</div>
+    <div class="simple" id="apex_vndk.java_libs">
+        <span class="fixed">&nbsp;</span><b>java_libs </b>
+        <i>list of strings</i>, List of java libraries that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_vndk.key">
+        <span class="fixed">&nbsp;</span><b>key </b>
+        <i>string</i>, Name of the apex_key module that provides the private key to sign APEX
+
+</div>
+    <div class="simple" id="apex_vndk.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="apex_vndk.logging_parent">
+        <span class="fixed">&nbsp;</span><b>logging_parent </b>
+        <i>string</i>, Logging Parent value
+
+</div>
+    <div class="simple" id="apex_vndk.manifest">
+        <span class="fixed">&nbsp;</span><b>manifest </b>
+        <i>string</i>, Json manifest file describing meta info of this APEX bundle. Default:
+&#34;apex_manifest.json&#34;
+
+</div>
+    <div class="simple" id="apex_vndk.min_sdk_version">
+        <span class="fixed">&nbsp;</span><b>min_sdk_version </b>
+        <i>string</i>, The minimum SDK version that this apex must be compatible with.
+
+</div>
+    <div class="simple" id="apex_vndk.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>apexMultilibProperties</i>
+</div>
+    <div class="simple" id="apex_vndk.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="apex_vndk.native_shared_libs">
+        <span class="fixed">&nbsp;</span><b>native_shared_libs </b>
+        <i>list of strings</i>, List of native shared libs that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_vndk.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="apex_vndk.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="apex_vndk.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="apex_vndk.package_name">
+        <span class="fixed">&nbsp;</span><b>package_name </b>
+        <i>string</i>, Apex Container Package Name.
+Override value for attribute package:name in AndroidManifest.xml
+
+</div>
+    <div class="simple" id="apex_vndk.payload_type">
+        <span class="fixed">&nbsp;</span><b>payload_type </b>
+        <i>string</i>, The type of APEX to build. Controls what the APEX payload is. Either
+&#39;image&#39;, &#39;zip&#39; or &#39;both&#39;. Default: &#39;image&#39;.
+
+</div>
+    <div class="simple" id="apex_vndk.prebuilts">
+        <span class="fixed">&nbsp;</span><b>prebuilts </b>
+        <i>list of strings</i>, List of prebuilt files that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_vndk.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="apex_vndk.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="apex_vndk.provide_cpp_shared_libs">
+        <span class="fixed">&nbsp;</span><b>provide_cpp_shared_libs </b>
+        <i>bool</i>, Indicates this APEX provides C++ shared libaries to other APEXes. Default: false.
+
+</div>
+    <div class="simple" id="apex_vndk.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="apex_vndk.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="apex_vndk.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="apex_vndk.sdk_member_name">
+        <span class="fixed">&nbsp;</span><b>sdk_member_name </b>
+        <i>string</i>, Name of the module that this sdk member is representing
+
+</div>
+    <div class="simple" id="apex_vndk.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="apex_vndk.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="apex_vndk.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="apex_vndk.target.android">
+        <span class="fixed">&#x2295</span><b>target.android</b>, target.host, target.linux_bionic, target.linux_glibc</div>
+      <div class="collapsible">Multilib properties only for android.
+
+ Multilib properties only for host.
+
+Multilib properties only for host linux_bionic.
+
+Multilib properties only for host linux_glibc.
+
+
+        
+    <div class="simple" id="apex_vndk.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>apexMultilibProperties</i>
+</div></div>
+    <div class="accordion"  id="apex_vndk.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="apex_vndk.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="apex_vndk.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="apex_vndk.test_only_no_hashtree">
+        <span class="fixed">&nbsp;</span><b>test_only_no_hashtree </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should include dm-verity hashtree.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex_vndk.test_only_unsigned_payload">
+        <span class="fixed">&nbsp;</span><b>test_only_unsigned_payload </b>
+        <i>bool</i>, Whenever apex_payload.img of the APEX should not be dm-verity signed.
+Should be only used in tests#.
+
+</div>
+    <div class="simple" id="apex_vndk.tests">
+        <span class="fixed">&nbsp;</span><b>tests </b>
+        <i>list of strings</i>, List of tests that are embedded inside this APEX bundle
+
+</div>
+    <div class="simple" id="apex_vndk.updatable">
+        <span class="fixed">&nbsp;</span><b>updatable </b>
+        <i>bool</i>, Whether this APEX is considered updatable or not. When set to true, this will enforce additional
+rules for making sure that the APEX is truly updatable.
+- To be updatable, min_sdk_version should be set as well
+This will also disable the size optimizations like symlinking to the system libs.
+Default is false.
+
+</div>
+    <div class="simple" id="apex_vndk.use_vendor">
+        <span class="fixed">&nbsp;</span><b>use_vendor </b>
+        <i>bool</i>, For native libraries and binaries, use the vendor variant instead of the core (platform) variant.
+Default is false.
+
+</div>
+    <div class="simple" id="apex_vndk.uses">
+        <span class="fixed">&nbsp;</span><b>uses </b>
+        <i>list of strings</i>, List of providing APEXes&#39; names so that this APEX can depend on provided shared libraries.
+
+</div>
+    <div class="simple" id="apex_vndk.uses_sdks">
+        <span class="fixed">&nbsp;</span><b>uses_sdks </b>
+        <i>list of strings</i>, List of SDKs that are used to build this APEX. A reference to an SDK should be either
+`name#version` or `name` which is an alias for `name#current`. If left empty, `platform#current`
+is implied. This value affects all modules included in this APEX. In other words, they are
+also built with the SDKs specified here.
+
+</div>
+    <div class="simple" id="apex_vndk.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="apex_vndk.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="apex_vndk.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+    <div class="simple" id="apex_vndk.vndk_version">
+        <span class="fixed">&nbsp;</span><b>vndk_version </b>
+        <i>string</i>, Indicates VNDK version of which this VNDK APEX bundles VNDK libs. Default is Platform VNDK Version.
+
+</div>
+	
+	<p>
+  <h2 id="override_apex">override_apex</h2>
+  override_apex is used to create an apex module based on another apex module
+by overriding some of its properties.
+
+<div class="breadcrumb">
+    
+				<a href=apex.html#override_apex.name>name</a>
+				,&nbsp;<a href=apex.html#override_apex.allowed_files>allowed_files</a>
+				,&nbsp;<a href=apex.html#override_apex.apps>apps</a>
+				,&nbsp;<a href=apex.html#override_apex.arch>arch</a>
+				,&nbsp;<a href=apex.html#override_apex.base>base</a>
+				,&nbsp;<a href=apex.html#override_apex.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#override_apex.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#override_apex.dist>dist</a>
+				,&nbsp;<a href=apex.html#override_apex.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#override_apex.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#override_apex.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#override_apex.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#override_apex.logging_parent>logging_parent</a>
+				,&nbsp;<a href=apex.html#override_apex.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#override_apex.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#override_apex.notice>notice</a>
+				,&nbsp;<a href=apex.html#override_apex.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#override_apex.owner>owner</a>
+				,&nbsp;<a href=apex.html#override_apex.package_name>package_name</a>
+				,&nbsp;<a href=apex.html#override_apex.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#override_apex.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#override_apex.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#override_apex.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#override_apex.required>required</a>
+				,&nbsp;<a href=apex.html#override_apex.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#override_apex.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#override_apex.target>target</a>
+				,&nbsp;<a href=apex.html#override_apex.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#override_apex.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#override_apex.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#override_apex.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#override_apex.visibility>visibility</a></div>
+    <div class="simple" id="override_apex.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="override_apex.allowed_files">
+        <span class="fixed">&nbsp;</span><b>allowed_files </b>
+        <i>string</i>, A txt file containing list of files that are allowed to be included in this APEX.
+
+</div>
+    <div class="simple" id="override_apex.apps">
+        <span class="fixed">&nbsp;</span><b>apps </b>
+        <i>list of strings</i>, List of APKs to package inside APEX
+
+</div>
+    <div class="simple" id="override_apex.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="override_apex.base">
+        <span class="fixed">&nbsp;</span><b>base </b>
+        <i>string</i>, Name of the base module to be overridden
+
+</div>
+    <div class="simple" id="override_apex.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="override_apex.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="override_apex.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="override_apex.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="override_apex.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="override_apex.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="override_apex.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="override_apex.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="override_apex.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="override_apex.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="override_apex.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="override_apex.logging_parent">
+        <span class="fixed">&nbsp;</span><b>logging_parent </b>
+        <i>string</i>, Logging Parent value
+
+</div>
+    <div class="simple" id="override_apex.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="override_apex.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="override_apex.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="override_apex.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="override_apex.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="override_apex.package_name">
+        <span class="fixed">&nbsp;</span><b>package_name </b>
+        <i>string</i>, Apex Container Package Name.
+Override value for attribute package:name in AndroidManifest.xml
+
+</div>
+    <div class="simple" id="override_apex.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="override_apex.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="override_apex.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="override_apex.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="override_apex.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="override_apex.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="override_apex.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="override_apex.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="override_apex.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="override_apex.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="override_apex.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="override_apex.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="override_apex.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="override_apex.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+	
+	<p>
+  <h2 id="prebuilt_apex">prebuilt_apex</h2>
+  prebuilt_apex imports an `.apex` file into the build graph as if it was built with apex.
+
+<div class="breadcrumb">
+    
+				<a href=apex.html#prebuilt_apex.name>name</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.src>src</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.arch>arch</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.arch.arm>arch.arm</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.device_specific>device_specific</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.dist>dist</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.enabled>enabled</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.filename>filename</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.host_required>host_required</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.init_rc>init_rc</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.installable>installable</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.licenses>licenses</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.multilib>multilib</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.notice>notice</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.overrides>overrides</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.owner>owner</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.prefer>prefer</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.product_specific>product_specific</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.proprietary>proprietary</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.ramdisk>ramdisk</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.recovery>recovery</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.required>required</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.soc_specific>soc_specific</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.target>target</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.target.host>target.host</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.target_required>target_required</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.vendor>vendor</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=apex.html#prebuilt_apex.visibility>visibility</a></div>
+    <div class="simple" id="prebuilt_apex.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="prebuilt_apex.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>
+</div>
+    <div class="simple" id="prebuilt_apex.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_apex.arch.arm">
+        <span class="fixed">&#x2295</span><b>arch.arm</b>, arch.arm64, arch.x86, arch.x86_64</div>
+      <div class="collapsible">
+ 
+
+
+
+        
+    <div class="simple" id="prebuilt_apex.src">
+        <span class="fixed">&nbsp;</span><b>src </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_apex.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="prebuilt_apex.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="accordion"  id="prebuilt_apex.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="prebuilt_apex.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="prebuilt_apex.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="prebuilt_apex.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="prebuilt_apex.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="prebuilt_apex.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="prebuilt_apex.filename">
+        <span class="fixed">&nbsp;</span><b>filename </b>
+        <i>string</i>, Optional name for the installed apex. If unspecified, name of the
+module is used as the file name
+
+</div>
+    <div class="simple" id="prebuilt_apex.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_apex.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_apex.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="prebuilt_apex.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="prebuilt_apex.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="prebuilt_apex.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="prebuilt_apex.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="prebuilt_apex.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="prebuilt_apex.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="prebuilt_apex.prefer">
+        <span class="fixed">&nbsp;</span><b>prefer </b>
+        <i>bool</i>, When prefer is set to true the prebuilt will be used instead of any source module with
+a matching name.
+
+</div>
+    <div class="simple" id="prebuilt_apex.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_apex.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="simple" id="prebuilt_apex.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="prebuilt_apex.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="prebuilt_apex.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_apex.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_apex.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="prebuilt_apex.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="prebuilt_apex.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="prebuilt_apex.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="simple" id="prebuilt_apex.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_apex.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="prebuilt_apex.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="prebuilt_apex.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div></div>
+<script>
+  accordions = document.getElementsByClassName('accordion');
+  for (i=0; i < accordions.length; ++i) {
+    accordions[i].addEventListener("click", function() {
+      var panel = this.nextElementSibling;
+      var child = this.firstElementChild;
+      if (panel.style.display === "block") {
+          panel.style.display = "none";
+          child.textContent = '\u2295';
+      } else {
+          panel.style.display = "block";
+          child.textContent = '\u2296';
+      }
+    });
+  }
+</script>
+</body>

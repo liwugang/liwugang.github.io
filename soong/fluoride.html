@@ -1,0 +1,1588 @@
+
+<html>
+<head>
+<title>Build Docs</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<style>
+.accordion,.simple{margin-left:1.5em;text-indent:-1.5em;margin-top:.25em}
+.collapsible{border-width:0 0 0 1;margin-left:.25em;padding-left:.25em;border-style:solid;
+  border-color:grey;display:none;}
+span.fixed{display: block; float: left; clear: left; width: 1em;}
+ul {
+	list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 30ch;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+li a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+li a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+</style>
+
+<script type="text/javascript">
+window.addEventListener('message', (e) => {
+  if (e != null && e.data != null && e.data.type === "SET_BASE" && e.data.base != null) {
+    const existingBase = document.querySelector('base');
+    if (existingBase != null) {
+      existingBase.parentElement.removeChild(existingBase);
+    }
+
+    const base = document.createElement('base');
+    base.setAttribute('href', e.data.base);
+    document.head.appendChild(base);
+  }
+});
+</script>
+
+</head>
+<body><ul>
+<li><h3>fluoride package</h3></li>
+<li><a href="fluoride.html#fluoride_defaults_qti">fluoride_defaults_qti</a></li>
+</ul>
+
+<div style="margin-left:30ch;padding:1px 16px;">
+
+	
+	<p>
+  <h2 id="fluoride_defaults_qti">fluoride_defaults_qti</h2>
+  
+<div class="breadcrumb">
+    
+				<a href=fluoride.html#fluoride_defaults_qti.name>name</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.srcs>srcs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.host_supported>host_supported</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.device_supported>device_supported</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.aidl>aidl</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.allow_undefined_symbols>allow_undefined_symbols</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.apex_available>apex_available</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.arch>arch</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.asflags>asflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.auto_gen_config>auto_gen_config</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.bootstrap>bootstrap</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.c_std>c_std</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.cflags>cflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.clang>clang</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.clang_asflags>clang_asflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.clang_cflags>clang_cflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.compile_multilib>compile_multilib</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.conlyflags>conlyflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.corpus>corpus</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.cpp_std>cpp_std</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.cppflags>cppflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.data>data</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.debug>debug</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.defaults>defaults</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.defaults_visibility>defaults_visibility</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.device_specific>device_specific</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.dictionary>dictionary</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.disable_framework>disable_framework</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.dist>dist</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.double_loadable>double_loadable</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.enabled>enabled</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.exclude_shared_libs>exclude_shared_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.exclude_srcs>exclude_srcs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.exclude_static_libs>exclude_static_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_cflags>export_cflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_generated_headers>export_generated_headers</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_header_lib_headers>export_header_lib_headers</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_include_dirs>export_include_dirs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_shared_lib_headers>export_shared_lib_headers</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_static_lib_headers>export_static_lib_headers</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.export_system_include_dirs>export_system_include_dirs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.force_symbols_not_weak_list>force_symbols_not_weak_list</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.force_symbols_weak_list>force_symbols_weak_list</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.fuzz_config>fuzz_config</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.generated_headers>generated_headers</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.generated_sources>generated_sources</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.gnu_extensions>gnu_extensions</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.group_static_libs>group_static_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.gtest>gtest</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.header_abi_checker>header_abi_checker</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.header_libs>header_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.host_ldlibs>host_ldlibs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.host_required>host_required</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.include_build_directory>include_build_directory</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.include_dirs>include_dirs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.init_rc>init_rc</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.inject_bssl_hash>inject_bssl_hash</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.installable>installable</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.instruction_set>instruction_set</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.isolated>isolated</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.ldflags>ldflags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.licenses>licenses</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.linker_script>linker_script</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.local_include_dirs>local_include_dirs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.logtags>logtags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.lto>lto</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.min_sdk_version>min_sdk_version</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.multilib>multilib</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.native_bridge_supported>native_bridge_supported</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.native_coverage>native_coverage</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.no_libcrt>no_libcrt</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.no_named_install_directory>no_named_install_directory</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.nocrt>nocrt</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.notice>notice</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.objs>objs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.openmp>openmp</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.overrides>overrides</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.owner>owner</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.pack_relocations>pack_relocations</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.pgo>pgo</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.prefix_symbols>prefix_symbols</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.product_specific>product_specific</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.proprietary>proprietary</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.proto>proto</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.ramdisk>ramdisk</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.ramdisk_available>ramdisk_available</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.recovery>recovery</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.recovery_available>recovery_available</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.relative_install_path>relative_install_path</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.renderscript>renderscript</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.require_root>require_root</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.required>required</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.rtti>rtti</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.runtime_libs>runtime_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.sanitize>sanitize</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.sdk_variant_only>sdk_variant_only</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.sdk_version>sdk_version</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.shared>shared</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.shared_libs>shared_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.soc_specific>soc_specific</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.sort_bss_symbols_by_size>sort_bss_symbols_by_size</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.static>static</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.static_executable>static_executable</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.static_libs>static_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.static_ndk_lib>static_ndk_lib</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.stem>stem</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.stl>stl</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.strip>strip</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.stubs>stubs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.suffix>suffix</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.symlink_preferred_arch>symlink_preferred_arch</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.symlinks>symlinks</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.system_ext_specific>system_ext_specific</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.system_shared_libs>system_shared_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target>target</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target.host>target.host</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target.platform>target.platform</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target.ramdisk>target.ramdisk</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target.recovery>target.recovery</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target.vendor>target.vendor</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.target_required>target_required</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_config>test_config</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_config_template>test_config_template</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_for>test_for</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_mainline_modules>test_mainline_modules</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_min_api_level>test_min_api_level</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_min_sdk_version>test_min_sdk_version</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_options>test_options</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_per_src>test_per_src</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.test_suites>test_suites</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.tidy>tidy</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.tidy_checks>tidy_checks</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.tidy_checks_as_errors>tidy_checks_as_errors</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.tidy_flags>tidy_flags</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.unexported_symbols_list>unexported_symbols_list</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.unique_host_soname>unique_host_soname</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.use_apex_name_macro>use_apex_name_macro</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.use_clang_lld>use_clang_lld</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.use_version_lib>use_version_lib</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.vendor>vendor</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.vendor_available>vendor_available</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.version_script>version_script</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.vintf_fragments>vintf_fragments</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.visibility>visibility</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.vndk>vndk</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.whole_static_libs>whole_static_libs</a>
+				,&nbsp;<a href=fluoride.html#fluoride_defaults_qti.yacc>yacc</a></div>
+    <div class="simple" id="fluoride_defaults_qti.name">
+        <span class="fixed">&nbsp;</span><b>name </b>
+        <i>string</i>, The name of the module.  Must be unique across all modules.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.srcs">
+        <span class="fixed">&nbsp;</span><b>srcs </b>
+        <i>list of strings</i>, list of source files used to compile the C/C++ module.  May be .c, .cpp, or .S files.
+srcs may reference the outputs of other modules that produce source files like genrule
+or filegroup using the syntax &#34;:module&#34;.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.host_supported">
+        <span class="fixed">&nbsp;</span><b>host_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the host.  Defaults to false.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.device_supported">
+        <span class="fixed">&nbsp;</span><b>device_supported </b>
+        <i>bool</i>, If set to true, build a variant of the module for the device.  Defaults to true.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.aidl">
+        <span class="fixed">&#x2295</span><b>aidl</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.export_aidl_headers">
+        <span class="fixed">&nbsp;</span><b>export_aidl_headers </b>
+        <i>bool</i>, export headers generated from .aidl sources
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.include_dirs">
+        <span class="fixed">&nbsp;</span><b>include_dirs </b>
+        <i>list of strings</i>, list of directories that will be added to the aidl include paths.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.local_include_dirs">
+        <span class="fixed">&nbsp;</span><b>local_include_dirs </b>
+        <i>list of strings</i>, list of directories relative to the Blueprints file that will
+be added to the aidl include paths.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.generate_traces">
+        <span class="fixed">&nbsp;</span><b>generate_traces </b>
+        <i>bool</i>, whether to generate traces (for systrace) for this interface
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.allow_undefined_symbols">
+        <span class="fixed">&nbsp;</span><b>allow_undefined_symbols </b>
+        <i>bool</i>, allow the module to contain undefined symbols.  By default,
+modules cannot contain undefined symbols that are not satisified by their immediate
+dependencies.  Set this flag to true to remove --no-undefined from the linker flags.
+This flag should only be necessary for compiling low-level libraries like libc.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.apex_available">
+        <span class="fixed">&nbsp;</span><b>apex_available </b>
+        <i>list of strings</i>, Availability of this module in APEXes. Only the listed APEXes can contain
+this module. If the module has stubs then other APEXes and the platform may
+access it through them (subject to visibility).
+
+&#34;//apex_available:anyapex&#34; is a pseudo APEX name that matches to any APEX.
+&#34;//apex_available:platform&#34; refers to non-APEX partitions like &#34;system.img&#34;.
+Default is [&#34;//apex_available:platform&#34;].
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.arch">
+        <span class="fixed">&nbsp;</span><b>arch </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.asflags">
+        <span class="fixed">&nbsp;</span><b>asflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for .S compiles
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.auto_gen_config">
+        <span class="fixed">&nbsp;</span><b>auto_gen_config </b>
+        <i>bool</i>, Flag to indicate whether or not to create test config automatically. If AndroidTest.xml
+doesn&#39;t exist next to the Android.bp, this attribute doesn&#39;t need to be set to true
+explicitly.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.bootstrap">
+        <span class="fixed">&nbsp;</span><b>bootstrap </b>
+        <i>bool</i>, Allows this module to use non-APEX version of libraries. Useful
+for building binaries that are started before APEXes are activated.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.c_std">
+        <span class="fixed">&nbsp;</span><b>c_std </b>
+        <i>string</i>, C standard version to use. Can be a specific version (such as &#34;gnu11&#34;),
+&#34;experimental&#34; (which will use draft versions like C1x when available),
+or the empty string (which will use the default).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cflags">
+        <span class="fixed">&nbsp;</span><b>cflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for C and C++ compiles.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.clang">
+        <span class="fixed">&nbsp;</span><b>clang </b>
+        <i>bool</i>, Deprecated. true is the default, false is invalid.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.clang_asflags">
+        <span class="fixed">&nbsp;</span><b>clang_asflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for .S compiles when
+compiling with clang
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.clang_cflags">
+        <span class="fixed">&nbsp;</span><b>clang_cflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for C and C++ compiles when
+compiling with clang
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>, control whether this module compiles for 32-bit, 64-bit, or both.  Possible values
+are &#34;32&#34; (compile for 32-bit only), &#34;64&#34; (compile for 64-bit only), &#34;both&#34; (compile for both
+architectures), or &#34;first&#34; (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit
+platform
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.conlyflags">
+        <span class="fixed">&nbsp;</span><b>conlyflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for C compiles
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.corpus">
+        <span class="fixed">&nbsp;</span><b>corpus </b>
+        <i>list of strings</i>, Optional list of seed files to be installed to the fuzz target&#39;s output
+directory.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cpp_std">
+        <span class="fixed">&nbsp;</span><b>cpp_std </b>
+        <i>string</i>, C++ standard version to use. Can be a specific version (such as
+&#34;gnu++11&#34;), &#34;experimental&#34; (which will use draft versions like C++1z when
+available), or the empty string (which will use the default).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cppflags">
+        <span class="fixed">&nbsp;</span><b>cppflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for C++ compiles
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.data">
+        <span class="fixed">&nbsp;</span><b>data </b>
+        <i>list of strings</i>, list of files or filegroup modules that provide data that should be installed alongside
+the test
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.debug">
+        <span class="fixed">&#x2295</span><b>debug</b>, release</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="fluoride_defaults_qti.cflags">
+        <span class="fixed">&nbsp;</span><b>cflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for C and C++ compiles in debug or
+release builds
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.defaults">
+        <span class="fixed">&nbsp;</span><b>defaults </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.defaults_visibility">
+        <span class="fixed">&nbsp;</span><b>defaults_visibility </b>
+        <i>list of strings</i>, Controls the visibility of the defaults module itself.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.device_specific">
+        <span class="fixed">&nbsp;</span><b>device_specific </b>
+        <i>bool</i>, whether this module is specific to a device, not only for SoC, but also for off-chip
+peripherals. When set to true, it is installed into /odm (or /vendor/odm if odm partition
+does not exist, or /system/vendor/odm if both odm and vendor partitions do not exist).
+This implies `soc_specific:true`.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.dictionary">
+        <span class="fixed">&nbsp;</span><b>dictionary </b>
+        <i>string</i>, Optional dictionary to be installed to the fuzz target&#39;s output directory.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.disable_framework">
+        <span class="fixed">&nbsp;</span><b>disable_framework </b>
+        <i>bool</i>, Add RunCommandTargetPreparer to stop framework before the test and start it after the test.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.dist">
+        <span class="fixed">&#x2295</span><b>dist</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.targets">
+        <span class="fixed">&nbsp;</span><b>targets </b>
+        <i>list of strings</i>, copy the output of this module to the $DIST_DIR when `dist` is specified on the
+command line and  any of these targets are also on the command line, or otherwise
+built
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.dest">
+        <span class="fixed">&nbsp;</span><b>dest </b>
+        <i>string</i>, The name of the output artifact. This defaults to the basename of the output of
+the module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.dir">
+        <span class="fixed">&nbsp;</span><b>dir </b>
+        <i>string</i>, The directory within the dist directory to store the artifact. Defaults to the
+top level directory (&#34;&#34;).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, A suffix to add to the artifact file name (before any extension).
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.double_loadable">
+        <span class="fixed">&nbsp;</span><b>double_loadable </b>
+        <i>bool</i>, whether this module is capable of being loaded with other instance
+(possibly an older version) of the same module in the same process.
+Currently, a shared library that is a member of VNDK (vndk: {enabled: true})
+can be double loaded in a vendor process if the library is also a
+(direct and indirect) dependency of an LLNDK library. Such libraries must be
+explicitly marked as `double_loadable: true` by the owner, or the dependency
+from the LLNDK lib should be cut if the lib is not designed to be double loaded.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, emit build rules for this module
+
+Disabling a module should only be done for those modules that cannot be built
+in the current environment. Modules that can build in the current environment
+but are not usually required (e.g. superceded by a prebuilt) should not be
+disabled as that will prevent them from being built by the checkbuild target
+and so prevent early detection of changes that have broken those modules.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_shared_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_shared_libs </b>
+        <i>list of strings</i>, list of shared libs that should not be used to build this module
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_srcs">
+        <span class="fixed">&nbsp;</span><b>exclude_srcs </b>
+        <i>list of strings</i>, list of source files that should not be used to build the C/C++ module.
+This is most useful in the arch/multilib variants to remove non-common files
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_static_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_static_libs </b>
+        <i>list of strings</i>, list of static libs that should not be used to build this module
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_cflags">
+        <span class="fixed">&nbsp;</span><b>export_cflags </b>
+        <i>list of strings</i>, list of plain cc flags to be used for any module that links against this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_generated_headers">
+        <span class="fixed">&nbsp;</span><b>export_generated_headers </b>
+        <i>list of strings</i>, list of generated headers to re-export include directories from. Entries must be
+present in generated_headers.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_header_lib_headers">
+        <span class="fixed">&nbsp;</span><b>export_header_lib_headers </b>
+        <i>list of strings</i>, list of header libraries to re-export include directories from. Entries must be
+present in header_libs.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_include_dirs">
+        <span class="fixed">&nbsp;</span><b>export_include_dirs </b>
+        <i>list of strings</i>, list of directories relative to the Blueprints file that will
+be added to the include path (using -I) for this module and any module that links
+against this module.  Directories listed in export_include_dirs do not need to be
+listed in local_include_dirs.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_shared_lib_headers">
+        <span class="fixed">&nbsp;</span><b>export_shared_lib_headers </b>
+        <i>list of strings</i>, list of shared libraries to re-export include directories from. Entries must be
+present in shared_libs.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_static_lib_headers">
+        <span class="fixed">&nbsp;</span><b>export_static_lib_headers </b>
+        <i>list of strings</i>, list of static libraries to re-export include directories from. Entries must be
+present in static_libs.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_system_include_dirs">
+        <span class="fixed">&nbsp;</span><b>export_system_include_dirs </b>
+        <i>list of strings</i>, list of directories that will be added to the system include path
+using -isystem for this module and any module that links against this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.force_symbols_not_weak_list">
+        <span class="fixed">&nbsp;</span><b>force_symbols_not_weak_list </b>
+        <i>string</i>, local file name to pass to the linker as -force_symbols_not_weak_list
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.force_symbols_weak_list">
+        <span class="fixed">&nbsp;</span><b>force_symbols_weak_list </b>
+        <i>string</i>, local file name to pass to the linker as -force_symbols_weak_list
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.fuzz_config">
+        <span class="fixed">&nbsp;</span><b>fuzz_config </b>
+        <i>FuzzConfig</i>, Config for running the target on fuzzing infrastructure.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.generated_headers">
+        <span class="fixed">&nbsp;</span><b>generated_headers </b>
+        <i>list of strings</i>, list of generated headers to add to the include path. These are the names
+of genrule modules.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.generated_sources">
+        <span class="fixed">&nbsp;</span><b>generated_sources </b>
+        <i>list of strings</i>, list of generated sources to compile. These are the names of gensrcs or
+genrule modules.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.gnu_extensions">
+        <span class="fixed">&nbsp;</span><b>gnu_extensions </b>
+        <i>bool</i>, if set to false, use -std=c++* instead of -std=gnu++*
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.group_static_libs">
+        <span class="fixed">&nbsp;</span><b>group_static_libs </b>
+        <i>bool</i>, group static libraries.  This can resolve missing symbols issues with interdependencies
+between static libraries, but it is generally better to order them correctly instead.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.gtest">
+        <span class="fixed">&nbsp;</span><b>gtest </b>
+        <i>bool</i>, if set, build against the gtest library. Defaults to true.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.header_abi_checker">
+        <span class="fixed">&#x2295</span><b>header_abi_checker</b></div>
+      <div class="collapsible">Properties for ABI compatibility checker
+
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, Enable ABI checks (even if this is not an LLNDK/VNDK lib)
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.symbol_file">
+        <span class="fixed">&nbsp;</span><b>symbol_file </b>
+        <i>string</i>, Path to a symbol file that specifies the symbols to be included in the generated
+ABI dump file
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_symbol_versions">
+        <span class="fixed">&nbsp;</span><b>exclude_symbol_versions </b>
+        <i>list of strings</i>, Symbol versions that should be ignored from the symbol file
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_symbol_tags">
+        <span class="fixed">&nbsp;</span><b>exclude_symbol_tags </b>
+        <i>list of strings</i>, Symbol tags that should be ignored from the symbol file
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.header_libs">
+        <span class="fixed">&nbsp;</span><b>header_libs </b>
+        <i>list of strings</i>, list of modules that should only provide headers for this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.host_ldlibs">
+        <span class="fixed">&nbsp;</span><b>host_ldlibs </b>
+        <i>list of strings</i>, -l arguments to pass to linker for host-provided shared libraries
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.host_required">
+        <span class="fixed">&nbsp;</span><b>host_required </b>
+        <i>list of strings</i>, names of other modules to install on host if this module is installed
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.include_build_directory">
+        <span class="fixed">&nbsp;</span><b>include_build_directory </b>
+        <i>bool</i>, Add the directory containing the Android.bp file to the list of include
+directories. Defaults to true.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.include_dirs">
+        <span class="fixed">&nbsp;</span><b>include_dirs </b>
+        <i>list of strings</i>, list of directories relative to the root of the source tree that will
+be added to the include path using -I.
+If possible, don&#39;t use this.  If adding paths from the current directory use
+local_include_dirs, if adding paths from other modules use export_include_dirs in
+that module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.init_rc">
+        <span class="fixed">&nbsp;</span><b>init_rc </b>
+        <i>list of strings</i>, init.rc files to be installed if this module is installed
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.inject_bssl_hash">
+        <span class="fixed">&nbsp;</span><b>inject_bssl_hash </b>
+        <i>bool</i>, Inject boringssl hash into the shared library.  This is only intended for use by external/boringssl.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.installable">
+        <span class="fixed">&nbsp;</span><b>installable </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.instruction_set">
+        <span class="fixed">&nbsp;</span><b>instruction_set </b>
+        <i>string</i>, the instruction set architecture to use to compile the C/C++
+module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.isolated">
+        <span class="fixed">&nbsp;</span><b>isolated </b>
+        <i>bool</i>, if set, use the isolated gtest runner. Defaults to false.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.ldflags">
+        <span class="fixed">&nbsp;</span><b>ldflags </b>
+        <i>list of strings</i>, list of module-specific flags that will be used for all link steps
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.licenses">
+        <span class="fixed">&nbsp;</span><b>licenses </b>
+        <i>list of strings</i>, Names of the licenses that apply to this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.linker_script">
+        <span class="fixed">&nbsp;</span><b>linker_script </b>
+        <i>string</i>, if set, the path to a linker script to pass to ld -r when combining multiple object files.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.local_include_dirs">
+        <span class="fixed">&nbsp;</span><b>local_include_dirs </b>
+        <i>list of strings</i>, list of directories relative to the Blueprints file that will
+be added to the include path using -I
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.logtags">
+        <span class="fixed">&nbsp;</span><b>logtags </b>
+        <i>list of strings</i>, *.logtags files, to combine together in order to generate the /system/etc/event-log-tags
+file
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.lto">
+        <span class="fixed">&#x2295</span><b>lto</b></div>
+      <div class="collapsible">Lto must violate capitialization style for acronyms so that it can be
+referred to in blueprint files as &#34;lto&#34;
+
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.never">
+        <span class="fixed">&nbsp;</span><b>never </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.full">
+        <span class="fixed">&nbsp;</span><b>full </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.thin">
+        <span class="fixed">&nbsp;</span><b>thin </b>
+        <i>bool</i>
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.min_sdk_version">
+        <span class="fixed">&nbsp;</span><b>min_sdk_version </b>
+        <i>string</i>, Minimum sdk version that the artifact should support when it runs as part of mainline modules(APEX).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.multilib">
+        <span class="fixed">&nbsp;</span><b>multilib </b>
+        <i>interface</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.native_bridge_supported">
+        <span class="fixed">&nbsp;</span><b>native_bridge_supported </b>
+        <i>bool</i>, Whether this module is built for non-native architecures (also known as native bridge binary)
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.native_coverage">
+        <span class="fixed">&nbsp;</span><b>native_coverage </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.no_libcrt">
+        <span class="fixed">&nbsp;</span><b>no_libcrt </b>
+        <i>bool</i>, don&#39;t link in libclang_rt.builtins-*.a
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.no_named_install_directory">
+        <span class="fixed">&nbsp;</span><b>no_named_install_directory </b>
+        <i>bool</i>, Disables the creation of a test-specific directory when used with
+relative_install_path. Useful if several tests need to be in the same
+directory, but test_per_src doesn&#39;t work.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.nocrt">
+        <span class="fixed">&nbsp;</span><b>nocrt </b>
+        <i>bool</i>, don&#39;t link in crt_begin and crt_end.  This flag should only be necessary for
+compiling crt or libc.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.notice">
+        <span class="fixed">&nbsp;</span><b>notice </b>
+        <i>string</i>, relative path to a file to include in the list of notices for the device
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.objs">
+        <span class="fixed">&nbsp;</span><b>objs </b>
+        <i>list of strings</i>, names of other cc_object modules to link into this module using partial linking
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.openmp">
+        <span class="fixed">&nbsp;</span><b>openmp </b>
+        <i>bool</i>, Build and link with OpenMP
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.overrides">
+        <span class="fixed">&nbsp;</span><b>overrides </b>
+        <i>list of strings</i>, Names of modules to be overridden. Listed modules can only be other binaries
+(in Make or Soong).
+This does not completely prevent installation of the overridden binaries, but if both
+binaries would be installed by default (in PRODUCT_PACKAGES) the other binary will be removed
+from PRODUCT_PACKAGES.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.owner">
+        <span class="fixed">&nbsp;</span><b>owner </b>
+        <i>string</i>, vendor who owns this module
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.pack_relocations">
+        <span class="fixed">&nbsp;</span><b>pack_relocations </b>
+        <i>bool</i>, Generate compact dynamic relocation table, default true.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.pgo">
+        <span class="fixed">&#x2295</span><b>pgo</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.instrumentation">
+        <span class="fixed">&nbsp;</span><b>instrumentation </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.sampling">
+        <span class="fixed">&nbsp;</span><b>sampling </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.profile_file">
+        <span class="fixed">&nbsp;</span><b>profile_file </b>
+        <i>string</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.benchmarks">
+        <span class="fixed">&nbsp;</span><b>benchmarks </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.enable_profile_use">
+        <span class="fixed">&nbsp;</span><b>enable_profile_use </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cflags">
+        <span class="fixed">&nbsp;</span><b>cflags </b>
+        <i>list of strings</i>, Additional compiler flags to use when building this module
+for profiling (either instrumentation or sampling).
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.prefix_symbols">
+        <span class="fixed">&nbsp;</span><b>prefix_symbols </b>
+        <i>string</i>, if set, add an extra objcopy --prefix-symbols= step
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.product_specific">
+        <span class="fixed">&nbsp;</span><b>product_specific </b>
+        <i>bool</i>, whether this module is specific to a software configuration of a product (e.g. country,
+network operator, etc). When set to true, it is installed into /product (or
+/system/product if product partition does not exist).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.proprietary">
+        <span class="fixed">&nbsp;</span><b>proprietary </b>
+        <i>bool</i>, whether this is a proprietary vendor module, and should be installed into /vendor
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.proto">
+        <span class="fixed">&#x2295</span><b>proto</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.type">
+        <span class="fixed">&nbsp;</span><b>type </b>
+        <i>string</i>, Proto generator type.  C++: full or lite.  Java: micro, nano, stream, or lite.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.plugin">
+        <span class="fixed">&nbsp;</span><b>plugin </b>
+        <i>string</i>, Proto plugin to use as the generator.  Must be a cc_binary_host module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.include_dirs">
+        <span class="fixed">&nbsp;</span><b>include_dirs </b>
+        <i>list of strings</i>, list of directories that will be added to the protoc include paths.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.local_include_dirs">
+        <span class="fixed">&nbsp;</span><b>local_include_dirs </b>
+        <i>list of strings</i>, list of directories relative to the bp file that will
+be added to the protoc include paths.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.canonical_path_from_root">
+        <span class="fixed">&nbsp;</span><b>canonical_path_from_root </b>
+        <i>bool</i>, whether to identify the proto files from the root of the
+source tree (the original method in Android, useful for
+android-specific protos), or relative from where they were
+specified (useful for external/third party protos).
+
+This defaults to true today, but is expected to default to
+false in the future.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static">
+        <span class="fixed">&nbsp;</span><b>static </b>
+        <i>bool</i>, Link statically against the protobuf runtime
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.export_proto_headers">
+        <span class="fixed">&nbsp;</span><b>export_proto_headers </b>
+        <i>bool</i>, export headers generated from .proto sources
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.ramdisk">
+        <span class="fixed">&nbsp;</span><b>ramdisk </b>
+        <i>bool</i>, Whether this module is installed to ramdisk
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.ramdisk_available">
+        <span class="fixed">&nbsp;</span><b>ramdisk_available </b>
+        <i>bool</i>, Make this module available when building for ramdisk
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.recovery">
+        <span class="fixed">&nbsp;</span><b>recovery </b>
+        <i>bool</i>, Whether this module is installed to recovery partition
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.recovery_available">
+        <span class="fixed">&nbsp;</span><b>recovery_available </b>
+        <i>bool</i>, Make this module available when building for recovery
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.relative_install_path">
+        <span class="fixed">&nbsp;</span><b>relative_install_path </b>
+        <i>string</i>, install to a subdirectory of the default install path for the module
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.renderscript">
+        <span class="fixed">&#x2295</span><b>renderscript</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.include_dirs">
+        <span class="fixed">&nbsp;</span><b>include_dirs </b>
+        <i>list of strings</i>, list of directories that will be added to the llvm-rs-cc include paths
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.flags">
+        <span class="fixed">&nbsp;</span><b>flags </b>
+        <i>list of strings</i>, list of flags that will be passed to llvm-rs-cc
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.target_api">
+        <span class="fixed">&nbsp;</span><b>target_api </b>
+        <i>string</i>, Renderscript API level to target
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.require_root">
+        <span class="fixed">&nbsp;</span><b>require_root </b>
+        <i>bool</i>, Add RootTargetPreparer to auto generated test config. This guarantees the test to run
+with root permission.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.required">
+        <span class="fixed">&nbsp;</span><b>required </b>
+        <i>list of strings</i>, names of other modules to install if this module is installed
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.rtti">
+        <span class="fixed">&nbsp;</span><b>rtti </b>
+        <i>bool</i>, pass -frtti instead of -fno-rtti
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.runtime_libs">
+        <span class="fixed">&nbsp;</span><b>runtime_libs </b>
+        <i>list of strings</i>, list of modules that should be installed with this module.  This is similar to &#39;required&#39;
+but &#39;.vendor&#39; suffix will be appended to the module names if the shared libraries have
+vendor variants and this module uses VNDK.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.sanitize">
+        <span class="fixed">&#x2295</span><b>sanitize</b></div>
+      <div class="collapsible">enable AddressSanitizer, ThreadSanitizer, or UndefinedBehaviorSanitizer
+
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.never">
+        <span class="fixed">&nbsp;</span><b>never </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.address">
+        <span class="fixed">&nbsp;</span><b>address </b>
+        <i>bool</i>, main sanitizers
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.thread">
+        <span class="fixed">&nbsp;</span><b>thread </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.hwaddress">
+        <span class="fixed">&nbsp;</span><b>hwaddress </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.undefined">
+        <span class="fixed">&nbsp;</span><b>undefined </b>
+        <i>bool</i>, local sanitizers
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.all_undefined">
+        <span class="fixed">&nbsp;</span><b>all_undefined </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.misc_undefined">
+        <span class="fixed">&nbsp;</span><b>misc_undefined </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.fuzzer">
+        <span class="fixed">&nbsp;</span><b>fuzzer </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.safestack">
+        <span class="fixed">&nbsp;</span><b>safestack </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cfi">
+        <span class="fixed">&nbsp;</span><b>cfi </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.integer_overflow">
+        <span class="fixed">&nbsp;</span><b>integer_overflow </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.scudo">
+        <span class="fixed">&nbsp;</span><b>scudo </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.scs">
+        <span class="fixed">&nbsp;</span><b>scs </b>
+        <i>bool</i>
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.diag">
+        <span class="fixed">&#x2295</span><b>diag</b></div>
+      <div class="collapsible">Sanitizers to run in the diagnostic mode (as opposed to the release mode).
+Replaces abort() on error with a human-readable error message.
+Address and Thread sanitizers always run in diagnostic mode.
+
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.undefined">
+        <span class="fixed">&nbsp;</span><b>undefined </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cfi">
+        <span class="fixed">&nbsp;</span><b>cfi </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.integer_overflow">
+        <span class="fixed">&nbsp;</span><b>integer_overflow </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.misc_undefined">
+        <span class="fixed">&nbsp;</span><b>misc_undefined </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.no_recover">
+        <span class="fixed">&nbsp;</span><b>no_recover </b>
+        <i>list of strings</i>
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.recover">
+        <span class="fixed">&nbsp;</span><b>recover </b>
+        <i>list of strings</i>, value to pass to -fsanitize-recover=
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.blacklist">
+        <span class="fixed">&nbsp;</span><b>blacklist </b>
+        <i>string</i>, value to pass to -fsanitize-blacklist
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.sdk_variant_only">
+        <span class="fixed">&nbsp;</span><b>sdk_variant_only </b>
+        <i>bool</i>, If true, always create an sdk variant and don&#39;t create a platform variant.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.sdk_version">
+        <span class="fixed">&nbsp;</span><b>sdk_version </b>
+        <i>string</i>, Minimum sdk version supported when compiling against the ndk. Setting this property causes
+two variants to be built, one for the platform and one for apps.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.shared">
+        <span class="fixed">&nbsp;</span><b>shared </b>
+        <i>StaticOrSharedProperties</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.shared_libs">
+        <span class="fixed">&nbsp;</span><b>shared_libs </b>
+        <i>list of strings</i>, list of modules that should be dynamically linked into this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.soc_specific">
+        <span class="fixed">&nbsp;</span><b>soc_specific </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.sort_bss_symbols_by_size">
+        <span class="fixed">&nbsp;</span><b>sort_bss_symbols_by_size </b>
+        <i>bool</i>, Order symbols in .bss section by their sizes.  Only useful for shared libraries.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static">
+        <span class="fixed">&nbsp;</span><b>static </b>
+        <i>StaticOrSharedProperties</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static_executable">
+        <span class="fixed">&nbsp;</span><b>static_executable </b>
+        <i>bool</i>, compile executable with -static
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static_libs">
+        <span class="fixed">&nbsp;</span><b>static_libs </b>
+        <i>list of strings</i>, list of modules that should be statically linked into this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static_ndk_lib">
+        <span class="fixed">&nbsp;</span><b>static_ndk_lib </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.stem">
+        <span class="fixed">&nbsp;</span><b>stem </b>
+        <i>string</i>, set the name of the output
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.stl">
+        <span class="fixed">&nbsp;</span><b>stl </b>
+        <i>string</i>, Select the STL library to use.  Possible values are &#34;libc++&#34;,
+&#34;libc++_static&#34;, &#34;libstdc++&#34;, or &#34;none&#34;. Leave blank to select the
+default.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.strip">
+        <span class="fixed">&#x2295</span><b>strip</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.none">
+        <span class="fixed">&nbsp;</span><b>none </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.all">
+        <span class="fixed">&nbsp;</span><b>all </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.keep_symbols">
+        <span class="fixed">&nbsp;</span><b>keep_symbols </b>
+        <i>bool</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.keep_symbols_list">
+        <span class="fixed">&nbsp;</span><b>keep_symbols_list </b>
+        <i>list of strings</i>
+</div>
+    <div class="simple" id="fluoride_defaults_qti.keep_symbols_and_debug_frame">
+        <span class="fixed">&nbsp;</span><b>keep_symbols_and_debug_frame </b>
+        <i>bool</i>
+</div></div>
+    <div class="accordion"  id="fluoride_defaults_qti.stubs">
+        <span class="fixed">&#x2295</span><b>stubs</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.symbol_file">
+        <span class="fixed">&nbsp;</span><b>symbol_file </b>
+        <i>string</i>, Relative path to the symbol map. The symbol map provides the list of
+symbols that are exported for stubs variant of this library.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.versions">
+        <span class="fixed">&nbsp;</span><b>versions </b>
+        <i>list of strings</i>, List versions to generate stubs libs for.
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, set suffix of the name of the output
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.symlink_preferred_arch">
+        <span class="fixed">&nbsp;</span><b>symlink_preferred_arch </b>
+        <i>bool</i>, if set, install a symlink to the preferred architecture
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.symlinks">
+        <span class="fixed">&nbsp;</span><b>symlinks </b>
+        <i>list of strings</i>, install symlinks to the binary.  Symlink names will have the suffix and the binary
+extension (if any) appended
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.system_ext_specific">
+        <span class="fixed">&nbsp;</span><b>system_ext_specific </b>
+        <i>bool</i>, whether this module extends system. When set to true, it is installed into /system_ext
+(or /system/system_ext if system_ext partition does not exist).
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.system_shared_libs">
+        <span class="fixed">&nbsp;</span><b>system_shared_libs </b>
+        <i>list of strings</i>, list of system libraries that will be dynamically linked to
+shared library and executable modules.  If unset, generally defaults to libc,
+libm, and libdl.  Set to [] to prevent linking against the defaults.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.target">
+        <span class="fixed">&nbsp;</span><b>target </b>
+        <i>interface</i>
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.target.host">
+        <span class="fixed">&#x2295</span><b>target.host</b>, target.android</div>
+      <div class="collapsible">
+ 
+
+        
+    <div class="simple" id="fluoride_defaults_qti.compile_multilib">
+        <span class="fixed">&nbsp;</span><b>compile_multilib </b>
+        <i>string</i>
+</div></div>
+    <div class="accordion"  id="fluoride_defaults_qti.target.platform">
+        <span class="fixed">&#x2295</span><b>target.platform</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.shared_libs">
+        <span class="fixed">&nbsp;</span><b>shared_libs </b>
+        <i>list of strings</i>, list of shared libs that should be use to build the platform variant
+of a module that sets sdk_version.  This should rarely be necessary,
+in most cases the same libraries are available for the SDK and platform
+variants.
+
+</div></div>
+    <div class="accordion"  id="fluoride_defaults_qti.target.ramdisk">
+        <span class="fixed">&#x2295</span><b>target.ramdisk</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.static_libs">
+        <span class="fixed">&nbsp;</span><b>static_libs </b>
+        <i>list of strings</i>, list of static libs that only should be used to build the recovery
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_shared_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_shared_libs </b>
+        <i>list of strings</i>, list of shared libs that should not be used to build
+the ramdisk variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_static_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_static_libs </b>
+        <i>list of strings</i>, list of static libs that should not be used to build
+the ramdisk variant of the C/C++ module.
+
+</div></div>
+    <div class="accordion"  id="fluoride_defaults_qti.target.recovery">
+        <span class="fixed">&#x2295</span><b>target.recovery</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.srcs">
+        <span class="fixed">&nbsp;</span><b>srcs </b>
+        <i>list of strings</i>, list of source files that should only be used in the
+recovery variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_srcs">
+        <span class="fixed">&nbsp;</span><b>exclude_srcs </b>
+        <i>list of strings</i>, list of source files that should not be used to
+build the recovery variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cflags">
+        <span class="fixed">&nbsp;</span><b>cflags </b>
+        <i>list of strings</i>, List of additional cflags that should be used to build the recovery
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.shared_libs">
+        <span class="fixed">&nbsp;</span><b>shared_libs </b>
+        <i>list of strings</i>, list of shared libs that only should be used to build the recovery
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static_libs">
+        <span class="fixed">&nbsp;</span><b>static_libs </b>
+        <i>list of strings</i>, list of static libs that only should be used to build the recovery
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_shared_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_shared_libs </b>
+        <i>list of strings</i>, list of shared libs that should not be used to build
+the recovery variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_static_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_static_libs </b>
+        <i>list of strings</i>, list of static libs that should not be used to build
+the recovery variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_header_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_header_libs </b>
+        <i>list of strings</i>, list of header libs that should not be used to build the recovery variant
+of the C/C++ module.
+
+</div></div>
+    <div class="accordion"  id="fluoride_defaults_qti.target.vendor">
+        <span class="fixed">&#x2295</span><b>target.vendor</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.srcs">
+        <span class="fixed">&nbsp;</span><b>srcs </b>
+        <i>list of strings</i>, list of source files that should only be used in the
+vendor variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_srcs">
+        <span class="fixed">&nbsp;</span><b>exclude_srcs </b>
+        <i>list of strings</i>, list of source files that should not be used to
+build the vendor variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.cflags">
+        <span class="fixed">&nbsp;</span><b>cflags </b>
+        <i>list of strings</i>, List of additional cflags that should be used to build the vendor
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.override_export_include_dirs">
+        <span class="fixed">&nbsp;</span><b>override_export_include_dirs </b>
+        <i>list of strings</i>, list of exported include directories, like
+export_include_dirs, that will be applied to the
+vendor variant of this library. This will overwrite
+any other declarations.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.shared_libs">
+        <span class="fixed">&nbsp;</span><b>shared_libs </b>
+        <i>list of strings</i>, list of shared libs that only should be used to build the vendor
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.static_libs">
+        <span class="fixed">&nbsp;</span><b>static_libs </b>
+        <i>list of strings</i>, list of static libs that only should be used to build the vendor
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_shared_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_shared_libs </b>
+        <i>list of strings</i>, list of shared libs that should not be used to build the vendor variant
+of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_static_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_static_libs </b>
+        <i>list of strings</i>, list of static libs that should not be used to build the vendor variant
+of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_header_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_header_libs </b>
+        <i>list of strings</i>, list of header libs that should not be used to build the vendor variant
+of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.exclude_runtime_libs">
+        <span class="fixed">&nbsp;</span><b>exclude_runtime_libs </b>
+        <i>list of strings</i>, list of runtime libs that should not be installed along with the vendor
+variant of the C/C++ module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.version_script">
+        <span class="fixed">&nbsp;</span><b>version_script </b>
+        <i>string</i>, version script for this vendor variant
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.suffix">
+        <span class="fixed">&nbsp;</span><b>suffix </b>
+        <i>string</i>, set suffix of the name of the output
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.target_required">
+        <span class="fixed">&nbsp;</span><b>target_required </b>
+        <i>list of strings</i>, names of other modules to install on target if this module is installed
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_config">
+        <span class="fixed">&nbsp;</span><b>test_config </b>
+        <i>string</i>, the name of the test configuration (for example &#34;AndroidTest.xml&#34;) that should be
+installed with the module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_config_template">
+        <span class="fixed">&nbsp;</span><b>test_config_template </b>
+        <i>string</i>, the name of the test configuration template (for example &#34;AndroidTestTemplate.xml&#34;) that
+should be installed with the module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_for">
+        <span class="fixed">&nbsp;</span><b>test_for </b>
+        <i>list of strings</i>, List of APEXes that this module tests. The module has access to
+the private part of the listed APEXes even when it is not included in the
+APEXes.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_mainline_modules">
+        <span class="fixed">&nbsp;</span><b>test_mainline_modules </b>
+        <i>list of strings</i>, Add parameterized mainline modules to auto generated test config. The options will be
+handled by TradeFed to download and install the specified modules on the device.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_min_api_level">
+        <span class="fixed">&nbsp;</span><b>test_min_api_level </b>
+        <i>int64</i>, Add MinApiLevelModuleController to auto generated test config. If the device property of
+&#34;ro.product.first_api_level&#34; &lt; Test_min_api_level, then skip this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_min_sdk_version">
+        <span class="fixed">&nbsp;</span><b>test_min_sdk_version </b>
+        <i>int64</i>, Add MinApiLevelModuleController to auto generated test config. If the device property of
+&#34;ro.build.version.sdk&#34; &lt; Test_min_sdk_version, then skip this module.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_options">
+        <span class="fixed">&nbsp;</span><b>test_options </b>
+        <i>TestOptions</i>, Test options.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_per_src">
+        <span class="fixed">&nbsp;</span><b>test_per_src </b>
+        <i>bool</i>, Create a separate binary for each source file.  Useful when there is
+global state that can not be torn down and reset between each test suite.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.test_suites">
+        <span class="fixed">&nbsp;</span><b>test_suites </b>
+        <i>list of strings</i>, list of compatibility suites (for example &#34;cts&#34;, &#34;vts&#34;) that the module should be
+installed into.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.tidy">
+        <span class="fixed">&nbsp;</span><b>tidy </b>
+        <i>bool</i>, whether to run clang-tidy over C-like sources.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.tidy_checks">
+        <span class="fixed">&nbsp;</span><b>tidy_checks </b>
+        <i>list of strings</i>, Extra checks to enable or disable in clang-tidy
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.tidy_checks_as_errors">
+        <span class="fixed">&nbsp;</span><b>tidy_checks_as_errors </b>
+        <i>list of strings</i>, Checks that should be treated as errors.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.tidy_flags">
+        <span class="fixed">&nbsp;</span><b>tidy_flags </b>
+        <i>list of strings</i>, Extra flags to pass to clang-tidy
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.unexported_symbols_list">
+        <span class="fixed">&nbsp;</span><b>unexported_symbols_list </b>
+        <i>string</i>, local file name to pass to the linker as -unexported_symbols_list
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.unique_host_soname">
+        <span class="fixed">&nbsp;</span><b>unique_host_soname </b>
+        <i>bool</i>, rename host libraries to prevent overlap with system installed libraries
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.use_apex_name_macro">
+        <span class="fixed">&nbsp;</span><b>use_apex_name_macro </b>
+        <i>bool</i>, Adds __ANDROID_APEX_&lt;APEX_MODULE_NAME&gt;__ macro defined for apex variants in addition to __ANDROID_APEX__
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.use_clang_lld">
+        <span class="fixed">&nbsp;</span><b>use_clang_lld </b>
+        <i>bool</i>, Use clang lld instead of gnu ld.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.use_version_lib">
+        <span class="fixed">&nbsp;</span><b>use_version_lib </b>
+        <i>bool</i>, make android::build:GetBuildNumber() available containing the build ID.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.vendor">
+        <span class="fixed">&nbsp;</span><b>vendor </b>
+        <i>bool</i>, whether this module is specific to an SoC (System-On-a-Chip). When set to true,
+it is installed into /vendor (or /system/vendor if vendor partition does not exist).
+Use `soc_specific` instead for better meaning.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.vendor_available">
+        <span class="fixed">&nbsp;</span><b>vendor_available </b>
+        <i>bool</i>, whether this module should be allowed to be directly depended by other
+modules with `vendor: true`, `proprietary: true`, or `vendor_available:true`.
+In addition, this module should be allowed to be directly depended by
+product modules with `product_specific: true`.
+If set to true, three variants will be built separately, one like
+normal, another limited to the set of libraries and headers
+that are exposed to /vendor modules, and the other to /product modules.
+
+The vendor and product variants may be used with a different (newer) /system,
+so it shouldn&#39;t have any unversioned runtime dependencies, or
+make assumptions about the system that may not be true in the
+future.
+
+If set to false, this module becomes inaccessible from /vendor or /product
+modules.
+
+Default value is true when vndk: {enabled: true} or vendor: true.
+
+Nothing happens if BOARD_VNDK_VERSION isn&#39;t set in the BoardConfig.mk
+If PRODUCT_PRODUCT_VNDK_VERSION isn&#39;t set, product variant will not be used.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.version_script">
+        <span class="fixed">&nbsp;</span><b>version_script </b>
+        <i>string</i>, local file name to pass to the linker as --version_script
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.vintf_fragments">
+        <span class="fixed">&nbsp;</span><b>vintf_fragments </b>
+        <i>list of strings</i>, VINTF manifest fragments to be installed if this module is installed
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.visibility">
+        <span class="fixed">&nbsp;</span><b>visibility </b>
+        <i>list of strings</i>, Controls the visibility of this module to other modules. Allowable values are one or more of
+these formats:
+
+<pre>
+
+ [&#34;//visibility:public&#34;]: Anyone can use this module.
+ [&#34;//visibility:private&#34;]: Only rules in the module&#39;s package (not its subpackages) can use
+     this module.
+ [&#34;//visibility:override&#34;]: Discards any rules inherited from defaults or a creating module.
+     Can only be used at the beginning of a list of visibility rules.
+ [&#34;//some/package:__pkg__&#34;, &#34;//other/package:__pkg__&#34;]: Only modules in some/package and
+     other/package (defined in some/package/*.bp and other/package/*.bp) have access to
+     this module. Note that sub-packages do not have access to the rule; for example,
+     //some/package/foo:bar or //other/package/testing:bla wouldn&#39;t have access. __pkg__
+     is a special module and must be used verbatim. It represents all of the modules in the
+     package.
+ [&#34;//project:__subpackages__&#34;, &#34;//other:__subpackages__&#34;]: Only modules in packages project
+     or other or in one of their sub-packages have access to this module. For example,
+     //project:rule, //project/library:lib or //other/testing/internal:munge are allowed
+     to depend on this rule (but not //independent:evil)
+ [&#34;//project&#34;]: This is shorthand for [&#34;//project:__pkg__&#34;]
+ [&#34;:__subpackages__&#34;]: This is shorthand for [&#34;//project:__subpackages__&#34;] where
+     //project is the module&#39;s package. e.g. using [&#34;:__subpackages__&#34;] in
+     packages/apps/Settings/Android.bp is equivalent to
+     //packages/apps/Settings:__subpackages__.
+ [&#34;//visibility:legacy_public&#34;]: The default visibility, behaves as //visibility:public
+     for now. It is an error if it is used in a module.
+
+</pre>
+If a module does not specify the `visibility` property then it uses the
+`default_visibility` property of the `package` module in the module&#39;s package.
+
+If the `default_visibility` property is not set for the module&#39;s package then
+it will use the `default_visibility` of its closest ancestor package for which
+a `default_visibility` property is specified.
+
+If no `default_visibility` property can be found then the module uses the
+global default of `//visibility:legacy_public`.
+
+The `visibility` property has no effect on a defaults module although it does
+apply to any non-defaults module that uses it. To set the visibility of a
+defaults module, use the `defaults_visibility` property on the defaults module;
+not to be confused with the `default_visibility` property on the package module.
+
+See https://android.googlesource.com/platform/build/soong/+/master/README.md#visibility for
+more details.
+
+</div>
+    <div class="accordion"  id="fluoride_defaults_qti.vndk">
+        <span class="fixed">&#x2295</span><b>vndk</b></div>
+      <div class="collapsible">
+ 
+        
+    <div class="simple" id="fluoride_defaults_qti.enabled">
+        <span class="fixed">&nbsp;</span><b>enabled </b>
+        <i>bool</i>, declared as a VNDK or VNDK-SP module. The vendor variant
+will be installed in /system instead of /vendor partition.
+
+`vendor_available` must be explicitly set to either true or
+false together with `vndk: {enabled: true}`.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.support_system_process">
+        <span class="fixed">&nbsp;</span><b>support_system_process </b>
+        <i>bool</i>, declared as a VNDK-SP module, which is a subset of VNDK.
+
+`vndk: { enabled: true }` must set together.
+
+All these modules are allowed to link to VNDK-SP or LL-NDK
+modules only. Other dependency will cause link-type errors.
+
+If `support_system_process` is not set or set to false,
+the module is VNDK-core and can link to other VNDK-core,
+VNDK-SP or LL-NDK modules only.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.extends">
+        <span class="fixed">&nbsp;</span><b>extends </b>
+        <i>string</i>, Extending another module
+
+</div></div>
+    <div class="simple" id="fluoride_defaults_qti.whole_static_libs">
+        <span class="fixed">&nbsp;</span><b>whole_static_libs </b>
+        <i>list of strings</i>, list of modules whose object files should be linked into this module
+in their entirety.  For static library modules, all of the .o files from the intermediate
+directory of the dependency will be linked into this modules .a file.  For a shared library,
+the dependency&#39;s .a file will be linked into this module using -Wl,--whole-archive.
+
+</div>
+    <div class="simple" id="fluoride_defaults_qti.yacc">
+        <span class="fixed">&nbsp;</span><b>yacc </b>
+        <i>YaccProperties</i>
+</div></div>
+<script>
+  accordions = document.getElementsByClassName('accordion');
+  for (i=0; i < accordions.length; ++i) {
+    accordions[i].addEventListener("click", function() {
+      var panel = this.nextElementSibling;
+      var child = this.firstElementChild;
+      if (panel.style.display === "block") {
+          panel.style.display = "none";
+          child.textContent = '\u2295';
+      } else {
+          panel.style.display = "block";
+          child.textContent = '\u2296';
+      }
+    });
+  }
+</script>
+</body>
