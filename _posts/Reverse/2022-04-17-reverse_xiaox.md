@@ -225,7 +225,7 @@ public class V implements View.OnClickListener {
 
 ![graph]({{"/assets/pictures/reverse/multi_open/shadow.png" | prepend:site.baseurl}})
 
-从该现象中也告诉我们，即使多开 app 会在系统中单独安装分身 app，但他任然依赖于原 app，我们不能将原 app 卸载
+从该现象中也告诉我们，即使多开 app 会在系统中单独安装分身 app，但他仍然依赖于原 app，我们不能将原 app 卸载
 
 #### 总结
 
@@ -329,7 +329,7 @@ public class AbcUtil {
 
 ### 获取动态解密后的 so
 
-此时可以等管理 app 运行后，从内存中 dump 出来 so 文件，dump 使用的工具任是 elf-dump-fix
+此时可以等管理 app 运行后，从内存中 dump 出来 so 文件，dump 使用的工具仍是 elf-dump-fix
 
 
 ![graph]({{"/assets/pictures/reverse/multi_open/dump_so.png" | prepend:site.baseurl}})
