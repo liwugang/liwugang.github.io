@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2022-04-17T10:46:54+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://liwugang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://liwugang.github.io/" rel="alternate" type="text/html" /><updated>2022-04-17T19:29:52+08:00</updated><id>https://liwugang.github.io/feed.xml</id><title type="html">liwugang</title><subtitle>Patient &amp;&amp; Courage
 </subtitle><author><name>liwugang</name><email>liwugang@outlook.com</email></author><entry><title type="html">某多开 app 破解 - 上篇</title><link href="https://liwugang.github.io/2022/04/17/reverse_xiaox.html" rel="alternate" type="text/html" title="某多开 app 破解 - 上篇" /><published>2022-04-17T10:46:00+08:00</published><updated>2022-04-17T10:46:00+08:00</updated><id>https://liwugang.github.io/2022/04/17/reverse_xiaox</id><content type="html" xml:base="https://liwugang.github.io/2022/04/17/reverse_xiaox.html">&lt;p&gt;之前对多开 app 进行了调研，发现了某多开 app 比较优秀，使用起来广告少，崩溃也相对较少，大厂 app 都能稳定运行。但是免费版只支持多开一个，要是多于一个需要会员，故就对该 app 进行了逆向分析，本文只是记录下破解过程，用于学习研究。&lt;/p&gt;
 
 &lt;p&gt;本文核心不是分析多开的原理，而是分析非会员不能多开的逻辑，破解掉该防护，以达到非会员也能多开的效果。&lt;/p&gt;
@@ -210,7 +210,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/multi_open/shadow.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;从该现象中也告诉我们，即使多开 app 会在系统中单独安装分身 app，但他任然依赖于原 app，我们不能将原 app 卸载&lt;/p&gt;
+&lt;p&gt;从该现象中也告诉我们，即使多开 app 会在系统中单独安装分身 app，但他仍然依赖于原 app，我们不能将原 app 卸载&lt;/p&gt;
 
 &lt;h4 id=&quot;总结&quot;&gt;总结&lt;/h4&gt;
 
@@ -315,7 +315,7 @@ tencent_stub
 
 &lt;h3 id=&quot;获取动态解密后的-so&quot;&gt;获取动态解密后的 so&lt;/h3&gt;
 
-&lt;p&gt;此时可以等管理 app 运行后，从内存中 dump 出来 so 文件，dump 使用的工具任是 elf-dump-fix&lt;/p&gt;
+&lt;p&gt;此时可以等管理 app 运行后，从内存中 dump 出来 so 文件，dump 使用的工具仍是 elf-dump-fix&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/pictures/reverse/multi_open/dump_so.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
