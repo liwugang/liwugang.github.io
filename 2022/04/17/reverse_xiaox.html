@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Archive - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>某多开 app 破解 - 上篇 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/archive.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<meta name="description" content="之前对多开 app 进行了调研，发现了某多开 app 比较优秀，使用起来广告少，崩溃也相对较少，大厂 app 都能稳定运行。但是免费版只支持多开一个，要是多于一个需要会员，故就对该 app 进行了逆向分析，本文只是记录下破解过程，用于学习研究。本文核心不是分析多开的原理，而是分析非会员不能多开的逻辑，破解掉该防护...">
+<link rel="canonical" href="https://liwugang.github.io/2022/04/17/reverse_xiaox.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -263,7 +262,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -887,278 +886,557 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 </svg>
 <a title="Patient && Courage
 " href="/">liwugang</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
-        <ul><li class="navigation__item navigation__item--active"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+        <ul><li class="navigation__item"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
       </nav></div>
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><div class="article__header"><header><h1>Archive</h1></header></div><meta itemprop="headline" content="Archive"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--archive js-all"><div class="site-tags js-tags">
-  <ul class="menu">
-    <li>
-      <button type="button" class="button button--secondary button--pill tag-button tag-button--all" data-encode="">
-        Show All<div class="tag-button__count">40</div>
-      </button>
-    </li><li><button type="button" class="button button--pill tag-button tag-button-4" data-encode="Android">
-          <span>Android</span><div class="tag-button__count">13</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="LeetCode">
-          <span>LeetCode</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="Linux">
-          <span>Linux</span><div class="tag-button__count">2</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="Python">
-          <span>Python</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="SELinux">
-          <span>SELinux</span><div class="tag-button__count">4</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="Security">
-          <span>Security</span><div class="tag-button__count">1</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="debug">
-          <span>debug</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="misc">
-          <span>misc</span><div class="tag-button__count">3</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-1" data-encode="openssl">
-          <span>openssl</span><div class="tag-button__count">2</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-3" data-encode="reverse">
-          <span>reverse</span><div class="tag-button__count">7</div>
-        </button>
-      </li><li><button type="button" class="button button--pill tag-button tag-button-2" data-encode="tools">
-          <span>tools</span><div class="tag-button__count">4</div>
-        </button>
-      </li></ul>
-</div>
-<div class="js-result layout--archive__result d-none"><div class="article-list items"><section><h2 style="color:#f00" class="article-list__group-header">置顶</h2><ul class="items"></ul><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="SELinux">
-        <div class="item__content"><span class="item__meta">Oct 03,2020</span><a itemprop="headline" class="item__header" href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2022</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android,reverse">
-        <div class="item__content"><span class="item__meta">Apr 17</span><a itemprop="headline" class="item__header" href="/2022/04/17/reverse_xiaox.html">某多开 app 破解 - 上篇</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Feb 27</span><a itemprop="headline" class="item__header" href="/2022/02/27/android10_no_read_code.html">Android 10 系统库代码段去掉读权限探讨</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Jan 01</span><a itemprop="headline" class="item__header" href="/2022/01/01/android_env_detection.html">设备风控攻防 - 设备环境检测</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2021</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android,Security">
-        <div class="item__content"><span class="item__meta">Nov 21</span><a itemprop="headline" class="item__header" href="/2021/11/21/analysis_jd_mystique.html">京东安全发现的魔形女漏洞分析</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Nov 06</span><a itemprop="headline" class="item__header" href="/2021/11/06/download_64_apk.html">如何下载64位的apk？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Jul 11</span><a itemprop="headline" class="item__header" href="/2021/07/11/magisk_enable_adbr_root.html">Magisk 环境下增加 adb root 功能</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Apr 07</span><a itemprop="headline" class="item__header" href="/2021/04/07/android_frp.html">Android Factory Reset Protection介绍</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2020</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Dec 06</span><a itemprop="headline" class="item__header" href="/2020/12/06/reverse_charles.html">破解最新抓包工具 Charles</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Linux">
-        <div class="item__content"><span class="item__meta">Oct 25</span><a itemprop="headline" class="item__header" href="/2020/10/25/introduce_lsm.html">Linux Security Module 框架介绍</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="misc">
-        <div class="item__content"><span class="item__meta">Oct 02</span><a itemprop="headline" class="item__header" href="/2020/10/02/blog_sticky.html">博客修改记录</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Sep 05</span><a itemprop="headline" class="item__header" href="/2020/09/05/markdown_insert_blank.html">markdown 如何插入多个空格？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="debug">
-        <div class="item__content"><span class="item__meta">Aug 30</span><a itemprop="headline" class="item__header" href="/2020/08/30/header_mismatch.html">记一次头文件不一致导致的异常</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Aug 01</span><a itemprop="headline" class="item__header" href="/2020/08/01/ghidra.html">Ghidra对局部变量的标识</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="debug">
-        <div class="item__content"><span class="item__meta">May 26</span><a itemprop="headline" class="item__header" href="/2020/05/26/debugging_kernel_with_qemu.html">使用QEMU调试Linux内核</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="debug">
-        <div class="item__content"><span class="item__meta">May 10</span><a itemprop="headline" class="item__header" href="/2020/05/10/gdb_break.html">gdb调试断点</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Apr 12</span><a itemprop="headline" class="item__header" href="/2020/04/12/reverse_with_frida.html">使用frida hook插件化apk</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="SELinux,Android">
-        <div class="item__content"><span class="item__meta">Mar 31</span><a itemprop="headline" class="item__header" href="/2020/03/31/neverallow_for_build.html">SELinux 编译时 neverallow 如何限制？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Linux">
-        <div class="item__content"><span class="item__meta">Mar 22</span><a itemprop="headline" class="item__header" href="/2020/03/22/hide_process.html">Linux 下如何隐藏自己不被发现？</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="SELinux,Android">
-        <div class="item__content"><span class="item__meta">Feb 29</span><a itemprop="headline" class="item__header" href="/2020/02/29/coredomain_create_new_property.html">Coredomain 创建新的 property type</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Python">
-        <div class="item__content"><span class="item__meta">Jan 11</span><a itemprop="headline" class="item__header" href="/2020/01/11/auto_input_and_click.html">Python实现自动化点击和输入功能</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="openssl">
-        <div class="item__content"><span class="item__meta">Jan 01</span><a itemprop="headline" class="item__header" href="/2020/01/01/filecrypt_aes.html">filecrypt工具加解密大文件失败问题分析</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2019</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Dec 30</span><a itemprop="headline" class="item__header" href="/2019/12/30/git_commits_en.html">A Tool To Automate Multiple Commits Into One</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android,SELinux">
-        <div class="item__content"><span class="item__meta">Dec 29</span><a itemprop="headline" class="item__header" href="/2019/12/29/CTS-neverallow.html">Android CTS中neverallow规则生成过程</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">Jul 06</span><a itemprop="headline" class="item__header" href="/2019/07/06/arm_stm_and_ldm.html">ARM中的STM和LDM指令的解析</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="misc">
-        <div class="item__content"><span class="item__meta">May 18</span><a itemprop="headline" class="item__header" href="/2019/05/18/feof_using.html">feof的陷阱</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">May 12</span><a itemprop="headline" class="item__header" href="/2019/05/12/crackme_owasp_android_first.html">OWASP Android crackmes</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="reverse">
-        <div class="item__content"><span class="item__meta">May 11</span><a itemprop="headline" class="item__header" href="/2019/05/11/crackme_cpp_one.html">简单C++ crackme分析</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Apr 28</span><a itemprop="headline" class="item__header" href="/2019/04/28/git_commits.html">Git自动化合并多个Commit</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="openssl">
-        <div class="item__content"><span class="item__meta">Apr 21</span><a itemprop="headline" class="item__header" href="/2019/04/21/openssl_decrypt_fail.html">openssl AES密钥和iv长度问题分析</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2017</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="tools">
-        <div class="item__content"><span class="item__meta">Sep 25</span><a itemprop="headline" class="item__header" href="/2017/09/25/zhaocha.html">找茬游戏辅助工具</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2016</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Python">
-        <div class="item__content"><span class="item__meta">Feb 24</span><a itemprop="headline" class="item__header" href="/2016/02/24/python_compile_error.html">error:Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). Get it … 解决方案</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Feb 21</span><a itemprop="headline" class="item__header" href="/2016/02/21/android_verify_apk.html">android签名证书文件的解析和签名校验的加强</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="LeetCode">
-        <div class="item__content"><span class="item__meta">Jan 15</span><a itemprop="headline" class="item__header" href="/2016/01/15/3_longest_substring_without_repeating_characters.html">3-Longest Substring Without Repeating Characters @LeetCode</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="LeetCode">
-        <div class="item__content"><span class="item__meta">Jan 13</span><a itemprop="headline" class="item__header" href="/2016/01/13/1_two_sum.html">1-Two Sum @LeetCode</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="LeetCode">
-        <div class="item__content"><span class="item__meta">Jan 13</span><a itemprop="headline" class="item__header" href="/2016/01/13/2_add_two_numbers.html">2-Add Two Numbers @LeetCode</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Jan 07</span><a itemprop="headline" class="item__header" href="/2016/01/07/LEB128.html">LEB128相关知识</a></div>
-      </li></ul></section><section><h2 class="article-list__group-header">2015</h2><ul class="items"><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Python">
-        <div class="item__content"><span class="item__meta">Nov 29</span><a itemprop="headline" class="item__header" href="/2015/11/29/python_protection.html">类似py2exe软件真的能保护python源码吗</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="misc">
-        <div class="item__content"><span class="item__meta">Aug 21</span><a itemprop="headline" class="item__header" href="/2015/08/21/makefile_ifelse.html">Makefile中的ifeq 多条件使用</a></div>
-      </li><li class="item" itemscope itemtype="http://schema.org/BlogPosting" data-tags="Android">
-        <div class="item__content"><span class="item__meta">Aug 19</span><a itemprop="headline" class="item__header" href="/2015/08/19/android_import_so.html">Android引入动态库so的方法</a></div>
-      </li></div>
-</div>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>某多开 app 破解 - 上篇</h1></header></div><meta itemprop="headline" content="某多开 app 破解 - 上篇"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=reverse">reverse</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 17, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-04-17T10:46:00+08:00">
+    <meta itemprop="keywords" content="Android,reverse"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>之前对多开 app 进行了调研，发现了某多开 app 比较优秀，使用起来广告少，崩溃也相对较少，大厂 app 都能稳定运行。但是免费版只支持多开一个，要是多于一个需要会员，故就对该 app 进行了逆向分析，本文只是记录下破解过程，用于学习研究。</p>
+
+<p>本文核心不是分析多开的原理，而是分析非会员不能多开的逻辑，破解掉该防护，以达到非会员也能多开的效果。</p>
+
+<p>为了后面方便对涉及到的 app 称呼，本文把要分析的多开 app 又称为管理 app，要多开的 app 称为原 app，多开出来的 app 称为分身 app。</p>
+
+<!--more-->
+
+<h2 id="工具">工具</h2>
+
+<ul>
+  <li>jadx-gui</li>
+  <li>charles</li>
+  <li>IDA</li>
+  <li>frida</li>
+  <li>elf-dump-fix，用于从内存中 dump dex，(<a href="https://github.com/maiyao1988/elf-dump-fix/">下载地址</a>)</li>
+  <li>rizin，用于获取 arm 指令的字节码 (和 radare2 类似，从 radare2 独立出来)，下篇用到</li>
+</ul>
+
+<h2 id="获取核心的-dex">获取核心的 dex</h2>
+
+<p>正常情况下，逆向是首先需要定位到关键代码处，然后从关键代码处开始分析。特别是对于有界面的某个操作，先找到界面对应的 activity，然后分析界面上的操作和显示等。</p>
+
+<p>对于我们的管理 app，就是先进入到不能多开的界面，然后定位其 activity，界面如下图：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/main_activity.png" alt="graph" /></p>
+
+<h3 id="获取界面-activity">获取界面 activity</h3>
+
+<p>获取 Android 当前界面可以通过各种工具，如 ddms，最简单的方式就是通过 adb shell 命令获取，获取方式如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adb shell dumpsys activity |grep mResumedActivity  <span class="c"># Linux 和 MacOs 可用，Windows 没有测试，请自行使用 findstr 替换 grep 测试</span>
+</code></pre></div></div>
+
+<p>结果为：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mResumedActivity: ActivityRecord<span class="o">{</span>67a7b7a u0 com.XXX.XXXX/.widget.create.SelectCreateAppActivity t294<span class="o">}</span>
+</code></pre></div></div>
+<p>所以，管理 app 的关键的 activity 类为 SelectCreateAppActivity</p>
+
+<p>通过 jadx-gui 对 apk 打开，然后没有发现 SelectCreateAppActivity 类，并且从类名可以看出来，该 apk 是被加固的，所以核心的 dex 是被隐藏的</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/not_found_activity.png" alt="graph" /></p>
+
+<h3 id="寻找核心的-dex">寻找核心的 dex</h3>
+
+<p>对于加固的 dex，最终都是要加载到内存中执行，有的方式我们可以从内存 maps 中找到蛛丝马迹，有的是使用匿名内存方式加载，这种需要使用 frida dex dump 这类脚本在内存中搜索 dex</p>
+
+<p>对于我们分析的管理 app，比较幸运的是直接能从内存中找到一个 dex，如下图：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/search_maps.png" alt="graph" /></p>
+
+<p>将 dex 从手机上取出来，重新使用 jadx-gui 对其打开，发现存在上面的类 SelectCreateAppActivity，所以这个 dex 就是我们找的核心 dex，但是发现没有指令，所有指令是被 nop 填充的，真正的指令被抽取了，如下图：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/actual_dex.png" alt="graph" /></p>
+
+<h3 id="获取完整的-dex">获取完整的 dex</h3>
+
+<p>指令被抽取后，在运行前肯定要回填，所以我们可以把内存的该 dex dump出来，我们使用 elf-dump-fix 工具，该工具主要是 dump so 内存，然后进行 elf 修复。此时我们只需要 dump dex 内存即可</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/dump_dex.png" alt="graph" /></p>
+
+<p>此时使用 jadx-gui 打开时提示错误，dex 的 checksum 校验失败，打开显示下面错误，这是由于 dex 在内存中被修改导致</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/checksum_error.png" alt="graph" /></p>
+
+<p>为了验证下 dump 出来的 dex 包含有指令，我们给 jadx-gui 提供绕过 checksum 的检测的参数：-Pdex-input.verify-checksum=no，然后重新使用 jadx-gui 打开：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jadx-gui <span class="nt">-Pdex-input</span>.verify-checksum<span class="o">=</span>no XXX.dex
+</code></pre></div></div>
+
+<p>重新打开后，确认有代码了，说明我们 dump 出来的 dex 是完整的，也就是我们要找到的核心 dex</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/activity_content.png" alt="graph" /></p>
+
+<h3 id="dex-checksum-修复">dex checksum 修复</h3>
+
+<p>在系统加载 dex 时会对 dex 的完整性通过 checksum 进行校验，指令重新写回时会修改 dex，导致 dex 的校验失败，此时我们可以 jadx-gui 中的提示信息将实际的 checksum 写回到 dex 中进行修复。</p>
+
+<p>从 dex header 的结构可知，checksum 是在 dex 文件的 8字节偏移，此时我们把正确的 checksum 写入到位置即可，存放是采用小端方式，由上面的错误信息可知：实际的 checksum 是 0x14950f15，写入小端字节序是：15 0f 95 14</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">struct</span> <span class="n">Header</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">magic_</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kt">uint32_t</span> <span class="n">checksum_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// See also location_checksum_</span>
+    <span class="p">...</span> <span class="p">...</span>
+  <span class="p">};</span>
+</code></pre></div></div>
+
+<p>修复完成后，可通过 jadx-gui 正常打开 dex，此时得到的就是我们将要分析的核心 dex</p>
+
+<h2 id="代码逻辑分析">代码逻辑分析</h2>
+
+<h3 id="定位关键代码">定位关键代码</h3>
+
+<p>寻找关键代码的两种思路：</p>
+
+<ul>
+  <li>
+    <p>直接从代码侧出发，dialog 显示是通过点击应用右侧 “制作分身” button 触发的，通过找到显示 app 信息的逻辑，然后找到对应的 button 的点击事件</p>
+  </li>
+  <li>
+    <p>另外一种是通过提示文案寻找，通过文案中 “普通用户只能双开应用” 找到是在 layout 下的 dialog_muti_need_vip.xml，然后通过 dialog_muti_need_vip 定位到显示 dialog 的代码处，为 D 类中的 d 方法，然后找到调用处</p>
+  </li>
+</ul>
+
+<p>App 信息的类</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">d</span> <span class="kd">extends</span> <span class="n">me</span><span class="o">.</span><span class="na">yokeyword</span><span class="o">.</span><span class="na">indexablerv</span><span class="o">.</span><span class="na">d</span><span class="o">&lt;</span><span class="nc">AppEntity</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="o">...</span> <span class="o">...</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">a</span><span class="o">(</span><span class="nc">RecyclerView</span><span class="o">.</span><span class="na">ViewHolder</span> <span class="n">viewHolder</span><span class="o">,</span> <span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span> <span class="n">eVar</span> <span class="o">=</span> <span class="o">(</span><span class="n">e</span><span class="o">)</span> <span class="n">viewHolder</span><span class="o">;</span>
+        <span class="n">eVar</span><span class="o">.</span><span class="na">f710b</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="n">com</span><span class="o">.</span><span class="na">bumptech</span><span class="o">.</span><span class="na">glide</span><span class="o">.</span><span class="na">c</span><span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">getApplicationContext</span><span class="o">()).</span><span class="na">d</span><span class="o">(</span><span class="nc">AppInfoUtils</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">())).</span><span class="na">a</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">f1879d</span><span class="o">).</span><span class="na">a</span><span class="o">(</span><span class="n">eVar</span><span class="o">.</span><span class="na">f709a</span><span class="o">);</span>
+        <span class="n">eVar</span><span class="o">.</span><span class="na">f710b</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">appEntity</span><span class="o">.</span><span class="na">getIsSupport</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">eVar</span><span class="o">.</span><span class="na">f711c</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="no">V</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">));</span> <span class="c1">// 设置点击 “制作分身”  的事件接收器</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="o">...</span> <span class="o">...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>走到 button 的点击事件接收器类</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">V</span> <span class="kd">implements</span> <span class="nc">View</span><span class="o">.</span><span class="na">OnClickListener</span> <span class="o">{</span>
+    <span class="o">...</span> <span class="o">...</span>
+    <span class="nd">@Override</span> <span class="c1">// android.view.View.OnClickListener</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">onClickApp</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">f718a</span><span class="o">);</span> <span class="c1">// 接收到点击事件后，调用 SelectCreateAppActivity 的 onClickApp 方法</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>最终调用的方法</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClickApp</span><span class="o">(</span><span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getIsSupport</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"正在适配中，敬请期待..."</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="nc">PackageNameGenarator</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"您的手机上还没有"</span> <span class="o">+</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">",请先安装官方最新版。"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">A</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">u</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="n">a</span><span class="o">(</span><span class="n">appEntity</span><span class="o">);</span> <span class="c1">// 通过文案可知走到这里</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>通过从文案的排查，可知走的是 a 方法</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">a</span><span class="o">(</span><span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">w</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">E</span><span class="o">()</span> <span class="o">||</span> <span class="o">!</span><span class="n">h</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="nc">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Intent</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="nc">CreateCustomActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="s">"entity"</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">);</span>
+            <span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="s">"ct"</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">j</span><span class="o">);</span>
+            <span class="n">startActivity</span><span class="o">(</span><span class="n">intent</span><span class="o">);</span>
+            <span class="n">overridePendingTransition</span><span class="o">(</span><span class="no">R</span><span class="n">$anim</span><span class="o">.</span><span class="na">in_from_right</span><span class="o">,</span> <span class="no">R</span><span class="n">$anim</span><span class="o">.</span><span class="na">out_to_left</span><span class="o">);</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="no">D</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="k">this</span><span class="o">);</span> <span class="c1">// 这是显示文案的对话框，所以上面是判断多开和会员的逻辑</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>该方法是核心方法，D.d 是显示不能多开的对话框，通过第一行的 if 后面的条件判断是否可以进行多开</p>
+
+<p>条件一和条件二是通过对 com.XXX.XXX.a.a.a() 中的 w() 和 E() 方法判断，这个类中的信息都是从服务端传递过来的</p>
+
+<p>条件三是通过遍历设备上的 applist 寻找，是否有 metaData 中的 PLUGIN_PACKAGE 为原 app 的包名，若有则表示已经多开过了</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">a</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">PackageInfo</span><span class="o">&gt;</span> <span class="n">installedPackages</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getPackageManager</span><span class="o">().</span><span class="na">getInstalledPackages</span><span class="o">(</span><span class="mi">128</span><span class="o">);</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">installedPackages</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="nc">PackageInfo</span> <span class="n">packageInfo</span> <span class="o">=</span> <span class="n">installedPackages</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">((</span><span class="n">packageInfo</span><span class="o">.</span><span class="na">applicationInfo</span><span class="o">.</span><span class="na">flags</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">packageInfo</span><span class="o">.</span><span class="na">packageName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"dkmodel"</span><span class="o">)</span> <span class="o">||</span> <span class="n">packageInfo</span><span class="o">.</span><span class="na">packageName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"dkplugin"</span><span class="o">)</span> <span class="o">||</span> <span class="o">.....))</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="k">new</span> <span class="nf">PluginInfo</span><span class="o">();</span>
+                        <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="n">packageInfo</span><span class="o">.</span><span class="na">applicationInfo</span><span class="o">.</span><span class="na">metaData</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"PLUGIN_PACKAGE"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="n">string</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">string</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">str</span><span class="o">))</span> <span class="o">{</span>
+                            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e2</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e2</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e3</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e3</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="绕过多开限制">绕过多开限制</h3>
+
+<h4 id="尝试---本地修改包名绕过">尝试 - 本地修改包名绕过</h4>
+
+<p>经过上面分析，条件一和条件二都是需要对服务端返回值修改，而条件三是本地包名的判断，是不是可以将分身 app 中的 metadata 里的 PLUGIN_PACKAGE 改成任意包名绕过限制？</p>
+
+<p>经尝试，修改成不存在的包名后，分身 app 无法启动，并且查看 maps 可以发现，其实他会包含有原 app 包的 apk</p>
+
+<p>如下面对夸克进行多开，分身 app 包名是 dkplugin.azg.hjo，在 maps 中能发现有夸克的包名</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/shadow.png" alt="graph" /></p>
+
+<p>从该现象中也告诉我们，即使多开 app 会在系统中单独安装分身 app，但他任然依赖于原 app，我们不能将原 app 卸载</p>
+
+<h4 id="总结">总结</h4>
+
+<p>只能通过修改条件一或者条件二绕过多开限制，而这两个信息都是从服务端传过来的，所以需要修改 dex 代码</p>
+
+<h2 id="脱壳">脱壳</h2>
+
+<p>该壳的核心 so 代码是用 OLLVM 加固，分析起来比较麻烦，为了能够快速得到目的，就没有继续死磕。通过网上资料可知，该壳相对简单，脱壳可参考<a href="https://www.imwen.cn/2020/03/29/271.html">这里</a></p>
+
+<ul>
+  <li>
+    <p>把 Androidmanifest.xml 中的
+name 改为加固 classes.dex 中以下路径 com.wrapper.proxyapplication.WrapperProxyApplication 中调用的实际 application 类</p>
+  </li>
+  <li>
+    <p>删除下面文件</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>删除 apk 中的下列文件
+
+assets/0OO00l111l1l
+assets/0OO00oo01l1l
+assets/0OO00oo11l1l
+assets/o0oooOO0ooOo.dat
+assets/tosversion
+lib/libshell-super.2019.so
+lib/libshella-4.2.0.9.so
+tencent_stub
+</code></pre></div></div>
+
+<ul>
+  <li>然后将核心 dex 放入，重新打包签名即可</li>
+</ul>
+
+<p>脱壳后并且将上面条件一设置大于0时，运行后出错，出错信息为：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/so_error.png" alt="graph" /></p>
+
+<h2 id="so-分析">so 分析</h2>
+
+<p>通过字符串搜索，只有两处会有该提示：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClickApp</span><span class="o">(</span><span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getIsSupport</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"正在适配中，敬请期待..."</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="nc">PackageNameGenarator</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"您的手机上还没有"</span> <span class="o">+</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">",请先安装官方最新版。"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">A</span><span class="o">())</span> <span class="o">{</span> <span class="c1">// 第一处：服务端获取配置标识</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">u</span><span class="o">()))</span> <span class="o">{</span> <span class="c1">// 第二处：u() 返回空</span>
+            <span class="n">a</span><span class="o">(</span><span class="n">appEntity</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>第一处是从服务端获取配置标识，若失败了才会打印日志退出。而在使用 charles 抓包可知，从服务端获取到的配置是成功的。所以失败原因是发生第二处，即是 com.XXX.XXX.a.a.a().u() 返回空导致</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">u</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">r</span><span class="o">))</span> <span class="o">{</span> <span class="c1">// 服务端信息，不为空</span>
+            <span class="k">return</span> <span class="s">""</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">AbcUtil</span> <span class="n">abcUtil</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">H</span><span class="o">;</span>
+            <span class="k">return</span> <span class="nc">AbcUtil</span><span class="o">.</span><span class="na">getStr4</span><span class="o">(</span><span class="nc">Application</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getApplicationContext</span><span class="o">(),</span> <span class="k">this</span><span class="o">.</span><span class="na">r</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e2</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="k">return</span> <span class="s">""</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>u 调用空可能存在三个地方：</p>
+<ul>
+  <li>this.r 为空，这是服务端返回的信息，排除该情况</li>
+  <li>调用 AbcUtil.getStr4 后返回为空</li>
+  <li>或者调用 AbcUtil.getStr4 抛出异常</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbcUtil</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"jiagu1"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">native</span> <span class="nc">String</span> <span class="nf">getStr4</span><span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">native</span> <span class="kt">boolean</span> <span class="nf">saveD</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">,</span> <span class="nc">DeviceEntity</span> <span class="n">deviceEntity</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>可以看到， abcUtil 中的两个方法实际上调用的是 libjiagu1.so 中的函数</p>
+
+<p>使用 IDA 对该 so 打开，然后发现并没有找到 getStr4 函数，而是有一大段数据，在结合有使用 svc 调用的 mmap 等函数，猜测可能是在运行时进行动态解密</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/svc.png" alt="graph" /></p>
+
+<h3 id="获取动态解密后的-so">获取动态解密后的 so</h3>
+
+<p>此时可以等管理 app 运行后，从内存中 dump 出来 so 文件，dump 使用的工具任是 elf-dump-fix</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/dump_so.png" alt="graph" /></p>
+
+<p>和上面 dump dex 不同的是，最后一个参数设为 1， 要对 elf 进行修复</p>
+
+<p>此时在通过 IDA 打开是可以找到 getStr4 函数</p>
+
+<h3 id="getstr4-函数分析">getStr4 函数分析</h3>
+
+<p><img src="/assets/pictures/reverse/multi_open/so_code.png" alt="graph" /></p>
+
+<p>getStr4 的函数逻辑为：</p>
+
+<ul>
+  <li>调用 sub_28F4 函数，若为 true，则直接返回 0</li>
+  <li>然后调用 java 侧的 StringUtils 类中的 str2 方法，然后将结果返回</li>
+</ul>
+
+<p>查看 sub_28F4 函数如下：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/so_sig.png" alt="graph" /></p>
+
+<p>从使用的 API 可以明显看到，这是在获取 apk 签名，由于我们重新对 apk 签名过，所以在此时签名校验会失败，才导致脱壳后不可用</p>
+
+<h3 id="绕过签名校验">绕过签名校验</h3>
+
+<p>直接修改 so 简单，但是 so 会有动态解密过程，需要将修改转化成解密前的修改，这样修改比较麻烦，为了更快完成目标，并且对 so 的两个方法进行了分析，都是判断签名后直接调用 java 侧方法，所以我们可以将 so 去掉，直接在 java 侧修改调用对应的 java 方法</p>
+
+<p>通过 frida 对 getStr4 函数的 hook 监控，发现 getStr4 返回固定的值，所以为了更简单的修改，直接将 java 侧 getStr4 返回该固定值，并且去掉 so 的加载：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="c"># 修复前</span>
+
+.method static constructor &lt;clinit&gt;<span class="o">()</span>V
+    .locals 1
+
+    const-string v0, <span class="s2">"jiagu1"</span>
+
+    .line 1
+    invoke-static <span class="o">{</span>v0<span class="o">}</span>, Ljava/lang/System<span class="p">;</span>-&gt;loadLibrary<span class="o">(</span>Ljava/lang/String<span class="p">;</span><span class="o">)</span>V
+
+    <span class="k">return</span><span class="nt">-void</span>
+.end method
+
+.method public static native getStr4<span class="o">(</span>Ljava/lang/Object<span class="p">;</span>Ljava/lang/String<span class="p">;</span><span class="o">)</span>Ljava/lang/String<span class="p">;</span>
+.end method
+
+<span class="c"># 修改后</span>
+
+.method static constructor &lt;clinit&gt;<span class="o">()</span>V
+    .locals 1
+
+    <span class="c">#const-string v0, "jiagu1"</span>
+
+    .line 1
+    <span class="c">#invoke-static {v0}, Ljava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V</span>
+
+    <span class="k">return</span><span class="nt">-void</span>
+.end method
+
+
+.method public static getStr4<span class="o">(</span>Ljava/lang/Object<span class="p">;</span>Ljava/lang/String<span class="p">;</span><span class="o">)</span>Ljava/lang/String<span class="p">;</span>
+    .registers 3
+
+    const-string v0, <span class="s2">"Ektech2017!@#"</span> <span class="c"># 返回的固定值</span>
+
+    <span class="k">return</span><span class="nt">-object</span> v0
+
+.end method
+
+</code></pre></div></div>
+<p>将 so 的加载注释掉，并且将 getStr4 直接返回固定值</p>
+
+<p>修改完后重新打包签名安装，此时发现是可用的，如下图可以多开任意个，没有限制：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/multi_open_success.png" alt="graph" /></p>
+
+<h2 id="总结-1">总结</h2>
+
+<p>本篇主要是对管理 app 的逆向分析破解，主要涉及到：</p>
+
+<ul>
+  <li>核心 dex 的获取</li>
+  <li>定位关键代码</li>
+  <li>脱壳并修改关键代码</li>
+  <li>解密 so 的获取</li>
+  <li>so 核心代码分析</li>
+  <li>绕过 so 的签名校验</li>
+</ul>
+
+<p>本文中涉及到的一些技术点并没有仔细列举，大家可以根据自行去分析，如：</p>
+<ul>
+  <li>条件一和条件二是服务端的配置</li>
+  <li>charles 使用，并且通过 charles 测试修改服务端配置</li>
+  <li>frida 的使用</li>
+</ul>
+
+<p>最后本篇只是分析了管理 app，此时点击分身 app 是会闪退，这是由于分身 app 还会有安全防护，该防护等下篇再分析</p>
+
+<h2 id="样本下载">样本下载</h2>
+
+<p><a href="https://github.com/liwugang/liwugang.github.io/tree/master/assets/files/multi_open.apk">样本 apk</a></p>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2022-04-17T10:46:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__reward"><section>
+  <div class="content-play">
+    <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+    <div class="hide_box-play"></div>
+    <div class="shang_box-play">
+      <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/assets/pictures/pay/close.jpg" alt="取消" /></a>
+      <div class="shang_tit-play">
+        <p>感谢您的支持!</p>
+      </div>
+      <div class="shang_payimg">
+          <img src="/assets/pictures/pay/alipayimg.jpg" alt="扫码支持" />
+      </div>
+    <div class="shang_payimg">
+          <img src="/assets/pictures/pay/weipayimg.png" alt="扫码支持" />
+      </div>
+      <div class="pay_explain">扫码打赏，您说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="alipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        <div class="pay_item" data-id="weipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/wechat.jpg" alt="微信" /></span>
+        </div>
+      </div>
+      <div class="shang_info-play">
+        <p>打开支付宝或微信扫一扫，即可进行扫码打赏哦</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  function dashangToggle(){
+    $(".hide_box-play").fadeToggle();
+    $(".shang_box-play").fadeToggle();
+  }
+  </script>
+
+  <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+
+  <style type="text/css">
+    .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+    .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+    .shang_box-play{width:540px;height:500px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+    .shang_box-play img{border:none;border-width:0;}
+    .dashang{display:block;width:150px;margin:5px auto;height:40px;line-height:25px;padding:10px;background-color:#f72828;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:18px;transition: all 0.3s;}
+    .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+    .shang_close-play{float:right;display:inline-block;
+      margin-right: 10px;margin-top: 20px;
+    }
+
+    .shang_logo{display:block;text-align:center;margin:20px auto;}
+    .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+    .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+    .shang_payimg{width:230px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+    .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+    .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+    .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+    .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+    .shang_info-play{clear:both;}
+    .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+  </style>
+
+</section>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2022/02/27/android10_no_read_code.html">Android 10 系统库代码段去掉读权限探讨</a></div></div></div>
+
 </div>
 
 <script>(function() {
   var SOURCES = window.TEXT_VARIABLES.sources;
-  function queryString() {
-    // This function is anonymous, is executed immediately and
-    // the return value is assigned to QueryString!
-    var i = 0, queryObj = {}, pair;
-    var queryStr = window.location.search.substring(1);
-    var queryArr = queryStr.split('&');
-    for (i = 0; i < queryArr.length; i++) {
-      pair = queryArr[i].split('=');
-      // If first entry with this name
-      if (typeof queryObj[pair[0]] === 'undefined') {
-        queryObj[pair[0]] = pair[1];
-        // If second entry with this name
-      } else if (typeof queryObj[pair[0]] === 'string') {
-        queryObj[pair[0]] = [queryObj[pair[0]], pair[1]];
-        // If third or later entry with this name
-      } else {
-        queryObj[pair[0]].push(pair[1]);
-      }
-    }
-    return queryObj;
-  }
-
-  var setUrlQuery = (function() {
-    var baseUrl =  window.location.href.split('?')[0];
-    return function(query) {
-      if (typeof query === 'string') {
-        window.history.replaceState(null, '', baseUrl + query);
-      } else {
-        window.history.replaceState(null, '', baseUrl);
-      }
-    };
-  })();
-
   window.Lazyload.js(SOURCES.jquery, function() {
-    var $tags = $('.js-tags');
-    var $articleTags = $tags.find('button');
-    var $tagShowAll = $tags.find('.tag-button--all');
-    var $result = $('.js-result');
-    var $sections = $result.find('section');
-    var sectionArticles = [];
-    var $lastFocusButton = null;
-    var sectionTopArticleIndex = [];
-    var hasInit = false;
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
 
-    $sections.each(function() {
-      sectionArticles.push($(this).find('.item'));
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
     });
-
-    function init() {
-      var i, index = 0;
-      for (i = 0; i < $sections.length; i++) {
-        sectionTopArticleIndex.push(index);
-        index += $sections.eq(i).find('.item').length;
-      }
-      sectionTopArticleIndex.push(index);
-    }
-
-    function searchButtonsByTag(_tag/*raw tag*/) {
-      if (!_tag) {
-        return $tagShowAll;
-      }
-      var _buttons = $articleTags.filter('[data-encode="' + _tag + '"]');
-      if (_buttons.length === 0) {
-        return $tagShowAll;
-      }
-      return _buttons;
-    }
-    function buttonFocus(target) {
-      if (target) {
-        target.addClass('focus');
-        $lastFocusButton && !$lastFocusButton.is(target) && $lastFocusButton.removeClass('focus');
-        $lastFocusButton = target;
-      }
-    }
-
-    function tagSelect (tag/*raw tag*/, target) {
-      var result = {}, $articles;
-      var i, j, k, _tag;
-
-      for (i = 0; i < sectionArticles.length; i++) {
-        $articles = sectionArticles[i];
-        for (j = 0; j < $articles.length; j++) {
-          if (tag === '' || tag === undefined) {
-            result[i] || (result[i] = {});
-            result[i][j] = true;
-          } else {
-            var tags = $articles.eq(j).data('tags').split(',');
-            for (k = 0; k < tags.length; k++) {
-              if (tags[k] === tag) {
-                result[i] || (result[i] = {});
-                result[i][j] = true; break;
-              }
-            }
-          }
-        }
-      }
-
-      for (i = 0; i < sectionArticles.length; i++) {
-        result[i] && $sections.eq(i).removeClass('d-none');
-        result[i] || $sections.eq(i).addClass('d-none');
-        for (j = 0; j < sectionArticles[i].length; j++) {
-          if (result[i] && result[i][j]) {
-            sectionArticles[i].eq(j).removeClass('d-none');
-          } else {
-            sectionArticles[i].eq(j).addClass('d-none');
-          }
-        }
-      }
-
-      hasInit || ($result.removeClass('d-none'), hasInit = true);
-
-
-      if (target) {
-        buttonFocus(target);
-        _tag = target.attr('data-encode');
-        if (_tag === '' || typeof _tag !== 'string') {
-          setUrlQuery();
-        } else {
-          setUrlQuery('?tag=' + _tag);
-        }
-      } else {
-        buttonFocus(searchButtonsByTag(tag));
-      }
-    }
-
-    var query = queryString(), _tag = query.tag;
-    init(); tagSelect(_tag);
-    $tags.on('click', 'button', function() {
-      tagSelect($(this).data('encode'), $(this));
-    });
-
   });
 })();
-</script>
-
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'reverse_multi_app'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -1709,6 +1987,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
