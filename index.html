@@ -902,6 +902,19 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 03, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-03T11:55:00+08:00">
     <meta itemprop="keywords" content="SELinux"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2022/04/12/reverse_xiaox.html"><h2 itemprop="headline" class="item__header">某多开 app 破解 - 上篇</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">之前对多开 app 进行了调研，发现了某多开 app 比较优秀，使用起来广告少，崩溃也相对较少，大厂 app 都能稳定运行。但是免费版只支持多开一个，要是多于一个需要会员，故就对该 app 进行了逆向分析，本文只是记录下破解过程，用于学习研究。
+
+本文核心不是分析多开的原理，而是分析非会员不能多开的逻辑，破解掉该防护，以达到非会员也能多开的效果。
+
+为了后面方便对涉及到的 app 称呼，本文把要分析的多开 app 又称为管理 app，要多开的 app 称为原 app，多开出来的 app 称为分身 app。</div><p><a href="/2022/04/12/reverse_xiaox.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=reverse">reverse</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-04-12T17:25:00+08:00">
+    <meta itemprop="keywords" content="Android,reverse"></div>
       </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2022/02/27/android10_no_read_code.html"><h2 itemprop="headline" class="item__header">Android 10 系统库代码段去掉读权限探讨</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">前段时间在对系统函数进行 hook 检测时，发现了一些异常 crash，并且只发生在 Android 10 系统上，经过对错误日志分析，确认这是 Android 10 新增加的功能：系统库的代码段会映射到可执行内存，没有读权限。hook 检测的逻辑是需要读取指令解析来确认，所以导致了异常。
 
 简介
@@ -980,24 +993,8 @@ magisk 获取 root 权限是通过放置的 su，adb root 功能并不可用，�
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 25, 2020</span>
             </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-25T14:17:00+08:00">
     <meta itemprop="keywords" content="Linux"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2020/10/02/blog_sticky.html"><h2 itemprop="headline" class="item__header">博客修改记录</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">目的
-
-该博客采用jekyll-TeXt-theme主题，一个主题不可能让所有人都满意，不满意就会修改，本文会记录下我修改的地方。
-
-修改记录
-
-2020-10-01 新增置顶功能
-
-2020-10-02 新增pdf和ppt显示功能
-
-2021-01-09 增加打赏功能</div><p><a href="/2020/10/02/blog_sticky.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 02, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-02T12:12:00+08:00">
-    <meta itemprop="keywords" content="misc"></div>
       </article></div>
-</div><div class="layout--home"><div class="pagination"><p>39 post articles, 4 pages.</p>
+</div><div class="layout--home"><div class="pagination"><p>40 post articles, 4 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><div class="button button--secondary button--circle disabled">
             <i class="fas fa-angle-left"></i>

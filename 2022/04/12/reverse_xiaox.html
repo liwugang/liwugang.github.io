@@ -1,0 +1,2063 @@
+<!DOCTYPE html><html lang="en">
+  <head><!-- Global site tag (gtag.js) - Baidu Analytics -->
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?1d2fe4c4c213d17757e0b1a94713ead0";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>某多开 app 破解 - 上篇 - liwugang</title>
+
+<meta name="description" content="之前对多开 app 进行了调研，发现了某多开 app 比较优秀，使用起来广告少，崩溃也相对较少，大厂 app 都能稳定运行。但是免费版只支持多开一个，要是多于一个需要会员，故就对该 app 进行了逆向分析，本文只是记录下破解过程，用于学习研究。本文核心不是分析多开的原理，而是分析非会员不能多开的逻辑，破解掉该防护...">
+<link rel="canonical" href="https://liwugang.github.io/2022/04/12/reverse_xiaox.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="manifest" href="/assets/favicon/site.webmanifest">
+<link rel="mask-icon" href="/assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css" ><!-- start custom head snippets -->
+<!--<script data-ad-client="ca-pub-7921139258194908" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+<!-- end custom head snippets --><script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.isOverallScroller = function(node) {
+    return node === document.documentElement || node === document.body || node === window;
+  };
+
+  window.isFormElement = function(node) {
+    var tagName = node.tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i;
+      loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cbs[i]();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();
+(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();
+(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();
+</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      version: '2.2.5',
+      sources: {
+        font_awesome: 'https://cdn.bootcss.com/font-awesome/5.13.0/css/all.css',
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn.jsdelivr.net/npm/leancloud-storage@3.13.2/dist/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js',
+          css: 'https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css'
+        },
+        valine: 'https://unpkg.com/valine/dist/Valine.min.js',
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h1,h2,h3,h4'
+        }
+      },
+      paths: {
+        search_js: '/assets/search.js'
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script></head>
+  <body>
+    <div class="root" data-is-touch="false">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+
+      <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
+      <div class="header__title">
+        <div class="header__brand"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">  <image id="image0" width="512" height="512" x="0" y="0"
+    href="data:image/png;base64,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" />
+</svg>
+<a title="Patient && Courage
+" href="/">liwugang</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
+        <ul><li class="navigation__item"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+      </nav></div>
+  </header>
+</div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
+
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
+
+              <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
+
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>某多开 app 破解 - 上篇</h1></header></div><meta itemprop="headline" content="某多开 app 破解 - 上篇"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=reverse">reverse</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-04-12T17:25:00+08:00">
+    <meta itemprop="keywords" content="Android,reverse"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>之前对多开 app 进行了调研，发现了某多开 app 比较优秀，使用起来广告少，崩溃也相对较少，大厂 app 都能稳定运行。但是免费版只支持多开一个，要是多于一个需要会员，故就对该 app 进行了逆向分析，本文只是记录下破解过程，用于学习研究。</p>
+
+<p>本文核心不是分析多开的原理，而是分析非会员不能多开的逻辑，破解掉该防护，以达到非会员也能多开的效果。</p>
+
+<p>为了后面方便对涉及到的 app 称呼，本文把要分析的多开 app 又称为管理 app，要多开的 app 称为原 app，多开出来的 app 称为分身 app。</p>
+
+<!--more-->
+
+<h2 id="工具">工具</h2>
+
+<ul>
+  <li>jadx-gui</li>
+  <li>charles</li>
+  <li>IDA</li>
+  <li>frida</li>
+  <li>elf-dump-fix，用于从内存中 dump dex，(<a href="https://github.com/maiyao1988/elf-dump-fix/">下载地址</a>)</li>
+  <li>rizin，用于获取 arm 指令的字节码 (和 radare2 类似，从 radare2 独立出来)，下篇用到</li>
+</ul>
+
+<h2 id="获取核心的-dex">获取核心的 dex</h2>
+
+<p>正常情况下，逆向是首先需要定位到关键代码处，然后从关键代码处开始分析。特别是对于有界面的某个操作，先找到界面对应的 activity，然后分析界面上的操作和显示等。</p>
+
+<p>对于我们的管理 app，就是先进入到不能多开的界面，然后定位其 activity，界面如下图：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/main_activity.png" alt="graph" /></p>
+
+<h3 id="获取界面-activity">获取界面 activity</h3>
+
+<p>获取 Android 当前界面可以通过各种工具，如 ddms，最简单的方式就是通过 adb shell 命令获取，获取方式如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adb shell dumpsys activity |grep mResumedActivity  <span class="c"># Linux 和 MacOs 可用，Windows 没有测试，请自行使用 findstr 替换 grep 测试</span>
+</code></pre></div></div>
+
+<p>结果为：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mResumedActivity: ActivityRecord<span class="o">{</span>67a7b7a u0 com.XXX.XXXX/.widget.create.SelectCreateAppActivity t294<span class="o">}</span>
+</code></pre></div></div>
+<p>所以，管理 app 的关键的 activity 类为 SelectCreateAppActivity</p>
+
+<p>通过 jadx-gui 对 apk 打开，然后没有发现 SelectCreateAppActivity 类，并且从类名可以看出来，该 apk 是被加固的，所以核心的 dex 是被隐藏的</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/not_found_activity.png" alt="graph" /></p>
+
+<h3 id="寻找核心的-dex">寻找核心的 dex</h3>
+
+<p>对于加固的 dex，最终都是要加载到内存中执行，有的方式我们可以从内存 maps 中找到蛛丝马迹，有的是使用匿名内存方式加载，这种需要使用 frida dex dump 这类脚本在内存中搜索 dex</p>
+
+<p>对于我们分析的管理 app，比较幸运的是直接能从内存中找到一个 dex，如下图：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/search_maps.png" alt="graph" /></p>
+
+<p>将 dex 从手机上取出来，重新使用 jadx-gui 对其打开，发现存在上面的类 SelectCreateAppActivity，所以这个 dex 就是我们找的核心 dex，但是发现没有指令，所有指令是被 nop 填充的，真正的指令被抽取了，如下图：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/actual_dex.png" alt="graph" /></p>
+
+<h3 id="获取完整的-dex">获取完整的 dex</h3>
+
+<p>指令被抽取后，在运行前肯定要回填，所以我们可以把内存的该 dex dump出来，我们使用 elf-dump-fix 工具，该工具主要是 dump so 内存，然后进行 elf 修复。此时我们只需要 dump dex 内存即可</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/dump_dex.png" alt="graph" /></p>
+
+<p>此时使用 jadx-gui 打开时提示错误，dex 的 checksum 校验失败，打开显示下面错误，这是由于 dex 在内存中被修改导致</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/checksum_error.png" alt="graph" /></p>
+
+<p>为了验证下 dump 出来的 dex 包含有指令，我们给 jadx-gui 提供绕过 checksum 的检测的参数：-Pdex-input.verify-checksum=no，然后重新使用 jadx-gui 打开：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jadx-gui <span class="nt">-Pdex-input</span>.verify-checksum<span class="o">=</span>no XXX.dex
+</code></pre></div></div>
+
+<p>重新打开后，确认有代码了，说明我们 dump 出来的 dex 是完整的，也就是我们要找到的核心 dex</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/activity_content.png" alt="graph" /></p>
+
+<h3 id="dex-checksum-修复">dex checksum 修复</h3>
+
+<p>在系统加载 dex 时会对 dex 的完整性通过 checksum 进行校验，指令重新写回时会修改 dex，导致 dex 的校验失败，此时我们可以 jadx-gui 中的提示信息将实际的 checksum 写回到 dex 中进行修复。</p>
+
+<p>从 dex header 的结构可知，checksum 是在 dex 文件的 8字节偏移，此时我们把正确的 checksum 写入到位置即可，存放是采用小端方式，由上面的错误信息可知：实际的 checksum 是 0x14950f15，写入小端字节序是：15 0f 95 14</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">struct</span> <span class="n">Header</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">magic_</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kt">uint32_t</span> <span class="n">checksum_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// See also location_checksum_</span>
+    <span class="p">...</span> <span class="p">...</span>
+  <span class="p">};</span>
+</code></pre></div></div>
+
+<p>修复完成后，可通过 jadx-gui 正常打开 dex，此时得到的就是我们将要分析的核心 dex</p>
+
+<h2 id="代码逻辑分析">代码逻辑分析</h2>
+
+<h3 id="定位关键代码">定位关键代码</h3>
+
+<p>寻找关键代码的两种思路：</p>
+
+<ul>
+  <li>
+    <p>直接从代码侧出发，dialog 显示是通过点击应用右侧 “制作分身” button 触发的，通过找到显示 app 信息的逻辑，然后找到对应的 button 的点击事件</p>
+  </li>
+  <li>
+    <p>另外一种是通过提示文案寻找，通过文案中 “普通用户只能双开应用” 找到是在 layout 下的 dialog_muti_need_vip.xml，然后通过 dialog_muti_need_vip 定位到显示 dialog 的代码处，为 D 类中的 d 方法，然后找到调用处</p>
+  </li>
+</ul>
+
+<p>App 信息的类</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">d</span> <span class="kd">extends</span> <span class="n">me</span><span class="o">.</span><span class="na">yokeyword</span><span class="o">.</span><span class="na">indexablerv</span><span class="o">.</span><span class="na">d</span><span class="o">&lt;</span><span class="nc">AppEntity</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="o">...</span> <span class="o">...</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">a</span><span class="o">(</span><span class="nc">RecyclerView</span><span class="o">.</span><span class="na">ViewHolder</span> <span class="n">viewHolder</span><span class="o">,</span> <span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span> <span class="n">eVar</span> <span class="o">=</span> <span class="o">(</span><span class="n">e</span><span class="o">)</span> <span class="n">viewHolder</span><span class="o">;</span>
+        <span class="n">eVar</span><span class="o">.</span><span class="na">f710b</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="n">com</span><span class="o">.</span><span class="na">bumptech</span><span class="o">.</span><span class="na">glide</span><span class="o">.</span><span class="na">c</span><span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">getApplicationContext</span><span class="o">()).</span><span class="na">d</span><span class="o">(</span><span class="nc">AppInfoUtils</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">())).</span><span class="na">a</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">f1879d</span><span class="o">).</span><span class="na">a</span><span class="o">(</span><span class="n">eVar</span><span class="o">.</span><span class="na">f709a</span><span class="o">);</span>
+        <span class="n">eVar</span><span class="o">.</span><span class="na">f710b</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">appEntity</span><span class="o">.</span><span class="na">getIsSupport</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">eVar</span><span class="o">.</span><span class="na">f711c</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="no">V</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">));</span> <span class="c1">// 设置点击 “制作分身”  的事件接收器</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="o">...</span> <span class="o">...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>走到 button 的点击事件接收器类</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">V</span> <span class="kd">implements</span> <span class="nc">View</span><span class="o">.</span><span class="na">OnClickListener</span> <span class="o">{</span>
+    <span class="o">...</span> <span class="o">...</span>
+    <span class="nd">@Override</span> <span class="c1">// android.view.View.OnClickListener</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">SelectCreateAppActivity</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">onClickApp</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">f718a</span><span class="o">);</span> <span class="c1">// 接收到点击事件后，调用 SelectCreateAppActivity 的 onClickApp 方法</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>最终调用的方法</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClickApp</span><span class="o">(</span><span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getIsSupport</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"正在适配中，敬请期待..."</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="nc">PackageNameGenarator</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"您的手机上还没有"</span> <span class="o">+</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">",请先安装官方最新版。"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">A</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">u</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="n">a</span><span class="o">(</span><span class="n">appEntity</span><span class="o">);</span> <span class="c1">// 通过文案可知走到这里</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>通过从文案的排查，可知走的是 a 方法</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">a</span><span class="o">(</span><span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">w</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">E</span><span class="o">()</span> <span class="o">||</span> <span class="o">!</span><span class="n">h</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="nc">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Intent</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="nc">CreateCustomActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="s">"entity"</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">);</span>
+            <span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="s">"ct"</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">j</span><span class="o">);</span>
+            <span class="n">startActivity</span><span class="o">(</span><span class="n">intent</span><span class="o">);</span>
+            <span class="n">overridePendingTransition</span><span class="o">(</span><span class="no">R</span><span class="n">$anim</span><span class="o">.</span><span class="na">in_from_right</span><span class="o">,</span> <span class="no">R</span><span class="n">$anim</span><span class="o">.</span><span class="na">out_to_left</span><span class="o">);</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="no">D</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="k">this</span><span class="o">);</span> <span class="c1">// 这是显示文案的对话框，所以上面是判断多开和会员的逻辑</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>该方法是核心方法，D.d 是显示不能多开的对话框，通过第一行的 if 后面的条件判断是否可以进行多开</p>
+
+<p>条件一和条件二是通过对 com.XXX.XXX.a.a.a() 中的 w() 和 E() 方法判断，这个类中的信息都是从服务端传递过来的</p>
+
+<p>条件三是通过遍历设备上的 applist 寻找，是否有 metaData 中的 PLUGIN_PACKAGE 为原 app 的包名，若有则表示已经多开过了</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">a</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">PackageInfo</span><span class="o">&gt;</span> <span class="n">installedPackages</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getPackageManager</span><span class="o">().</span><span class="na">getInstalledPackages</span><span class="o">(</span><span class="mi">128</span><span class="o">);</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">installedPackages</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="nc">PackageInfo</span> <span class="n">packageInfo</span> <span class="o">=</span> <span class="n">installedPackages</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">((</span><span class="n">packageInfo</span><span class="o">.</span><span class="na">applicationInfo</span><span class="o">.</span><span class="na">flags</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">packageInfo</span><span class="o">.</span><span class="na">packageName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"dkmodel"</span><span class="o">)</span> <span class="o">||</span> <span class="n">packageInfo</span><span class="o">.</span><span class="na">packageName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"dkplugin"</span><span class="o">)</span> <span class="o">||</span> <span class="o">.....))</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="k">new</span> <span class="nf">PluginInfo</span><span class="o">();</span>
+                        <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="n">packageInfo</span><span class="o">.</span><span class="na">applicationInfo</span><span class="o">.</span><span class="na">metaData</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"PLUGIN_PACKAGE"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="n">string</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">string</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">str</span><span class="o">))</span> <span class="o">{</span>
+                            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e2</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e2</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e3</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e3</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="绕过多开限制">绕过多开限制</h3>
+
+<h4 id="尝试---本地修改包名绕过">尝试 - 本地修改包名绕过</h4>
+
+<p>经过上面分析，条件一和条件二都是需要对服务端返回值修改，而条件三是本地包名的判断，是不是可以将分身 app 中的 metadata 里的 PLUGIN_PACKAGE 改成任意包名绕过限制？</p>
+
+<p>经尝试，修改成不存在的包名后，分身 app 无法启动，并且查看 maps 可以发现，其实他会包含有原 app 包的 apk</p>
+
+<p>如下面对夸克进行多开，分身 app 包名是 dkplugin.azg.hjo，在 maps 中能发现有夸克的包名</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/shadow.png" alt="graph" /></p>
+
+<p>从该现象中也告诉我们，即使多开 app 会在系统中单独安装分身 app，但他任然依赖于原 app，我们不能将原 app 卸载</p>
+
+<h4 id="总结">总结</h4>
+
+<p>只能通过修改条件一或者条件二绕过多开限制，而这两个信息都是从服务端传过来的，所以需要修改 dex 代码</p>
+
+<h2 id="脱壳">脱壳</h2>
+
+<p>该壳的核心 so 代码是用 OLLVM 加固，分析起来比较麻烦，为了能够快速得到目的，就没有继续死磕。通过网上资料可知，该壳相对简单，脱壳可参考<a href="https://www.imwen.cn/2020/03/29/271.html">这里</a></p>
+
+<ul>
+  <li>
+    <p>把 Androidmanifest.xml 中的
+name 改为加固 classes.dex 中以下路径 com.wrapper.proxyapplication.WrapperProxyApplication 中调用的实际 application 类</p>
+  </li>
+  <li>
+    <p>删除下面文件</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>删除 apk 中的下列文件
+
+assets/0OO00l111l1l
+assets/0OO00oo01l1l
+assets/0OO00oo11l1l
+assets/o0oooOO0ooOo.dat
+assets/tosversion
+lib/libshell-super.2019.so
+lib/libshella-4.2.0.9.so
+tencent_stub
+</code></pre></div></div>
+
+<ul>
+  <li>然后将核心 dex 放入，重新打包签名即可</li>
+</ul>
+
+<p>脱壳后并且将上面条件一设置大于0时，运行后出错，出错信息为：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/so_error.png" alt="graph" /></p>
+
+<h2 id="so-分析">so 分析</h2>
+
+<p>通过字符串搜索，只有两处会有该提示：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClickApp</span><span class="o">(</span><span class="nc">AppEntity</span> <span class="n">appEntity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">!=</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getIsSupport</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"正在适配中，敬请期待..."</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="nc">PackageNameGenarator</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"您的手机上还没有"</span> <span class="o">+</span> <span class="n">appEntity</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">",请先安装官方最新版。"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">A</span><span class="o">())</span> <span class="o">{</span> <span class="c1">// 第一处：服务端获取配置标识</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">u</span><span class="o">()))</span> <span class="o">{</span> <span class="c1">// 第二处：u() 返回空</span>
+            <span class="n">a</span><span class="o">(</span><span class="n">appEntity</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="no">T</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"初始化失败，请尝试退出后重新打开XXXX"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>第一处是从服务端获取配置标识，若失败了才会打印日志退出。而在使用 charles 抓包可知，从服务端获取到的配置是成功的。所以失败原因是发生第二处，即是 com.XXX.XXX.a.a.a().u() 返回空导致</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">u</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="nc">StringUtils</span><span class="o">.</span><span class="na">isNotBlank</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">r</span><span class="o">))</span> <span class="o">{</span> <span class="c1">// 服务端信息，不为空</span>
+            <span class="k">return</span> <span class="s">""</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">AbcUtil</span> <span class="n">abcUtil</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">H</span><span class="o">;</span>
+            <span class="k">return</span> <span class="nc">AbcUtil</span><span class="o">.</span><span class="na">getStr4</span><span class="o">(</span><span class="nc">Application</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getApplicationContext</span><span class="o">(),</span> <span class="k">this</span><span class="o">.</span><span class="na">r</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e2</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="k">return</span> <span class="s">""</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>u 调用空可能存在三个地方：</p>
+<ul>
+  <li>this.r 为空，这是服务端返回的信息，排除该情况</li>
+  <li>调用 AbcUtil.getStr4 后返回为空</li>
+  <li>或者调用 AbcUtil.getStr4 抛出异常</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbcUtil</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">"jiagu1"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">native</span> <span class="nc">String</span> <span class="nf">getStr4</span><span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">native</span> <span class="kt">boolean</span> <span class="nf">saveD</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">,</span> <span class="nc">DeviceEntity</span> <span class="n">deviceEntity</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>可以看到， abcUtil 中的两个方法实际上调用的是 libjiagu1.so 中的函数</p>
+
+<p>使用 IDA 对该 so 打开，然后发现并没有找到 getStr4 函数，而是有一大段数据，在结合有使用 svc 调用的 mmap 等函数，猜测可能是在运行时进行动态解密</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/svc.png" alt="graph" /></p>
+
+<h3 id="获取动态解密后的-so">获取动态解密后的 so</h3>
+
+<p>此时可以等管理 app 运行后，从内存中 dump 出来 so 文件，dump 使用的工具任是 elf-dump-fix</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/dump_so.png" alt="graph" /></p>
+
+<p>和上面 dump dex 不同的是，最后一个参数设为 1， 要对 elf 进行修复</p>
+
+<p>此时在通过 IDA 打开是可以找到 getStr4 函数</p>
+
+<h3 id="getstr4-函数分析">getStr4 函数分析</h3>
+
+<p><img src="/assets/pictures/reverse/multi_open/so_code.png" alt="graph" /></p>
+
+<p>getStr4 的函数逻辑为：</p>
+
+<ul>
+  <li>调用 sub_28F4 函数，若为 true，则直接返回 0</li>
+  <li>然后调用 java 侧的 StringUtils 类中的 str2 方法，然后将结果返回</li>
+</ul>
+
+<p>查看 sub_28F4 函数如下：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/so_sig.png" alt="graph" /></p>
+
+<p>从使用的 API 可以明显看到，这是在获取 apk 签名，由于我们重新对 apk 签名过，所以在此时签名校验会失败，才导致脱壳后不可用</p>
+
+<h3 id="绕过签名校验">绕过签名校验</h3>
+
+<p>直接修改 so 简单，但是 so 会有动态解密过程，需要将修改转化成解密前的修改，这样修改比较麻烦，为了更快完成目标，并且对 so 的两个方法进行了分析，都是判断签名后直接调用 java 侧方法，所以我们可以将 so 去掉，直接在 java 侧修改调用对应的 java 方法</p>
+
+<p>通过 frida 对 getStr4 函数的 hook 监控，发现 getStr4 返回固定的值，所以为了更简单的修改，直接将 java 侧 getStr4 返回该固定值，并且去掉 so 的加载：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="c"># 修复前</span>
+
+.method static constructor &lt;clinit&gt;<span class="o">()</span>V
+    .locals 1
+
+    const-string v0, <span class="s2">"jiagu1"</span>
+
+    .line 1
+    invoke-static <span class="o">{</span>v0<span class="o">}</span>, Ljava/lang/System<span class="p">;</span>-&gt;loadLibrary<span class="o">(</span>Ljava/lang/String<span class="p">;</span><span class="o">)</span>V
+
+    <span class="k">return</span><span class="nt">-void</span>
+.end method
+
+.method public static native getStr4<span class="o">(</span>Ljava/lang/Object<span class="p">;</span>Ljava/lang/String<span class="p">;</span><span class="o">)</span>Ljava/lang/String<span class="p">;</span>
+.end method
+
+<span class="c"># 修改后</span>
+
+.method static constructor &lt;clinit&gt;<span class="o">()</span>V
+    .locals 1
+
+    <span class="c">#const-string v0, "jiagu1"</span>
+
+    .line 1
+    <span class="c">#invoke-static {v0}, Ljava/lang/System;-&gt;loadLibrary(Ljava/lang/String;)V</span>
+
+    <span class="k">return</span><span class="nt">-void</span>
+.end method
+
+
+.method public static getStr4<span class="o">(</span>Ljava/lang/Object<span class="p">;</span>Ljava/lang/String<span class="p">;</span><span class="o">)</span>Ljava/lang/String<span class="p">;</span>
+    .registers 3
+
+    const-string v0, <span class="s2">"Ektech2017!@#"</span> <span class="c"># 返回的固定值</span>
+
+    <span class="k">return</span><span class="nt">-object</span> v0
+
+.end method
+
+</code></pre></div></div>
+<p>将 so 的加载注释掉，并且将 getStr4 直接返回固定值</p>
+
+<p>修改完后重新打包签名安装，此时发现是可用的，如下图可以多开任意个，没有限制：</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/multi_open_success.png" alt="graph" /></p>
+
+<h2 id="总结-1">总结</h2>
+
+<p>本篇主要是对管理 app 的逆向分析破解，主要涉及到：</p>
+
+<ul>
+  <li>核心 dex 的获取</li>
+  <li>定位关键代码</li>
+  <li>脱壳并修改关键代码</li>
+  <li>解密 so 的获取</li>
+  <li>so 核心代码分析</li>
+  <li>绕过 so 的签名校验</li>
+</ul>
+
+<p>本文中涉及到的一些技术点并没有仔细列举，大家可以根据自行去分析，如：</p>
+<ul>
+  <li>条件一和条件二是服务端的配置</li>
+  <li>charles 使用，并且通过 charles 测试修改服务端配置</li>
+  <li>frida 的使用</li>
+</ul>
+
+<p>最后本篇只是分析了管理 app，此时点击分身 app 是会闪退，这是由于分身 app 还会有安全防护，该防护等下篇再分析</p>
+
+<h2 id="样本下载">样本下载</h2>
+
+<p><a href="https://github.com/liwugang/liwugang.github.io/tree/master/assets/files/multi_open.apk">样本 apk</a></p>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2022-04-12T17:25:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__reward"><section>
+  <div class="content-play">
+    <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+    <div class="hide_box-play"></div>
+    <div class="shang_box-play">
+      <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/assets/pictures/pay/close.jpg" alt="取消" /></a>
+      <div class="shang_tit-play">
+        <p>感谢您的支持!</p>
+      </div>
+      <div class="shang_payimg">
+          <img src="/assets/pictures/pay/alipayimg.jpg" alt="扫码支持" />
+      </div>
+    <div class="shang_payimg">
+          <img src="/assets/pictures/pay/weipayimg.png" alt="扫码支持" />
+      </div>
+      <div class="pay_explain">扫码打赏，您说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="alipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        <div class="pay_item" data-id="weipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/wechat.jpg" alt="微信" /></span>
+        </div>
+      </div>
+      <div class="shang_info-play">
+        <p>打开支付宝或微信扫一扫，即可进行扫码打赏哦</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  function dashangToggle(){
+    $(".hide_box-play").fadeToggle();
+    $(".shang_box-play").fadeToggle();
+  }
+  </script>
+
+  <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+
+  <style type="text/css">
+    .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+    .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+    .shang_box-play{width:540px;height:500px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+    .shang_box-play img{border:none;border-width:0;}
+    .dashang{display:block;width:150px;margin:5px auto;height:40px;line-height:25px;padding:10px;background-color:#f72828;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:18px;transition: all 0.3s;}
+    .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+    .shang_close-play{float:right;display:inline-block;
+      margin-right: 10px;margin-top: 20px;
+    }
+
+    .shang_logo{display:block;text-align:center;margin:20px auto;}
+    .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+    .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+    .shang_payimg{width:230px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+    .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+    .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+    .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+    .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+    .shang_info-play{clear:both;}
+    .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+  </style>
+
+</section>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2022/02/27/android10_no_read_code.html">Android 10 系统库代码段去掉读权限探讨</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'reverse_multi_app'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
+
+<!-- end custom main bottom snippet --></div>
+            </div></div></div><div class="page__footer d-print-none">
+<footer class="footer py-4 js-page-footer">
+  <div class="main"><div itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liwugang"><meta itemprop="url" content="/liwugang.github.io"><meta itemprop="description" content="Patient && Courage"><div class="footer__author-links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><link itemprop="url" href="liwugang.github.io"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:liwugang@outlook.com" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Twitter.">
+        <a class="button button--circle twitter-button" itemprop="sameAs" href="https://twitter.com/liwugang" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1024.032 194.432c-37.664 16.704-78.176 28-120.672 33.088 43.36-26.016 76.672-67.168 92.384-116.224-40.608 24.064-85.568 41.568-133.408 50.976-38.336-40.832-92.928-66.336-153.344-66.336-116.032 0-210.08 94.048-210.08 210.08 0 16.48 1.856 32.512 5.44 47.872-174.592-8.768-329.408-92.416-433.024-219.52-18.08 31.04-28.448 67.104-28.448 105.632 0 72.896 37.088 137.184 93.472 174.88-34.432-1.088-66.816-10.528-95.168-26.272-0.032 0.864-0.032 1.76-0.032 2.656 0 101.792 72.416 186.688 168.512 205.984-17.632 4.8-36.192 7.36-55.36 7.36-13.536 0-26.688-1.312-39.52-3.776 26.72 83.456 104.32 144.192 196.256 145.888-71.904 56.352-162.496 89.92-260.928 89.92-16.96 0-33.664-0.992-50.112-2.944 92.96 59.616 203.392 94.4 322.048 94.4 386.432 0 597.728-320.128 597.728-597.76 0-9.12-0.192-18.176-0.608-27.168 41.056-29.632 76.672-66.624 104.832-108.736z" />
+</svg>
+</div>
+        </a>
+      </li><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/liwugang" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+    </div><div class="site-info mt-2">
+      <div>© liwugang 2020,
+        Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a super customizable Jekyll theme." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.
+      </div>
+    </div>
+  </div>
+</footer></div></div>
+    </div><script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $body = $('body'), $window = $(window);
+    var $pageRoot = $('.js-page-root'), $pageMain = $('.js-page-main');
+    var activeCount = 0;
+    function modal(options) {
+      var $root = this, visible, onChange, hideWhenWindowScroll = false;
+      var scrollTop;
+      function setOptions(options) {
+        var _options = options || {};
+        visible = _options.initialVisible === undefined ? false : show;
+        onChange = _options.onChange;
+        hideWhenWindowScroll = _options.hideWhenWindowScroll;
+      }
+      function init() {
+        setState(visible);
+      }
+      function setState(isShow) {
+        if (isShow === visible) {
+          return;
+        }
+        visible = isShow;
+        if (visible) {
+          activeCount++;
+          scrollTop = $(window).scrollTop() || $pageMain.scrollTop();
+          $root.addClass('modal--show');
+          $pageMain.scrollTop(scrollTop);
+          activeCount === 1 && ($pageRoot.addClass('show-modal'), $body.addClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.on('scroll', hide);
+          $window.on('keyup', handleKeyup);
+        } else {
+          activeCount > 0 && activeCount--;
+          $root.removeClass('modal--show');
+          $window.scrollTop(scrollTop);
+          activeCount === 0 && ($pageRoot.removeClass('show-modal'), $body.removeClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.off('scroll', hide);
+          $window.off('keyup', handleKeyup);
+        }
+        onChange && onChange(visible);
+      }
+      function show() {
+        setState(true);
+      }
+      function hide() {
+        setState(false);
+      }
+      function handleKeyup(e) {
+        // Char Code: 27  ESC
+        if (e.which ===  27) {
+          hide();
+        }
+      }
+      setOptions(options);
+      init();
+      return {
+        show: show,
+        hide: hide,
+        $el: $root
+      };
+    }
+    $.fn.modal = modal;
+  });
+})();
+</script><div class="modal modal--overflow page__search-modal d-print-none js-page-search-modal"><script>
+(function () {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    // search panel
+    var search = (window.search || (window.search = {}));
+    var useDefaultSearchBox = window.useDefaultSearchBox === undefined ?
+      true : window.useDefaultSearchBox ;
+
+    var $searchModal = $('.js-page-search-modal');
+    var $searchToggle = $('.js-search-toggle');
+    var searchModal = $searchModal.modal({ onChange: handleModalChange, hideWhenWindowScroll: true });
+    var modalVisible = false;
+    search.searchModal = searchModal;
+
+    var $searchBox = null;
+    var $searchInput = null;
+    var $searchClear = null;
+
+    function getModalVisible() {
+      return modalVisible;
+    }
+    search.getModalVisible = getModalVisible;
+
+    function handleModalChange(visible) {
+      modalVisible = visible;
+      if (visible) {
+        search.onShow && search.onShow();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].focus();
+      } else {
+        search.onShow && search.onHide();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].blur();
+        setTimeout(function() {
+          useDefaultSearchBox && ($searchInput.val(''), $searchBox.removeClass('not-empty'));
+          search.clear && search.clear();
+          window.pageAsideAffix && window.pageAsideAffix.refresh();
+        }, 400);
+      }
+    }
+
+    $searchToggle.on('click', function() {
+      modalVisible ? searchModal.hide() : searchModal.show();
+    });
+    // Char Code: 83  S, 191 /
+    $(window).on('keyup', function(e) {
+      if (!modalVisible && !window.isFormElement(e.target || e.srcElement) && (e.which === 83 || e.which === 191)) {
+        modalVisible || searchModal.show();
+      }
+    });
+
+    if (useDefaultSearchBox) {
+      $searchBox = $('.js-search-box');
+      $searchInput = $searchBox.children('input');
+      $searchClear = $searchBox.children('.js-icon-clear');
+      search.getSearchInput = function() {
+        return $searchInput.get(0);
+      };
+      search.getVal = function() {
+        return $searchInput.val();
+      };
+      search.setVal = function(val) {
+        $searchInput.val(val);
+      };
+
+      $searchInput.on('focus', function() {
+        $(this).addClass('focus');
+      });
+      $searchInput.on('blur', function() {
+        $(this).removeClass('focus');
+      });
+      $searchInput.on('input', window.throttle(function() {
+        var val = $(this).val();
+        if (val === '' || typeof val !== 'string') {
+          search.clear && search.clear();
+        } else {
+          $searchBox.addClass('not-empty');
+          search.onInputNotEmpty && search.onInputNotEmpty(val);
+        }
+      }, 400));
+      $searchClear.on('click', function() {
+        $searchInput.val(''); $searchBox.removeClass('not-empty');
+        search.clear && search.clear();
+      });
+    }
+  });
+})();
+</script><div class="search search--dark">
+  <div class="main">
+    <div class="search__header">Search</div>
+    <div class="search-bar">
+      <div class="search-box js-search-box">
+        <div class="search-box__icon-search"><i class="fas fa-search"></i></div>
+        <input type="text" />
+        <div class="search-box__icon-clear js-icon-clear">
+          <a><i class="fas fa-times"></i></a>
+        </div>
+      </div>
+      <button class="button button--theme-dark button--pill search__cancel js-search-toggle">
+        Cancel</button>
+    </div>
+    <div class="search-result js-search-result"></div>
+  </div>
+</div>
+<script>var SOURCES = window.TEXT_VARIABLES.sources;
+var PAHTS = window.TEXT_VARIABLES.paths;
+window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
+  var search = (window.search || (window.search = {}));
+  var searchData = window.TEXT_SEARCH_DATA || {};
+
+  function memorize(f) {
+    var cache = {};
+    return function () {
+      var key = Array.prototype.join.call(arguments, ',');
+      if (key in cache) return cache[key];
+      else return cache[key] = f.apply(this, arguments);
+    };
+  }
+
+  /// search
+  function searchByQuery(query) {
+    var i, j, key, keys, cur, _title, result = {};
+    keys = Object.keys(searchData);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      for (j = 0; j < searchData[key].length; j++) {
+        cur = searchData[key][j], _title = cur.title;
+        if ((result[key] === undefined || result[key] && result[key].length < 4 )
+          && _title.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          if (result[key] === undefined) {
+            result[key] = [];
+          }
+          result[key].push(cur);
+        }
+      }
+    }
+    return result;
+  }
+
+  var renderHeader = memorize(function(header) {
+    return $('<p class="search-result__header">' + header + '</p>');
+  });
+
+  var renderItem = function(index, title, url) {
+    return $('<li class="search-result__item" data-index="' + index + '"><a class="button" href="' + url + '">' + title + '</a></li>');
+  };
+
+  function render(data) {
+    if (!data) { return null; }
+    var $root = $('<ul></ul>'), i, j, key, keys, cur, itemIndex = 0;
+    keys = Object.keys(data);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      $root.append(renderHeader(key));
+      for (j = 0; j < data[key].length; j++) {
+        cur = data[key][j];
+        $root.append(renderItem(itemIndex++, cur.title, cur.url));
+      }
+    }
+    return $root;
+  }
+
+  // search box
+  var $result = $('.js-search-result'), $resultItems;
+  var lastActiveIndex, activeIndex;
+
+  function clear() {
+    $result.html(null);
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+  }
+  function onInputNotEmpty(val) {
+    $result.html(render(searchByQuery(val)));
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+    $resultItems.eq(0).addClass('active');
+  }
+
+  search.clear = clear;
+  search.onInputNotEmpty = onInputNotEmpty;
+
+  function updateResultItems() {
+    lastActiveIndex >= 0 && $resultItems.eq(lastActiveIndex).removeClass('active');
+    activeIndex >= 0 && $resultItems.eq(activeIndex).addClass('active');
+  }
+
+  function moveActiveIndex(direction) {
+    var itemsCount = $resultItems ? $resultItems.length : 0;
+    if (itemsCount > 1) {
+      lastActiveIndex = activeIndex;
+      if (direction === 'up') {
+        activeIndex = (activeIndex - 1 + itemsCount) % itemsCount;
+      } else if (direction === 'down') {
+        activeIndex = (activeIndex + 1 + itemsCount) % itemsCount;
+      }
+      updateResultItems();
+    }
+  }
+
+  // Char Code: 13  Enter, 37  ⬅, 38  ⬆, 39  ➡, 40  ⬇
+  $(window).on('keyup', function(e) {
+    var modalVisible = search.getModalVisible && search.getModalVisible();
+    if (modalVisible) {
+      if (e.which === 38) {
+        modalVisible && moveActiveIndex('up');
+      } else if (e.which === 40) {
+        modalVisible && moveActiveIndex('down');
+      } else if (e.which === 13) {
+        modalVisible && $resultItems && activeIndex >= 0 && $resultItems.eq(activeIndex).children('a')[0].click();
+      }
+    }
+  });
+
+  $result.on('mouseover', '.search-result__item > a', function() {
+    var itemIndex = $(this).parent().data('index');
+    itemIndex >= 0 && (lastActiveIndex = activeIndex, activeIndex = itemIndex, updateResultItems());
+  });
+});
+</script></div></div>
+
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function scrollToAnchor(anchor, duration, callback) {
+      var $root = this;
+      $root.animate({ scrollTop: $(anchor).position().top }, duration, function() {
+        window.history.replaceState(null, '', window.location.href.split('#')[0] + anchor);
+        callback && callback();
+      });
+    }
+    $.fn.scrollToAnchor = scrollToAnchor;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function affix(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroll,
+        offsetBottom = 0, scrollTarget = window, scroll = window.document, disabled = false, isOverallScroller = true,
+        rootTop, rootLeft, rootHeight, scrollBottom, rootBottomTop,
+        hasInit = false, curState;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.offsetBottom && (offsetBottom = _options.offsetBottom);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroll && (scroll = _options.scroll);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $scrollTarget = $(scrollTarget);
+        isOverallScroller = window.isOverallScroller($scrollTarget[0]);
+        $scroll = $(scroll);
+      }
+      function preCalc() {
+        top();
+        rootHeight = $root.outerHeight();
+        rootTop = $root.offset().top + (isOverallScroller ? 0 :  $scrollTarget.scrollTop());
+        rootLeft = $root.offset().left;
+      }
+      function calc(needPreCalc) {
+        needPreCalc && preCalc();
+        scrollBottom = $scroll.outerHeight() - offsetBottom - rootHeight;
+        rootBottomTop = scrollBottom - rootTop;
+      }
+      function top() {
+        if (curState !== 'top') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: 0
+          });
+          curState = 'top';
+        }
+      }
+      function fixed() {
+        if (curState !== 'fixed') {
+          $root.addClass('fixed').css({
+            left: rootLeft + 'px',
+            top: 0
+          });
+          curState = 'fixed';
+        }
+      }
+      function bottom() {
+        if (curState !== 'bottom') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: rootBottomTop + 'px'
+          });
+          curState = 'bottom';
+        }
+      }
+      function setState() {
+        var scrollTop = $scrollTarget.scrollTop();
+        if (scrollTop >= rootTop && scrollTop <= scrollBottom) {
+          fixed();
+        } else if (scrollTop < rootTop) {
+          top();
+        } else {
+          bottom();
+        }
+      }
+      function init() {
+        if(!hasInit) {
+          var interval, timeout;
+          calc(true); setState();
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState();
+          });
+          $window.on('resize', function() {
+            disabled || (calc(true), setState());
+          });
+          hasInit = true;
+        }
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions,
+        refresh: function() {
+          calc(true, { animation: false }); setState();
+        }
+      };
+    }
+    $.fn.affix = affix;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function toc(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroller, $tocUl = $('<ul class="toc toc--ellipsis"></ul>'), $tocLi, $headings, $activeLast, $activeCur,
+        selectors = 'h1,h2,h3', container = 'body', scrollTarget = window, scroller = 'html, body', disabled = false,
+        headingsPos, scrolling = false, hasRendered = false, hasInit = false;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.selectors && (selectors = _options.selectors);
+        _options.container && (container = _options.container);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroller && (scroller = _options.scroller);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $headings = $(container).find(selectors).filter('[id]');
+        $scrollTarget = $(scrollTarget);
+        $scroller = $(scroller);
+      }
+      function calc() {
+        headingsPos = [];
+        $headings.each(function() {
+          headingsPos.push(Math.floor($(this).position().top));
+        });
+      }
+      function setState(element, disabled) {
+        var scrollTop = $scrollTarget.scrollTop(), i;
+        if (disabled || !headingsPos || headingsPos.length < 1) { return; }
+        if (element) {
+          $activeCur = element;
+        } else {
+          for (i = 0; i < headingsPos.length; i++) {
+            if (scrollTop >= headingsPos[i]) {
+              $activeCur = $tocLi.eq(i);
+            } else {
+              $activeCur || ($activeCur = $tocLi.eq(i));
+              break;
+            }
+          }
+        }
+        $activeLast && $activeLast.removeClass('active');
+        ($activeLast = $activeCur).addClass('active');
+      }
+      function render() {
+        if(!hasRendered) {
+          $root.append($tocUl);
+          $headings.each(function() {
+            var $this = $(this);
+            $tocUl.append($('<li></li>').addClass('toc-' + $this.prop('tagName').toLowerCase())
+              .append($('<a></a>').text($this.text()).attr('href', '#' + $this.prop('id'))));
+          });
+          $tocLi = $tocUl.children('li');
+          $tocUl.on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            scrolling = true;
+            setState($this.parent());
+            $scroller.scrollToAnchor($this.attr('href'), 400, function() {
+              scrolling = false;
+            });
+          });
+        }
+        hasRendered = true;
+      }
+      function init() {
+        var interval, timeout;
+        if(!hasInit) {
+          render(); calc(); setState(null, scrolling);
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState(null, scrolling);
+          });
+          $window.on('resize', window.throttle(function() {
+            if (!disabled) {
+              render(); calc(); setState(null, scrolling);
+            }
+          }, 100));
+        }
+        hasInit = true;
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions
+      };
+    }
+    $.fn.toc = toc;
+  });
+})();
+/*(function () {
+
+})();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
+</script>
+    </div>
+    <script>(function () {
+  var $root = document.getElementsByClassName('root')[0];
+  if (window.hasEvent('touchstart')) {
+    $root.dataset.isTouch = true;
+    document.addEventListener('touchstart', function(){}, false);
+  }
+})();
+</script>
+  </body>
+</html>
