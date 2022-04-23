@@ -10,10 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>深入理解 SELinux - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>某多开 app 破解 - 下篇 - liwugang</title>
 
-<meta name="description" content="本文为 SELinux 专辑，记录相关文章。">
-<link rel="canonical" href="https://liwugang.github.io/2020/10/03/selinux_all.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<meta name="description" content="可以从上篇文章 某多开 app 破解 - 上篇 了解背景和对管理 app 的破解，本篇主要是对分身 app 的防护进行分析和破解">
+<link rel="canonical" href="https://liwugang.github.io/2022/04/23/reverse_xiaox_two.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -895,82 +895,473 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>深入理解 SELinux</h1></header></div><meta itemprop="headline" content="深入理解 SELinux"><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>某多开 app 破解 - 下篇</h1></header></div><meta itemprop="headline" content="某多开 app 破解 - 下篇"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=SELinux">SELinux</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Oct 03, 2020</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2020-10-03T11:55:00+08:00">
-    <meta itemprop="keywords" content="SELinux"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Android">Android</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=reverse">reverse</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-04-23T16:20:00+08:00">
+    <meta itemprop="keywords" content="Android,reverse"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>本文为 SELinux 专辑，记录相关文章。</p>
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>可以从上篇文章 <a href="../17/reverse_xiaox.html">某多开 app 破解 - 上篇</a> 了解背景和对管理 app 的破解，本篇主要是对分身 app 的防护进行分析和破解</p>
 
 <!--more-->
 
-<h2 id="selinux">SELinux</h2>
+<h2 id="分身-app-防护分析">分身 app 防护分析</h2>
 
-<h2 id="android">Android</h2>
+<h3 id="java-侧防护">Java 侧防护</h3>
 
-<table>
-  <thead>
-    <tr>
-      <th>序号</th>
-      <th>文章名</th>
-      <th>概述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td><a href="/2020/03/31/neverallow_for_build.html">SELinux 编译时 neverallow 如何限制？</a></td>
-      <td>不管定义在system或vendor的neverallow规则，都会限制所有规则</td>
-    </tr>
-  </tbody>
-</table>
+<p>分身启动后直接发生崩溃，查看日志如下，关键信息用 XXX 代替了：</p>
 
-<h3 id="domain">Domain</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>04-17 20:31:27.008  3520  3520 W System.err: java.security.NoSuchAlgorithmException: 发生错误
+04-17 20:31:27.008  3520  3520 W System.err:    at com.XXX.XXX.plugin.hook.natives.NativeHook.test1<span class="o">(</span>NativeHook.java:1<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at com.XXX.XXX.plugin.hook.natives.NativeHook.makeCrash<span class="o">(</span>Native Method<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at com.XXX.XXX.plugin.hook.natives.NativeHook.goCrash<span class="o">(</span>NativeHook.java:1<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at com.XXX.XXX.g.a<span class="o">(</span>CopyRightUtils.java:16<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at com.XXX.XXXapp.activity.SplashActivity.d<span class="o">(</span>SplashActivity.java:12<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at com.XXX.XXXapp.activity.SplashActivity.onRequestPermissionsResult<span class="o">(</span>SplashActivity.java:2<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.Activity.dispatchRequestPermissionsResult<span class="o">(</span>Activity.java:8460<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.Activity.dispatchActivityResult<span class="o">(</span>Activity.java:8308<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.ActivityThread.deliverResults<span class="o">(</span>ActivityThread.java:5006<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.ActivityThread.handleSendResult<span class="o">(</span>ActivityThread.java:5054<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.servertransaction.ActivityResultItem.execute<span class="o">(</span>ActivityResultItem.java:51<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.servertransaction.TransactionExecutor.executeCallbacks<span class="o">(</span>TransactionExecutor.java:135<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.servertransaction.TransactionExecutor.execute<span class="o">(</span>TransactionExecutor.java:95<span class="o">)</span>
+04-17 20:31:27.008  3520  3520 W System.err:    at android.app.ActivityThread<span class="nv">$H</span>.handleMessage<span class="o">(</span>ActivityThread.java:2066<span class="o">)</span>
+04-17 20:31:27.009  3520  3520 W System.err:    at android.os.Handler.dispatchMessage<span class="o">(</span>Handler.java:106<span class="o">)</span>
+04-17 20:31:27.009  3520  3520 W System.err:    at android.os.Looper.loop<span class="o">(</span>Looper.java:223<span class="o">)</span>
+04-17 20:31:27.009  3520  3520 W System.err:    at android.app.ActivityThread.main<span class="o">(</span>ActivityThread.java:7664<span class="o">)</span>
+04-17 20:31:27.009  3520  3520 W System.err:    at java.lang.reflect.Method.invoke<span class="o">(</span>Native Method<span class="o">)</span>
+04-17 20:31:27.009  3520  3520 W System.err:    at com.android.internal.os.RuntimeInit<span class="nv">$MethodAndArgsCaller</span>.run<span class="o">(</span>RuntimeInit.java:592<span class="o">)</span>
+04-17 20:31:27.009  3520  3520 W System.err:    at com.android.internal.os.ZygoteInit.main<span class="o">(</span>ZygoteInit.java:947<span class="o">)</span>
+04-17 20:31:27.164  3589  3589 I Process : Sending signal. PID: 3520 SIG: 9
+</code></pre></div></div>
 
-<h3 id="file-contexts">File Contexts</h3>
+<p>通过堆栈找到发生异常的地方</p>
 
-<h3 id="property-contexts">Property Contexts</h3>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">C0125g</span> <span class="o">{</span> <span class="c1">// 对应上面 com.XXX.XXX.g 类</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">a</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">digest</span> <span class="o">=</span> <span class="nc">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"SHA1"</span><span class="o">).</span><span class="na">digest</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getPackageManager</span><span class="o">().</span><span class="na">getPackageInfo</span><span class="o">(</span><span class="nc">ChaosRuntime</span><span class="o">.</span><span class="na">PARENT_PACKAGE</span><span class="o">,</span> <span class="mi">64</span><span class="o">).</span><span class="na">signatures</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">toByteArray</span><span class="o">());</span> <span class="c1">// 此处是获取管理 app 的签名 SHA1</span>
+            <span class="nc">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">byte</span> <span class="n">b2</span> <span class="o">:</span> <span class="n">digest</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">String</span> <span class="n">upperCase</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">b2</span> <span class="o">&amp;</span> <span class="mi">255</span><span class="o">).</span><span class="na">toUpperCase</span><span class="o">(</span><span class="nc">Locale</span><span class="o">.</span><span class="na">US</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">upperCase</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"0"</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">upperCase</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="s">"F9074EBEBDDADEE08A78D36EFCCE9393802853C6"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">toUpperCase</span><span class="o">()))</span> <span class="o">{</span> <span class="c1">// 对签名和预制的值对比，若不同则退出</span>
+                <span class="nc">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Intent</span><span class="o">(</span><span class="s">"com.XXX.XXX.KILL_SELF"</span><span class="o">);</span>
+                <span class="n">intent</span><span class="o">.</span><span class="na">setPackage</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">());</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">sendBroadcast</span><span class="o">(</span><span class="n">intent</span><span class="o">);</span>
+                <span class="nc">NativeHook</span><span class="o">.</span><span class="na">goCrash</span><span class="o">();</span> <span class="c1">// 主动调用 goCrash</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="c1">// 主动退出</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
 
-<table>
-  <thead>
-    <tr>
-      <th>序号</th>
-      <th>文章名</th>
-      <th>概述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td><a href="/2020/02/29/coredomain_create_new_property.html">Coredomain 创建新的 property type</a></td>
-      <td>treble架构下，coredomain使用新property type</td>
-    </tr>
-  </tbody>
-</table>
+<p>从上面代码可以看到，分身 app 会在启动时会对管理 app 进行签名校验，若校验失败，则会主动退出</p>
 
-<h3 id="service-contexts">Service Contexts</h3>
+<h3 id="java-防护绕过">Java 防护绕过</h3>
 
-<h3 id="xts">xTS</h3>
+<p>绕过比较简单，可以将签名对比的 equals 方法返回值修改为 true，达到绕过该 java 侧防护</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>序号</th>
-      <th>文章名</th>
-      <th>概述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td><a href="/2019/12/29/CTS-neverallow.html">Android CTS中neverallow规则生成过程</a></td>
-      <td>CTS会进行neverallow测试，修改时不能违反这些规则，介绍Android如何生成neverallow规则</td>
-    </tr>
-  </tbody>
-</table>
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-10-03T11:55:00+08:00"><!-- start custom article footer snippet -->
+<p>具体的操作：</p>
+<ul>
+  <li>将分身 app 的 apk 从手机上拉出来</li>
+  <li>通过 apktool 将其反编译</li>
+  <li>找到对应的 smali 文件，可以通过签名字符串快速定位</li>
+  <li>修改 equals 的返回值始终为 true，修改的逻辑如下</li>
+  <li>然后使用 apk 重新打包，签名后安装测试</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    .line 12
+    invoke-virtual <span class="o">{</span>v2<span class="o">}</span>, Ljava/lang/StringBuilder<span class="p">;</span>-&gt;toString<span class="o">()</span>Ljava/lang/String<span class="p">;</span>
+
+    move-result-object v2
+
+    invoke-virtual <span class="o">{</span>v2<span class="o">}</span>, Ljava/lang/String<span class="p">;</span>-&gt;toUpperCase<span class="o">()</span>Ljava/lang/String<span class="p">;</span>
+
+    move-result-object v2
+
+    invoke-virtual <span class="o">{</span>v0, v2<span class="o">}</span>, Ljava/lang/String<span class="p">;</span>-&gt;equals<span class="o">(</span>Ljava/lang/Object<span class="p">;</span><span class="o">)</span>Z
+
+    move-result v0
+
+    const/4 v0, 0x1 <span class="c"># 添加的逻辑，将结果始终返回 true</span>
+
+    <span class="k">if</span><span class="nt">-nez</span> v0, :cond_2
+</code></pre></div></div>
+
+<h3 id="native-侧防护">Native 侧防护</h3>
+
+<p>Java 侧绕过检查之后，发现运行还是会崩溃，但此时是从 native 触发的，日志如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+04-17 21:20:44.109  6062  6062 F DEBUG   : signal 6 <span class="o">(</span>SIGABRT<span class="o">)</span>, code <span class="nt">-1</span> <span class="o">(</span>SI_QUEUE<span class="o">)</span>, fault addr <span class="nt">--------</span>                                                                                        
+04-17 21:20:44.110  6062  6062 F DEBUG   : Abort message: <span class="s1">'No pending exception expected: java.security.NoSuchAlgorithmException: 发生错误                                                    
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.XXX.XXX.plugin.hook.natives.NativeHook.test1() (NativeHook.java:1)                                                                 
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.XXX.XXX.plugin.hook.natives.NativeHook.installRedirectHookNative(java.lang.Object, java.lang.String, int, int, boolean, boolean, bo
+olean, boolean) (NativeHook.java:-2)                                                                                                                                                          
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.XXX.XXX.plugin.hook.natives.NativeHook.installRedirectHook() (NativeHook.java:8)                                                   
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.XXX.XXX.plugin.PluginImpl.initRedirectAndHook(android.content.Context, android.content.pm.ApplicationInfo) (PluginImpl.java:52)    
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.XXX.XXX.plugin.PluginImpl.bindApplicationNoCheck(java.lang.String, java.lang.String, android.os.ConditionVariable) (PluginImpl.java
+:107)                                                                                                                           
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.XXX.XXX.plugin.PluginImpl.bindApplication(java.lang.String, java.lang.String) (PluginImpl.java:3)                                  
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at boolean com.XXX.XXX.plugin.hook.android.am.g.a(android.os.Message, java.lang.Object) (HCallbackStub.java:87)                                
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at boolean com.XXX.XXX.plugin.hook.android.am.g.a(android.os.Message) (HCallbackStub.java:25)                                                  
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at boolean com.XXX.XXX.plugin.hook.android.am.g.handleMessage(android.os.Message) (HCallbackStub.java:10)                                      
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void android.os.Handler.dispatchMessage(android.os.Message) (Handler.java:102)                                                                
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void android.os.Looper.loop() (Looper.java:223)                                                                                               
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void android.app.ActivityThread.main(java.lang.String[]) (ActivityThread.java:7664)                                                           
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at java.lang.Object java.lang.reflect.Method.invoke(java.lang.Object, java.lang.Object[]) (Method.java:-2)                                       
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run() (RuntimeInit.java:592)                                                     
+04-17 21:20:44.110  6062  6062 F DEBUG   :   at void com.android.internal.os.ZygoteInit.main(java.lang.String[]) (ZygoteInit.java:947)                                                        
+04-17 21:20:44.110  6062  6062 F DEBUG   : '</span>                                                                                                                                      
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x0  0000000000000000  x1  0000000000001792  x2  0000000000000006  x3  0000007fe6aa23a0                                                         
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x4  736d74715e62ff1f  x5  736d74715e62ff1f  x6  736d74715e62ff1f  x7  7f7f7f7f7f7f7f7f                                                         04-17 21:20:44.110  6062  6062 F DEBUG   :     x8  00000000000000f0  x9  1ff722a3cb703524  x10 0000000000000000  x11 ffffffc0fffffbdf                                                         
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x12 0000000000000001  x13 00000000000007ba  x14 000311f11fb00006  x15 00000000020aa860                                                         
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x16 0000007612341c80  x17 0000007612323c10  x18 0000007616c78000  x19 0000000000001792                                                         
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x20 0000000000001792  x21 00000000ffffffff  x22 0000000000000000  x23 0000000000000000                                                         
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x24 0000007380d6e000  x25 0000000000000043  x26 000000761607786c  x27 0000007380d70000                                                         
+04-17 21:20:44.110  6062  6062 F DEBUG   :     x28 0000007380d71000  x29 0000007fe6aa2420                                                                                                     
+04-17 21:20:44.110  6062  6062 F DEBUG   :     lr  00000076122d62a0  sp  0000007fe6aa2380  pc  00000076122d62cc  pst 0000000000000000   
+
+... ...
+04-17 21:20:44.353  6062  6062 F DEBUG   :       <span class="c">#07 pc 000000000001202c  /data/app/~~NA6OJC104Awax8GaOnClzw==/dkplugin.niu.xje-z4bE-dmP2knenBq5H0oZNA==/lib/arm64/libXXXX.so (BuildId: 98ee9</span>
+
+</code></pre></div></div>
+
+<p>首先定位到发生崩溃的 NativeHook.test1 方法处：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test1</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">NoSuchAlgorithmException</span><span class="o">(</span><span class="s">"发生错误"</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>可以看到，调用该方法是主动触发异常的情形</p>
+
+<p>调用者是 NativeHook.installRedirectHookNative 方法，查看该方法：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">installRedirectHookNative</span><span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="nc">String</span> <span class="n">str</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i2</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">z</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">z2</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">z3</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">z4</span><span class="o">);</span>
+</code></pre></div></div>
+<p>该方法是 native 方法，所以主动调用异常是在 so 里面</p>
+
+<p>通过堆栈找到对应的 so，然后使用 IDA 打开，该 so 没有防护，可以直接使用 F5 转成伪C代码来看，若直接看 installRedirectHookNative 对应的 native，会比较复杂， 可以从 test1 方法入手，回溯方式定位到关键代码如下：</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">__int64</span> <span class="kr">__fastcall</span> <span class="nf">sub_A294</span><span class="p">(</span><span class="n">__int64</span> <span class="n">a1</span><span class="p">,</span> <span class="n">__int64</span> <span class="n">a2</span><span class="p">)</span> <span class="p">{</span>
+ <span class="p">...</span> <span class="p">...</span>
+  <span class="n">v4</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="o">**</span><span class="p">)(</span><span class="kt">void</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">a1</span> <span class="o">+</span> <span class="mi">248LL</span><span class="p">))();</span>
+  <span class="n">v5</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">264LL</span><span class="p">))(</span>
+         <span class="n">v2</span><span class="p">,</span>
+         <span class="n">v4</span><span class="p">,</span>
+         <span class="s">"getPackageManager"</span><span class="p">,</span>
+         <span class="s">"()Landroid/content/pm/PackageManager;"</span><span class="p">);</span>
+  <span class="n">v6</span> <span class="o">=</span> <span class="n">sub_9F0C</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">v5</span><span class="p">);</span>
+  <span class="n">v7</span> <span class="o">=</span> <span class="n">v6</span><span class="p">;</span>
+  <span class="n">v8</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">248LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v6</span><span class="p">);</span>
+  <span class="n">v9</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">264LL</span><span class="p">))(</span>
+         <span class="n">v2</span><span class="p">,</span>
+         <span class="n">v8</span><span class="p">,</span>
+         <span class="s">"getPackageInfo"</span><span class="p">,</span>
+         <span class="s">"(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;"</span><span class="p">);</span>
+  <span class="n">v10</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">48LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="s">"java/lang/String"</span><span class="p">);</span>
+  <span class="n">v11</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">264LL</span><span class="p">))(</span>
+          <span class="n">v2</span><span class="p">,</span>
+          <span class="n">v10</span><span class="p">,</span>
+          <span class="s">"&lt;init&gt;"</span><span class="p">,</span>
+          <span class="s">"([BLjava/lang/String;)V"</span><span class="p">);</span>
+  <span class="n">v12</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">1408LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="mi">14LL</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="n">_QWORD</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">1664LL</span><span class="p">))(</span>
+    <span class="n">v2</span><span class="p">,</span>
+    <span class="n">v12</span><span class="p">,</span>
+    <span class="mi">0LL</span><span class="p">,</span>
+    <span class="mi">14LL</span><span class="p">,</span>
+    <span class="s">"com.XXX.XXXX"</span><span class="p">);</span>
+  <span class="n">v13</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">1336LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="s">"GB2312"</span><span class="p">);</span>
+  <span class="n">sub_A0DC</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v10</span><span class="p">,</span> <span class="n">v11</span><span class="p">,</span> <span class="n">v12</span><span class="p">,</span> <span class="n">v13</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v10</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v13</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v12</span><span class="p">);</span>
+  <span class="n">v14</span> <span class="o">=</span> <span class="n">sub_9F0C</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v7</span><span class="p">,</span> <span class="n">v9</span><span class="p">);</span>
+  <span class="n">v15</span> <span class="o">=</span> <span class="n">v14</span><span class="p">;</span>
+  <span class="n">v16</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">248LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v14</span><span class="p">);</span>
+  <span class="n">v17</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">752LL</span><span class="p">))(</span>
+          <span class="n">v2</span><span class="p">,</span>
+          <span class="n">v16</span><span class="p">,</span>
+          <span class="s">"signatures"</span><span class="p">,</span>
+          <span class="s">"[Landroid/content/pm/Signature;"</span><span class="p">);</span>
+  <span class="n">v18</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">760LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v15</span><span class="p">,</span> <span class="n">v17</span><span class="p">);</span>
+  <span class="n">v19</span> <span class="o">=</span> <span class="n">v18</span><span class="p">;</span>
+  <span class="n">v20</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="n">_QWORD</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">1384LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v18</span><span class="p">,</span> <span class="mi">0LL</span><span class="p">);</span>
+  <span class="n">v21</span> <span class="o">=</span> <span class="n">v20</span><span class="p">;</span>
+  <span class="n">v22</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">248LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v20</span><span class="p">);</span>
+  <span class="n">v23</span> <span class="o">=</span> <span class="n">v22</span><span class="p">;</span>
+  <span class="n">v24</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">264LL</span><span class="p">))(</span>
+          <span class="n">v2</span><span class="p">,</span>
+          <span class="n">v22</span><span class="p">,</span>
+          <span class="s">"toCharsString"</span><span class="p">,</span>
+          <span class="s">"()Ljava/lang/String;"</span><span class="p">);</span>
+  <span class="n">v25</span> <span class="o">=</span> <span class="n">sub_9F0C</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v24</span><span class="p">);</span>
+  <span class="n">v26</span> <span class="o">=</span> <span class="n">sub_9DB4</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v25</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v25</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v21</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v19</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v15</span><span class="p">);</span>
+  <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v23</span><span class="p">);</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">strcmp</span><span class="p">(</span>
+             <span class="s">"308203473082022fa003020102020435ee7721300d06092a864886f70d01010b05003054310b300906035504061302636e310b30090"</span>
+             <span class="s">"60355040813026764310b300906035504071302737a310c300a060355040a1303626c79310c300a060355040b1303626c79310f300d"</span>
+             <span class="s">"XXX XXX"</span><span class="p">,</span>
+             <span class="n">v26</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">_DWORD</span><span class="p">)</span><span class="n">result</span> <span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">v28</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">48LL</span><span class="p">))(</span>
+            <span class="n">v2</span><span class="p">,</span>
+            <span class="s">"com/XXX/XXXX/plugin/hook/natives/NativeHook"</span><span class="p">);</span>
+    <span class="n">v29</span> <span class="o">=</span> <span class="n">v28</span><span class="p">;</span>
+    <span class="n">v30</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">904LL</span><span class="p">))(</span>
+            <span class="n">v2</span><span class="p">,</span>
+            <span class="n">v28</span><span class="p">,</span>
+            <span class="s">"test1"</span><span class="p">,</span>
+            <span class="s">"()V"</span><span class="p">);</span>
+    <span class="n">sub_A1F4</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v29</span><span class="p">,</span> <span class="n">v30</span><span class="p">);</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">__int64</span> <span class="p">(</span><span class="kr">__fastcall</span> <span class="o">**</span><span class="p">)(</span><span class="n">__int64</span><span class="p">,</span> <span class="n">__int64</span><span class="p">))(</span><span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">184LL</span><span class="p">))(</span><span class="n">v2</span><span class="p">,</span> <span class="n">v29</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>可以看到，该函数的逻辑是：</p>
+<ul>
+  <li>获取管理 app 的签名，然后和预制的证书进行对比</li>
+  <li>若对比失败，则直接调用 test1 进行崩溃退出</li>
+</ul>
+
+<p>所以，native 的防护仍然是对管理 app 的签名校验</p>
+
+<h3 id="native-防护绕过">Native 防护绕过</h3>
+
+<p>先找到上面的汇编代码处，如下：</p>
+
+<pre><code class="language-asm">text:000000000000A578 C0 01 00 90                    ADRP            X0, #a30820347308202@PAGE ; "308203473082022fa003020102020435ee77213"...
+.text:000000000000A57C 00 B8 38 91                    ADD             X0, X0, #a30820347308202@PAGEOFF ; "308203473082022fa003020102020435ee77213"...
+.text:000000000000A580 E1 03 19 AA                    MOV             X1, X25
+.text:000000000000A584 2F FD FF 97                    BL              .strcmp
+.text:000000000000A588 E0 03 00 34                    CBZ             W0, loc_A604
+.text:000000000000A58C 68 02 40 F9                    LDR             X8, [X19]
+.text:000000000000A590 C1 01 00 90                    ADRP            X1, #aComXXXXXXPlu@PAGE ; "com/XXX/XXXX/plugin/hook/natives/Nativ"...
+.text:000000000000A594 21 74 34 91                    ADD             X1, X1, #aComXXXXXXPlu@PAGEOFF ; "com/XXX/XXX/plugin/hook/natives/Nativ"...
+.text:000000000000A598 E0 03 13 AA                    MOV             X0, X19
+.text:000000000000A59C 08 19 40 F9                    LDR             X8, [X8,#0x30]
+.text:000000000000A5A0 00 01 3F D6                    BLR             X8
+.text:000000000000A5A4 68 02 40 F9                    LDR             X8, [X19]
+.text:000000000000A5A8 F4 03 00 AA                    MOV             X20, X0
+.text:000000000000A5AC C2 01 00 90                    ADRP            X2, #aTest1@PAGE ; "test1"
+.text:000000000000A5B0 C3 01 00 90                    ADRP            X3, #aV@PAGE ; "()V"
+.text:000000000000A5B4 08 C5 41 F9                    LDR             X8, [X8,#0x388]
+.text:000000000000A5B8 42 28 35 91                    ADD             X2, X2, #aTest1@PAGEOFF ; "test1"
+.text:000000000000A5BC 63 40 35 91                    ADD             X3, X3, #aV@PAGEOFF ; "()V"
+</code></pre>
+
+<p>strcmp 是计算的签名和预制证书进行对比， 此时我们需要将 CBZ 修改为相反指令 CBNZ，由于 IDA 不能直接编辑 arm 的指令，所以我们使用 rizin 工具集中的 rz-asm 工具，获取指令的机器码</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rz-asm <span class="nt">-a</span> arm <span class="nt">-b</span> 64 <span class="nt">-d</span>  E0030034 <span class="c"># 获取上面 "CBZ  W0, loc_A604" 具体有偏移的表示，通过机器码</span>
+cbz w0, 0x7c
+rz-asm <span class="nt">-a</span> arm <span class="nt">-b</span> 64 <span class="s2">"cbnz w0, 0x7c"</span> <span class="c"># 获取 "CBNZ W0, 0x7C" 具体的机器码</span>
+e0030035
+</code></pre></div></div>
+
+<p>所以应该是将机器码从 E0030034 修改为 E0030035，通过 IDA –&gt; Edit –&gt; Patch program –&gt; Change byte… 进行修改操作，修改完后，可以看到 IDA 的指令也同步进行了修改：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.text:000000000000A588 E0 03 00 35                    CBNZ            W0, loc_A604
+</code></pre></div></div>
+
+<p>修改完后，将改动保存到 so 中，IDA –&gt; Edit –&gt; Patch program –&gt; Apply patches to input file</p>
+
+<p>重新对 apk 打包签名安装后，此时 apk 是可以正常使用了</p>
+
+<h2 id="分身-app-修改">分身 app 修改</h2>
+
+<p>我们对分身 app 中进行了修改，验证了修改的可行性。但分身 app 是管理 app 自动生成的，我们需要找到生成的逻辑，然后进行统一的修改。而不是对每个分身 app 进行修改</p>
+
+<h3 id="定位关键代码">定位关键代码</h3>
+
+<p>下面将列出来调用链：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+a<span class="o">(</span>AppEntity appEntity<span class="o">)</span>        // 是点击 “制作分身” 的逻辑
+CreateCustomActivity.onCreate // 调用“制作分身”后的界面
+CreateCustomActivity.d        // 是点击“开始制作”的调用
+CreatingNewActivity.onCreate  // 调用CreatingNewActivity
+<span class="nt">--</span><span class="o">&gt;</span> CreatingNewActivity.c           // 是创建的动画效果
+<span class="nt">--</span><span class="o">&gt;</span> CreatingNewActivity.d           // 对传入的参数进行校验 和 权限校验
+<span class="nt">--</span><span class="o">&gt;</span> <span class="nt">--</span><span class="o">&gt;</span> CreatingNewActivity.b          // 请求服务端，将原 app 信息传入
+<span class="nt">--</span><span class="o">&gt;</span> <span class="nt">--</span><span class="o">&gt;</span> C0123v.onResponse              // 对服务端返回值进行处理，有些字段返回会导致中断分身 app 的生成
+<span class="nt">--</span><span class="o">&gt;</span> <span class="nt">--</span><span class="o">&gt;</span> CreatingNewActivity.a          // 调用回 CreatingNewActivity 类
+<span class="nt">--</span><span class="o">&gt;</span> <span class="nt">--</span><span class="o">&gt;</span> H<span class="o">(</span>this, str, str2<span class="o">))</span>.start<span class="o">()</span>    // 创建单独线程进行分身 app 的生成 
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">H</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="o">...</span> <span class="o">...</span>
+        <span class="nc">Context</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">getApplicationContext</span><span class="o">();</span>
+        <span class="n">str</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">f661c</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="nc">AppInfoUtils</span><span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">,</span> <span class="n">str</span><span class="o">))</span> <span class="o">{</span> <span class="c1">// 此处是原 app 是判断是32位还是64位</span>
+            <span class="n">i5</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">k</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">i5</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="na">n</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">inputStream</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">getAssets</span><span class="o">().</span><span class="na">open</span><span class="o">(</span><span class="s">"res"</span><span class="o">);</span> <span class="c1">// 32位打开 res</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">i7</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">k</span><span class="o">;</span>
+                <span class="n">inputStream</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="n">i7</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="nc">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"使用32位的分身 "</span><span class="o">);</span>
+            <span class="n">str15</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">f661c</span><span class="o">;</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">str15</span><span class="o">);</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">","</span><span class="o">);</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">f671a</span><span class="o">);</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">","</span><span class="o">);</span>
+            <span class="n">i6</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">k</span><span class="o">;</span>
+            <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">i6</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">i2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">k</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">i2</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="na">n</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">inputStream</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">getAssets</span><span class="o">().</span><span class="na">open</span><span class="o">(</span><span class="s">"res64"</span><span class="o">);</span> <span class="c1">// 64位打开 res64</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">i4</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">k</span><span class="o">;</span>
+                <span class="n">inputStream</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="n">i4</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="nc">StringBuilder</span> <span class="n">sb2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+            <span class="n">sb2</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"使用64位的分身 "</span><span class="o">);</span>
+            <span class="n">str14</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">f661c</span><span class="o">;</span>
+            <span class="n">sb2</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">str14</span><span class="o">);</span>
+            <span class="n">sb2</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">","</span><span class="o">);</span>
+            <span class="n">sb2</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">f671a</span><span class="o">);</span>
+            <span class="n">sb2</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">","</span><span class="o">);</span>
+            <span class="n">i3</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">k</span><span class="o">;</span>
+            <span class="n">sb2</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">i3</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="o">...</span> <span class="o">...</span>
+        <span class="n">ea</span><span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="n">inputStream</span><span class="o">,</span> <span class="n">inputStream</span><span class="o">.</span><span class="na">available</span><span class="o">(),</span> <span class="k">this</span><span class="o">.</span><span class="na">f673c</span><span class="o">.</span><span class="na">handler</span><span class="o">,</span> <span class="n">com</span><span class="o">.</span><span class="na">XXX</span><span class="o">.</span><span class="na">XXXX</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">.</span><span class="na">a</span><span class="o">().</span><span class="na">u</span><span class="o">(),</span> <span class="n">file2</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<p class="warning">jadx-gui 反编译 H 类时默认会有问题，不能正确显示 java 代码，可以将 File –&gt; Preferences –&gt; Show inconsistent code 选项打开</p>
+
+<p>可以看到会根据原 app 是32位还是64位选择打开 res 或者 res64，该文件保存的肯定是分身 app 所需要的文件，对该文件使用 file 查看，是 zip 压缩文件，并且是有密码保护的</p>
+
+<p>经过对 ea.a 方法深入分析，密码是 com.XXX.XXXX.a.a.a().u() 传入的，而该方法调用的是 AbcUtil.getStr4，即在管理 app 中有提到过，是 native 方法，并且我们也获取到该返回值为固定值，尝试用之前的固定值”Ektech2017!@#”测试解压,发现解压成功了</p>
+
+<p>解压出来是 resource 文件，格式仍然是 zip 压缩文件，继续解压，此时没有密码，解压后发现是分身 app 代码和资源</p>
+
+<p><img src="/assets/pictures/reverse/multi_open/child_app.png" alt="graph" /></p>
+
+<p>所以，我们将前面对 dex 和 so 的修改同步到这里，然后重新压缩生成 res 和 res64，替换管理 app assets 目录下的这两个文件即可绕过防护</p>
+
+<h2 id="分身对多开的校验">分身对多开的校验</h2>
+
+<p>此时将上述修改重新打包安装后，分身 app 可以正常启动了，说明我们修改没有问题了。但是又发现一个问题，生成多个分身后，后面的分身是无法启动的，显示“会员已过期，分身无法启动”</p>
+
+<p>可以通过文案的显示，定位到关键代码</p>
+
+<h3 id="定位关键代码-1">定位关键代码</h3>
+
+<p>可以通过文案的显示，定位到关键代码</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                <span class="k">if</span> <span class="o">(!</span><span class="nc">ChaosRuntime</span><span class="o">.</span><span class="na">isVipSeted</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">requestMemberInfo</span><span class="o">();</span>  <span class="c1">// 这里是从管理 app 请求用户的信息</span>
+                <span class="o">}</span>
+                <span class="k">if</span> <span class="o">(!</span><span class="nc">ChaosRuntime</span><span class="o">.</span><span class="na">isVip</span> <span class="o">&amp;&amp;</span> <span class="n">next</span><span class="o">.</span><span class="na">d</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 如果不是 vip，并且启动的不是第一个分身，就走该逻辑</span>
+                    <span class="nc">ColorMatrix</span> <span class="n">colorMatrix</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ColorMatrix</span><span class="o">();</span>
+                    <span class="n">colorMatrix</span><span class="o">.</span><span class="na">setSaturation</span><span class="o">(</span><span class="mf">0.0f</span><span class="o">);</span>
+                    <span class="n">imageView</span><span class="o">.</span><span class="na">setColorFilter</span><span class="o">(</span><span class="k">new</span> <span class="nc">ColorMatrixColorFilter</span><span class="o">(</span><span class="n">colorMatrix</span><span class="o">));</span>
+                    <span class="n">textView2</span><span class="o">.</span><span class="na">setTextColor</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">parseColor</span><span class="o">(</span><span class="s">"#AAAAAA"</span><span class="o">));</span>
+                    <span class="n">inflate3</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="nc">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="nd">@Override</span> <span class="c1">// android.view.View.OnClickListener</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="nc">StubBridgePrepareActivity</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">onSelectIsMutiNoVip</span><span class="o">(</span><span class="n">next</span><span class="o">);</span> <span class="c1">// 此处为文案显示</span>
+                        <span class="o">}</span>
+                    <span class="o">});</span>
+</code></pre></div></div>
+
+<p>现在管理 app 和分身 app 都没有了防护，可以随便修改了。一种方案是在分身代码处修改此处逻辑，绕过多开的校验，另外的方案就是在管理 app 中修改用户的权限信息，可以通过 requestMemberInfo 深入看下是怎么获取用户信息的</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">requestMemberInfo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">byteArray</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Bundle</span> <span class="n">call</span> <span class="o">=</span> <span class="n">getContentResolver</span><span class="o">().</span><span class="na">call</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"content://com.XXX.XXXX.PluginProvider"</span><span class="o">),</span> <span class="s">"getMemberInfo"</span><span class="o">,</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="kc">null</span><span class="o">,</span> <span class="o">(</span><span class="nc">Bundle</span><span class="o">)</span> <span class="kc">null</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">call</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">byteArray</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="na">getByteArray</span><span class="o">(</span><span class="s">"data"</span><span class="o">))</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">Parcel</span> <span class="n">obtain</span> <span class="o">=</span> <span class="nc">Parcel</span><span class="o">.</span><span class="na">obtain</span><span class="o">();</span>
+                <span class="n">obtain</span><span class="o">.</span><span class="na">unmarshall</span><span class="o">(</span><span class="n">byteArray</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">byteArray</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+                <span class="n">obtain</span><span class="o">.</span><span class="na">setDataPosition</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+                <span class="nc">MemberInfo</span> <span class="n">memberInfo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MemberInfo</span><span class="o">(</span><span class="n">obtain</span><span class="o">);</span>
+                <span class="n">obtain</span><span class="o">.</span><span class="na">recycle</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">memberInfo</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="kt">boolean</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                    <span class="nc">ChaosRuntime</span><span class="o">.</span><span class="na">isVipSeted</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">memberInfo</span><span class="o">.</span><span class="na">getVipType</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">z</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+                    <span class="o">}</span>
+                    <span class="nc">ChaosRuntime</span><span class="o">.</span><span class="na">isVip</span> <span class="o">=</span> <span class="n">z</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+
+    <span class="kd">public</span> <span class="nf">MemberInfo</span><span class="o">(</span><span class="nc">Parcel</span> <span class="n">parcel</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">imei</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readString</span><span class="o">();</span> <span class="c1">// imei</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">vipType</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span> <span class="c1">// vip 类型</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">expiredTime</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readLong</span><span class="o">();</span> <span class="c1">// vip 过期时间</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">serverCheckTime</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readLong</span><span class="o">();</span> <span class="c1">// 服务端检查时间</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">newVersion</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span> <span class="c1">// 新版本号</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">payMode</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>  <span class="c1">// 付款方式</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">showAd</span> <span class="o">=</span> <span class="n">parcel</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>   <span class="c1">// 是否显示广告</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>可以看到是通过管理 app 提供的 provider 获取用户信息，并且用户信息包含有：</p>
+<ul>
+  <li>imei</li>
+  <li>vip 类型</li>
+  <li>vip 过期时间</li>
+  <li>服务端检查时间</li>
+  <li>新版本号</li>
+  <li>付款方式</li>
+  <li>是否显示广告</li>
+</ul>
+
+<h3 id="修改方式">修改方式</h3>
+
+<p>我是在管理 app 中修改的，通过 PluginProvider 中定位到用户信息的来源，主要是从两个服务端接口获取，我直接修改的是接口返回值，这样在任意验证 vip 地方都可以通过</p>
+
+<p>当然最简单方式就是在上面分身 app 条件判断处进行修改</p>
+
+<h2 id="总结">总结</h2>
+
+<p><img src="/assets/pictures/reverse/multi_open/architure.png" alt="graph" /></p>
+
+<ul>
+  <li>防护手段，主要是对管理 app 的签名校验，自身 so 和分身 app 都会进行校验</li>
+  <li>分身 app 的生成是是通过 res/res64 在结合原 app</li>
+  <li>用户信息的获取，是管理 app 通过 provider 供分身 app 获取</li>
+</ul>
+
+<p>整体破解下来，技术难度不高，但是比较复杂，涉及到的比较多，并且从中也能了解到了多开的大概原理</p>
+
+<h2 id="样本下载">样本下载</h2>
+
+<p><a href="https://github.com/liwugang/liwugang.github.io/tree/master/assets/files/multi_open.apk">样本 apk</a></p>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2022-04-23T16:20:00+08:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet --><div class="article__reward"><section>
   <div class="content-play">
@@ -1035,7 +1426,7 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
   </style>
 
 </section>
-</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="next"><span>NEXT</span><a href="/2022/04/23/reverse_xiaox_two.html">某多开 app 破解 - 下篇</a></div></div></div>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2022/04/17/reverse_xiaox.html">某多开 app 破解 - 上篇</a></div></div></div>
 
 </div>
 
@@ -1077,7 +1468,7 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
 				repo: 'liwugang.github.io',
 				owner: 'liwugang',
 				admin: ['liwugang'],
-				id: 'selinux_all'
+				id: 'reverse_multi_app_two'
 			});
 			gitalk.render('js-gitalk-container');
 		});
