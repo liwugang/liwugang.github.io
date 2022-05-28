@@ -8,9 +8,11 @@ key: page_about
 
 # 关于博主
 
-博主目前就职于小米公司
-
 该博客主要记录我日常的技术总结，并且会有相应专题系统文章。我主要专注在Android、安全、逆向、Linux等方面。
+
+感兴趣的可以关注我的公众号：
+
+![graph]({{"/assets/sourcereader.png" | prepend:site.baseurl}})
 
 # 开源贡献
 
