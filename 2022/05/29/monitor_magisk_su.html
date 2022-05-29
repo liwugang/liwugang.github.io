@@ -10,11 +10,10 @@
   })();
 </script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>liwugang - page 5 - liwugang</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>监控 magisk su 调用 - liwugang</title>
 
-<meta name="description" content="Patient && Courage
-">
-<link rel="canonical" href="https://liwugang.github.io/page5/"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<meta name="description" content="目前市面上 Android 手机 root 采用最多的就是使用 magisk 的方案，方便和通用性比较强。特别是一些黑灰产改机的 rom，是正常 rom + magisk + app 的方案，主要逻辑是在 app 里面，在该 app 中会使用 root 进行执行特权操作，即调用 magisk 的 su 程序，本文...">
+<link rel="canonical" href="https://liwugang.github.io/2022/05/29/monitor_magisk_su.html"><link rel="alternate" type="application/rss+xml" title="liwugang" href="/feed.xml"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
@@ -263,7 +262,7 @@
 </script></head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -892,49 +891,220 @@ LTMwVDE0OjE3OjI5KzAwOjAwWUEV4AAAAABJRU5ErkJggg==" />
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div></aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
-<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>liwugang - page 5</h1></header><meta itemprop="headline" content="liwugang - page 5"><meta itemprop="author" content="liwugang"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/08/21/makefile_ifelse.html"><h2 itemprop="headline" class="item__header">Makefile中的ifeq 多条件使用</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">网上关于makefile中ifeq的介绍已经很多了，为什么我还要在写这篇文章，因为他们只说了if else两种条件的情况，并没有讲多于两种条件情况的使用。</div><p><a href="/2015/08/21/makefile_ifelse.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=misc">misc</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 21, 2015</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-21T20:14:23+08:00">
-    <meta itemprop="keywords" content="misc"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content"><header><a href="/2015/08/19/android_import_so.html"><h2 itemprop="headline" class="item__header">Android引入动态库so的方法</h2></a></header><div class="item__description"><div class="article__content" itemprop="description articleBody">为了执行效率，会将一些CPU密集性任务如音视频解码、图像处理等放入到so中，还有也会将程序关键核心部分放入到so中，这样增加了逆向的难度。下面将so引入分成本地和第三方两种类型。本地是指包含有源码的。这是不讲如何编译和Android.mk的编写，主要讲在Android项目中如何引入so。</div><p><a href="/2015/08/19/android_import_so.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<!-- end custom main top snippet --><article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>监控 magisk su 调用</h1></header></div><meta itemprop="headline" content="监控 magisk su 调用"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Android">Android</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Aug 19, 2015</span>
-            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2015-08-19T21:02:13+08:00">
-    <meta itemprop="keywords" content="Android"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>42 post articles, 5 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page4/">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
             </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>5</span></div>
-            </li><li><div class="button button--secondary button--circle disabled">
-            <i class="fas fa-angle-right"></i>
-          </div></li></ul>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=tools">tools</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 29, 2022</span>
+            </li></ul></div><meta itemprop="author" content="liwugang"/><meta itemprop="datePublished" content="2022-05-29T12:26:13+08:00">
+    <meta itemprop="keywords" content="Android,tools"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet --><div class="article__content" itemprop="articleBody"><p>目前市面上 Android 手机 root 采用最多的就是使用 magisk 的方案，方便和通用性比较强。特别是一些黑灰产改机的 rom，是正常 rom + magisk + app 的方案，主要逻辑是在 app 里面，在该 app 中会使用 root 进行执行特权操作，即调用 magisk 的 su 程序，本文介绍一种方案，可以监控 magisk su 调用的命令和返回的结果。</p>
+
+<!--more-->
+
+<h2 id="magisk-su-的使用">Magisk su 的使用</h2>
+
+<p>Magisk su 原理比较简单，magisk 在开机后会启动一个高权限 root 用户的进程 magiskd，调用 su 会通过 socket 连接到 magiskd，然后在 magiskd 进程中，会检查调用者权限，权限校验通过后，magiskd 以 root 用户启动 /system/bin/sh 来执行命令，即完成 su 的调用。</p>
+
+<p>su 有两种使用方式：</p>
+
+<ol>
+  <li>su 后面包含执行的命令，最终调用 sh 时传入该命令，此时 sh 执行完后会立即返回，调用方式为：
+    <ul>
+      <li>su -c “command”</li>
+    </ul>
+  </li>
+  <li>su 后面没有命令参数，调用 sh 像打开正常的交互终端，等待输入，然后输出结果，直到输入退出命令，调用方式为：
+    <ul>
+      <li>su</li>
+    </ul>
+  </li>
+</ol>
+
+<p>对于第一种方式，可以直接在 su 的代码中进行监控，查看输入的命令，而对于第二种方式，调用 sh 后是调用者和 sh 之间的交互，要想监控输入，只有在 sh 中才能监控。</p>
+
+<h2 id="监控-su-的原理">监控 su 的原理</h2>
+
+<p>为了尽可能少的修改 su 和不修改 sh，可以使用管道的原理，在 su 和 sh 之间增加一层，该层用于监控和传送他们之间的数据。</p>
+
+<p><img src="/assets/pictures/android/fake_sh.png" alt="graph" /></p>
+
+<p>su 会默认调用 /system/bin/sh，我们将修改为 /data/local/tmp/fake-sh，然后在 fake-sh 中进行数据的监控和转发。</p>
+
+<p><img src="/assets/pictures/android/fake_sh_pipe.png" alt="graph" /></p>
+
+<p>如上图，除了 su 外，还有4个进程，除了 fake-sh 外，其他进程都是由 fake-sh 创建的子进程，分别为：</p>
+
+<ul>
+  <li>子进程1： 调用实际的 sh 执行 su 的命令</li>
+  <li>子进程2： 读取 sh 的正常输出，然后打印出该输出，并将输出传给 su</li>
+  <li>子进程3： 读取 sh 的错误输出，然后打印出该错误输出，并将错误输出传给 su</li>
+</ul>
+
+<p>fake-sh 除了创建上面3个子进程外，还有：</p>
+
+<ul>
+  <li>创建 3个 pipe 管道，用于在进程之间传输数据</li>
+  <li>会读取 su 的输入，即执行的命令，然后打印出该命令，并将该命令传给 sh 进行执行</li>
+  <li>在收到进程1退出信号时，结束进程2和进程3，并退出</li>
+</ul>
+
+<h2 id="实现">实现</h2>
+
+<h3 id="fake-sh-的实现">fake-sh 的实现</h3>
+
+<p><a href="https://github.com/liwugang/MonitorMagiskSu">https://github.com/liwugang/MonitorMagiskSu</a>，通过 ndk 进行编译，然后将编译的 fake-sh 导入到 /data/local/tmp/ 目录</p>
+
+<h3 id="magisk-改动">Magisk 改动</h3>
+
+<p>Magisk 的改动较少，只需要将 su 使用的 sh 路径从 /system/bin/sh 修改为 /data/local/tmp/fake-sh 即可。</p>
+
+<h4 id="源码修改">源码修改</h4>
+
+<p>修改下面文件：
+https://github.com/topjohnwu/Magisk/blob/master/native/jni/su/su.hpp#L9</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">---</span> a/native/jni/su/su.hpp
++++ b/native/jni/su/su.hpp
+@@ <span class="nt">-6</span>,7 +6,7 @@
+ 
+ <span class="c">#include &lt;db.hpp&gt;</span>
+ 
+-#define DEFAULT_SHELL <span class="s2">"/system/bin/sh"</span>
++#define DEFAULT_SHELL <span class="s2">"/data/local/tmp/fake-sh"</span>
+
+</code></pre></div></div>
+
+<p>然后重新编译生成 magisk apk 进行安装</p>
+
+<h4 id="patch-现有的-magisk-apk">Patch 现有的 magisk apk</h4>
+
+<p>修改的地方只有一处，可以通过 IDA 或者其他工具，对 su 进行 patch 修改，然后在安装，最新的 magisk 版本是 Magisk-v24.3，我在上面 fake-sh 的仓库中提供了修改后的 magisk，可以直接用来使用</p>
+
+<h2 id="最后">最后</h2>
+
+<p>如果不需要进行监控，可以将 /system/bin/sh 拷贝到 /data/local/tmp/fake-sh，使用默认的 sh 执行</p>
+
+<p>fake-sh 代码：<a href="https://github.com/liwugang/MonitorMagiskSu">https://github.com/liwugang/MonitorMagiskSu</a></p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2022-05-29T12:26:13+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet --><div class="article__reward"><section>
+  <div class="content-play">
+    <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下"><font color="white">打赏</font></a></p>
+    <div class="hide_box-play"></div>
+    <div class="shang_box-play">
+      <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/assets/pictures/pay/close.jpg" alt="取消" /></a>
+      <div class="shang_tit-play">
+        <p>感谢您的支持!</p>
+      </div>
+      <div class="shang_payimg">
+          <img src="/assets/pictures/pay/alipayimg.jpg" alt="扫码支持" />
+      </div>
+    <div class="shang_payimg">
+          <img src="/assets/pictures/pay/weipayimg.png" alt="扫码支持" />
+      </div>
+      <div class="pay_explain">扫码打赏，您说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="alipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        <div class="pay_item" data-id="weipay">
+          <span class="pay_logo"><img src="/assets/pictures/pay/wechat.jpg" alt="微信" /></span>
+        </div>
+      </div>
+      <div class="shang_info-play">
+        <p>打开支付宝或微信扫一扫，即可进行扫码打赏哦</p>
+      </div>
     </div>
-  </div></div>
-<script>/*(function () {
+  </div>
+  <script type="text/javascript">
+  function dashangToggle(){
+    $(".hide_box-play").fadeToggle();
+    $(".shang_box-play").fadeToggle();
+  }
+  </script>
 
-})();*/
-</script>
+  <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
 
 
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+  <style type="text/css">
+    .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+    .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+    .shang_box-play{width:540px;height:500px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+    .shang_box-play img{border:none;border-width:0;}
+    .dashang{display:block;width:150px;margin:5px auto;height:40px;line-height:25px;padding:10px;background-color:#f72828;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:18px;transition: all 0.3s;}
+    .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+    .shang_close-play{float:right;display:inline-block;
+      margin-right: 10px;margin-top: 20px;
+    }
+
+    .shang_logo{display:block;text-align:center;margin:20px auto;}
+    .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+    .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+    .shang_payimg{width:230px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+    .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+    .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+    .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+    .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+    .shang_info-play{clear:both;}
+    .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+  </style>
+
+</section>
+</div><div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div></div></footer><div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/10/03/selinux_all.html">深入理解 SELinux</a></div><div class="next"><span>NEXT</span><a href="/2022/04/23/reverse_xiaox_two.html">某多开 app 破解 - 下篇</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script></div><section class="page__comments d-print-none"><!-- fix text color in the input textarea of gitalk -->
+	<style type="text/css">
+		.gitalk-wrapper .gt-header-textarea {
+			color: #333 !important;
+		}
+	</style><div class="gitalk-wrapper" id="js-gitalk-container"></div><script>
+		window.Lazyload.css('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css');
+		window.Lazyload.js('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+			var gitalk = new Gitalk({
+				clientID: '6562eeb5a6025aec380d',
+				clientSecret: '130c89e071f37fa46903269095bf95302eba243c',
+				repo: 'liwugang.github.io',
+				owner: 'liwugang',
+				admin: ['liwugang'],
+				id: 'monitor_magisk_su'
+			});
+			gitalk.render('js-gitalk-container');
+		});
+	</script></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet --></div>
             </div></div></div><div class="page__footer d-print-none">
@@ -1485,6 +1655,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script>
     </div>
     <script>(function () {
